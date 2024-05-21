@@ -1,25 +1,25 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import ModeSelectPage from './ModeSelectPage.js'; // ModeSelectPage をインポート
+import WaitingRoomPage from './WaitingRoomPage.js';
+import ImageSelectPage from './ImageSelectPage.js';
+import ImageDisplayPage from './ImageDisplayPage.js';
 
 function App() {
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<ModeSelectPage />} /> 
+      <Route path="/waiting" element={<WaitingRoomPage />} />
+      <Route path="/game" element={<ImageSelectPage />} /> 
+      <Route path="/display" element={<ImageDisplayPage />} />
+    </Routes>
+  </BrowserRouter>
   );
 }
+      
+
 
 export default App;

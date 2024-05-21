@@ -2,17 +2,6 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -24,15 +13,41 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.hand-display {
+  display: flex;
+  flex-direction: row; /* Flexboxの方向を横に設定 */
+  justify-content: space-around;
+  align-items: center;
+  width: 100%; /* コンテナの幅を親要素に合わせる */
+  min-height: 250px; /* 最小の高さを設定 */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.hand-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+}
+
+.hand-container p {
+  margin: 0;  /* マージンを0に設定して行間を詰める */
+  padding: 2px 0;  /* 上下にわずかなパディングを追加 */
+}
+
+.loading-text {
+  font-size: 16px;
+}
+
+.image {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.image.selected {
+  animation: flash 0.5s ease-in-out;
+  box-shadow: 0 0 8px 4px rgba(255, 255, 0, 0.8); /* 黄色の光る枠 */
+}
+
+@keyframes flash {
+  from { box-shadow: 0 0 8px 4px rgba(255, 255, 0, 0.8); }
+  to { box-shadow: none; }
 }
