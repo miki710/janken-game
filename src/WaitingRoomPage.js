@@ -1,25 +1,26 @@
 import React, { useEffect } from 'react';
-import { io } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
+import { useSocket } from '../context/SocketContext'; // SocketContextからuseSocketをインポート
 
-const socket = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:3001');
 
 function WaitingRoomPage() {
+    const socket = useSocket(); // SocketContextからsocketインスタンスを取得
     const navigate = useNavigate();
     useEffect(() => {
         // サーバーにプレイヤーの待機を通知
         socket.emit('waitingForPlayer');
 
         // マッチングが成功したら、ゲーム画面に遷移する
-        socket.on('matchFound', () => {
-            // 例えば、ゲーム画面への遷移
+        const handleMatchFound = () => {
             navigate('/game');
-        });
-
-        return () => {
-            socket.off('matchFound');
         };
-    }, []);
+        socket.on('matchFound', handleMatchFound);
+
+        // コンポーネントのアンマウント時にイベントリスナーを削除
+        return () => {
+            socket.off('matchFound', handleMatchFound);
+        };
+    }, [socket, navigate]); // 依存配列にsocketとnavigateを追加
 
     return (
         <div>

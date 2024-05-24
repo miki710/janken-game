@@ -1,6 +1,11 @@
 // server.js
+import dotenv from 'dotenv';
+dotenv.config();
+console.log(process.env.PORT);
+
 import express from 'express';
-import http from 'http';
+import https from 'https';
+import fs from 'fs';
 import { Server as socketIo } from 'socket.io';
    // 例：utils.mjs を utils.js に変更した場合
 import { parseFilename } from './utils.js';
@@ -8,23 +13,32 @@ import { attributeMap } from './attribute.js';
 import cors from 'cors';
 
 const app = express();
+
+// SSL/TLS 証明書の設定
+const options = {
+    key: fs.readFileSync('path/to/your/private.key'), // SSLキーのパス（本番環境で使用）
+    cert: fs.readFileSync('path/to/your/certificate.crt') // SSL証明書のパス（本番環境で使用）
+};
+
 app.use(cors());
-const server = http.createServer(app);
+const server = https.createServer(app);
 const io = new socketIo(server, {
+    path: process.env.SOCKET_PATH, // クライアントが接続を試みるパス。開発では使用しない
     cors: {
-      origin: "http://localhost:3000", // クライアントのURL
-      methods: ["GET", "POST"]
+      origin: process.env.CLIENT_URL, // 環境変数からクライアントのURLを取得
+      methods: ["GET"]
     }
 });
 
 const corsOptions = {
-    origin: 'http://localhost:3000', // クライアントのURL
+    origin: process.env.CLIENT_URL, // 環境変数からクライアントのURLを取得
     optionsSuccessStatus: 200
   };
   
   app.use(cors(corsOptions));
 
-
+// 環境変数からポート番号を取得し、デフォルトは3001（開発用）
+const PORT = process.env.PORT || 3001;
 
 export const images = {
     'Rock': [`${process.env.REACT_APP_IMAGE_BASE_URL}/Rock1.webp`, `${process.env.REACT_APP_IMAGE_BASE_URL}/Rock2.webp`, `${process.env.REACT_APP_IMAGE_BASE_URL}/Rock3.webp`],
@@ -112,6 +126,7 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(3001, () => {
-    console.log('サーバーがポート3001で起動しました');
+server.listen(PORT, () => {
+    console.log(`サーバーがポート${PORT}で起動しました`);
+    // 開発環境ではポート3001を使用し、本番環境ではポート443を推奨（環境によって設定を変更してください）
 });
