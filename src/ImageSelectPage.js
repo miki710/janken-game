@@ -1,15 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
 import { parseFilename, playSound } from './utils.js';  // functionName を utils.js からインポート
 import { attributeMap } from './attribute.js';
 
-const socket = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:3000');
-
-socket.on('connect_error', (error) => {
-    console.error('WebSocket Connection Error:', error);
-});
 
 export const images = {
     'Rock': [`${process.env.REACT_APP_IMAGE_BASE_URL}/Rock1.webp`, `${process.env.REACT_APP_IMAGE_BASE_URL}/Rock2.webp`, `${process.env.REACT_APP_IMAGE_BASE_URL}/Rock3.webp`],
@@ -37,34 +31,23 @@ function ImageSelectPage() {
     // 状態の初期化
     const [userInfo, setUserInfo] = useState(null);
     const [computerInfo, setComputerInfo] = useState(null);
-    
-    useEffect(() => {
-        if (mode === 'vsPlayer') {
-            // 対人戦の場合、マッチングの成功を待つ
-            socket.on('matchFound', () => {
-                console.log('マッチングが成功しました。');
-                setIsMatched(true); // マッチング成功状態を設定
-            });
-
-            return () => {
-                socket.off('matchFound');
-            };
-        }
-    }, [mode]);
 
 
     useEffect(() => {
+        console.log('Updated userInfo:', userInfo);  // userInfoが更新された後の値を確認
         if (userInfo) {
           setUserJob(userInfo.job);
         }
       }, [userInfo]); 
 
-    const handleChoice = (hand, index) => { 
+    const handleChoice = async (hand, index) => { 
         if (mode === 'vsPlayer' && !isMatched) {
             console.log('まだマッチングが完了していません。');
             return;
         }
 
+        console.log("handleChoiceがトリガーされました。", hand, index);
+       // その他の処理...
         playSound('click');  // 選択時に音を再生
         //ユーザーの手を設定
         setUserHand(hand);
@@ -72,67 +55,125 @@ function ImageSelectPage() {
   
         // ユーザーの仕事を設定
         const userFileName = images[hand][index];
-        const newUserInfo = parseFilename(userFileName, attributeMap);
+        const newUserInfo = await parseFilename(userFileName, attributeMap);
+        console.log('newUserInfo:', newUserInfo);  // newUserInfoの内容を確認
         setUserInfo(newUserInfo);
 
-        if (mode === 'vsComputer') {
-            // コンピュータとの対戦の場合、サーバーにユーザーの選択を送信し、結果を待つ
-            socket.emit('play', { hand: hand, index: index, mode: mode });
-        } else if (mode === 'vsPlayer') {
-            // 対人戦の場合、サーバーにユーザーの選択を送信
-            socket.emit('play', { hand: hand, index: index, mode: mode });
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/play`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json'},
+                credentials: 'include', // サーバー側で `credentials: true` を設定している場合
+                body: JSON.stringify({ hand: hand, index: index, mode: mode }),
+            });
+            const data = await response.json();
+            console.log('Received data:', data);
+            if (data && data.computer) {
+                console.log('Computer data:', data.computer);
+                setComputerHand(data.computer.hand);
+                setComputerImageIndex(data.computer.index);
+                setComputerInfo(data.computer.info);
+            } else {
+                console.error('No computer data received');
+            }
+
+            // サーバーから受け取ったIDを保存
+            const resultId = data.resultId;
+        
+            const resultResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/result/${resultId}`);
+            const resultData = await resultResponse.json();
+            console.log('Game result:', resultData);
+            if (!resultData || !resultData.computer || !resultData.computer.info) {
+                throw new Error('Received data is incomplete or malformed');
+            }
+            setComputerInfo(resultData.computer.info);
+            console.log('Set computerInfo:', resultData.computer.info);
+        } catch (error) {
+            console.error('Error during game processing:', error);
         }
     };
 
     useEffect(() => {
-        // サーバーからの結果を待ち受ける
-        const handleResult = (data) => {
-            console.log("Received data from server:", data);
+        console.log('computerHand:', computerHand);
+        console.log('computerImageIndex:', computerImageIndex);
+        console.log('computerInfo:', computerInfo);
+        if (userInfo && computerInfo) {
+            console.log('Updated userInfo:', userInfo);
+            console.log('Updated computerInfo:', computerInfo);
+            navigate('/display', {
+                state: { 
+                    user: { 
+                        hand: userHand, 
+                        job: userInfo.job,
+                        index: userImageIndex, 
+                        point: currentPoint 
+                    },
+                    computer: {
+                        hand: computerHand, 
+                        job: computerInfo.job,
+                        index: computerImageIndex 
+                    }
+                }
+            });
+        }
+    }, [userInfo, computerInfo, computerHand, computerImageIndex]);  // 依存関係に computerHand と computerImageIndex を追加
 
-            if (!data || !data.computer || !data.computer.hand || !data.computer.index || !data.computer.info || !data.computer.info.job) {
-                console.error('Data is incomplete or malformed:', data);
-                return; // データが不完全な場合は処理を中断
-            }
 
-            const newComputerHand = data.computer.hand;
-            const newComputerImageIndex = data.computer.index;
-            const newComputerInfo = data.computer.info; // 'info'を受け取るように変更
-            const newComputerJob = newComputerInfo.job; // jobを正しく参照
+    useEffect(() => {
+        // PC戦の場合はポーリングを行わない
+        if (mode === 'vsComputer') return;
 
-            setComputerHand(newComputerHand);
-            setComputerImageIndex(newComputerImageIndex);
-            setComputerInfo(newComputerInfo);
-            setComputerJob(newComputerJob); // jobをstateに設定
-            
-                console.log("遷移時のポイント:", currentPoint);
-                setTimeout(() => {
-                    navigate('/display', {
-                        state: { 
-                            user: { 
-                                hand: userHand, 
-                                job: userInfo.job, 
-                                index: userImageIndex, 
-                                point: currentPoint 
-                            },
-                            computer: {
-                                 hand: newComputerHand, 
-                                 job: newComputerInfo.job, 
-                                 index: newComputerImageIndex 
+        // ユーザー戦の場合のみポーリングを開始
+        if (mode === 'vsPlayer' && isMatched) {
+        const intervalId = setInterval(async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/result`);
+                const data = await response.json();
+                if (data && data.computer) {
+                    console.log("Received data from server:", data);
+    
+                    if (!data || !data.computer || !data.computer.hand || !data.computer.index || !data.computer.info || !data.computer.info.job) {
+                        console.error('Data is incomplete or malformed:', data);
+                        return; // データが不完全な場合は処理を中断
+                    }
+    
+                    const newComputerHand = data.computer.hand;
+                    const newComputerImageIndex = data.computer.index;
+                    const newComputerInfo = data.computer.info;
+                    const newComputerJob = newComputerInfo.job;
+    
+                    setComputerHand(newComputerHand);
+                    setComputerImageIndex(newComputerImageIndex);
+                    setComputerInfo(newComputerInfo);
+                    setComputerJob(newComputerJob);
+    
+                    console.log("遷移時のポイント:", currentPoint);
+                    setTimeout(() => {
+                        navigate('/display', {
+                            state: { 
+                                user: { 
+                                    hand: userHand, 
+                                    job: userInfo.job, 
+                                    index: userImageIndex, 
+                                    point: currentPoint 
+                                },
+                                computer: {
+                                     hand: newComputerHand, 
+                                     job: newComputerInfo.job, 
+                                     index: newComputerImageIndex 
+                                }
                             }
-                        }
-                    });
-                }, 3000); // 3000ミリ秒の遅延
-            
-        };
+                        });
+                    }, 3000); // 3000ミリ秒の遅延
+                }
+            } catch (error) {
+                console.error('Error fetching result:', error);
+            }
+        }, 3000); // 3秒ごとにサーバーから結果をチェック
     
-        socket.on('result', handleResult);
-    
-        return () => {
-            socket.off('result', handleResult);
-        };
-    }, [userHand, userInfo, currentPoint]); // 依存関係にこれらを追加    
-
-    
+        return () => clearInterval(intervalId); // コンポーネントのアンマウント時にポーリングを停止
+    }
+    }, [mode, isMatched]); // 依存関係に navigate を追加
 
   return (
     <div className="App">

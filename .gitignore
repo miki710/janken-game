@@ -26,3 +26,7 @@ yarn-error.log*
 .env
 babel.config.json
 jest.config.cjs
+
+#自己証明書
+cert.pem
+key.pem

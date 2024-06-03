@@ -8,9 +8,13 @@ import './App.css';
 function ImageDisplayPage() {
     const navigate = useNavigate(); // useNavigateフックを使用
     const location = useLocation();
+    console.log('Location state:', location.state);
+    
     const { user = {}, computer ={} } = location.state || {};
     const initialPoint = location.state && location.state.user ? location.state.user.point : 0;
     const [point, setPoint] = useState(initialPoint);
+    console.log('Received user data:', location.state.user);
+    console.log('Received computer data:', location.state.computer);
     console.log("受け取ったポイント:", initialPoint);
 
     // user オブジェクトから job プロパティを取り出し、存在しない場合はデフォルト値として空文字列 '' を設定

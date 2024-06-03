@@ -1,30 +1,35 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSocket } from '../context/SocketContext'; // SocketContextからuseSocketをインポート
 
 
 function WaitingRoomPage() {
-    const socket = useSocket(); // SocketContextからsocketインスタンスを取得
     const navigate = useNavigate();
+    const [isMatched, setIsMatched] = useState(false);
+
     useEffect(() => {
-        // サーバーにプレイヤーの待機を通知
-        socket.emit('waitingForPlayer');
+        const intervalId = setInterval(async () => {
+            try {
+                const response = await fetch('サーバーのマッチング状態確認用URL');
+                const data = await response.json();
+                if (data.matchFound) {
+                    setIsMatched(true);
+                    clearInterval(intervalId);
+                    navigate('/game');
+                }
+            } catch (error) {
+                console.error('マッチング状態の確認中にエラーが発生しました:', error);
+            }
+        }, 3000); // 3秒ごとにサーバーに問い合わせ
 
-        // マッチングが成功したら、ゲーム画面に遷移する
-        const handleMatchFound = () => {
-            navigate('/game');
-        };
-        socket.on('matchFound', handleMatchFound);
-
-        // コンポーネントのアンマウント時にイベントリスナーを削除
         return () => {
-            socket.off('matchFound', handleMatchFound);
+            clearInterval(intervalId); // コンポーネントのアンマウント時にポーリングを停止
         };
-    }, [socket, navigate]); // 依存配列にsocketとnavigateを追加
+    }, [navigate]);
 
     return (
         <div>
             <h1>他のプレイヤーを待っています...</h1>
+            {isMatched && <p>マッチングが見つかりました！ゲームに移動します。</p>}
         </div>
     );
 }

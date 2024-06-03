@@ -1,44 +1,142 @@
 // server.js
-import dotenv from 'dotenv';
-dotenv.config();
-console.log(process.env.PORT);
-
 import express from 'express';
 import https from 'https';
 import fs from 'fs';
-import { Server as socketIo } from 'socket.io';
-   // 例：utils.mjs を utils.js に変更した場合
+import dotenv from 'dotenv';
+// 例：utils.mjs を utils.js に変更した場合
 import { parseFilename } from './utils.js';
 import { attributeMap } from './attribute.js';
 import cors from 'cors';
 
-const app = express();
+dotenv.config(); // 環境変数を読み込む
+const app = express(); // express アプリケーションを初期化
+
+// CORS設定はその他のミドルウェアやルートハンドラよりも前
+const corsOptions = {
+    origin: process.env.CLIENT_URL, // 環境変数からクライアントのURLを取得
+    optionsSuccessStatus: 200,
+    credentials: true // クレデンシャル付きのリクエストを許可
+};
+
+// CORS設定をコンソールに出力
+console.log('CORS設定:', corsOptions);
+console.log('クライアントURL:', process.env.CLIENT_URL);
+
+app.use(cors(corsOptions));// CORS ミドルウェアを適用
+
+
+// リクエストの詳細をログに記録するミドルウェア
+app.use((req, res, next) => {
+    console.log(`Received ${req.method} request for ${req.url}`);
+    console.log('Headers:', req.headers);
+    console.log('Body:', req.body);
+    next();
+});
+
+// レスポンスの内容をログに記録するミドルウェア
+app.use((req, res, next) => {
+    console.log("Middleware for logging response is running");
+    const originalSend = res.send;
+    res.send = function (body) {
+        console.log(`Sending response with status ${res.statusCode}:`, body);
+        originalSend.call(this, body);
+    };
+    next();
+});
+
+
+// JSON リクエストボディを解析
+app.use(express.json());
+
+
+
+// 環境に応じて証明書のパスを選択
+const keyPath = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_KEY_PATH : process.env.LOCAL_KEY_PATH;
+const certPath = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_CERT_PATH : process.env.LOCAL_CERT_PATH;
 
 // SSL/TLS 証明書の設定
 const options = {
-    key: fs.readFileSync('path/to/your/private.key'), // SSLキーのパス（本番環境で使用）
-    cert: fs.readFileSync('path/to/your/certificate.crt') // SSL証明書のパス（本番環境で使用）
+    key: fs.readFileSync(keyPath), // SSLキーのパス（本番環境で使用）
+    cert: fs.readFileSync(certPath) // SSL証明書のパス（本番環境で使用）
 };
 
-app.use(cors());
-const server = https.createServer(app);
-const io = new socketIo(server, {
-    path: process.env.SOCKET_PATH, // クライアントが接続を試みるパス。開発では使用しない
-    cors: {
-      origin: process.env.CLIENT_URL, // 環境変数からクライアントのURLを取得
-      methods: ["GET"]
+const server = https.createServer(options, app);
+
+
+// ゲームの状態を管理する変数
+let gameResults = {};
+// ルート定義
+app.post('/play', (req, res) => {
+    const { hand, index, mode } = req.body; // ユーザーの選択を受け取る
+    const computerChoice = generateComputerChoice(); // コンピュータの選択を生成
+    const result = determineWinner(hand, computerChoice.hand); // 勝敗を決定
+
+    // 結果を保存
+    const resultId = Date.now(); // 簡易的なID生成
+    gameResults[resultId] = {
+        result: result,
+        computer: computerChoice
+    };
+
+    console.log("Generated Result ID:", resultId); // 結果IDをコンソールに出力
+
+    // 結果をクライアントに送信
+    res.json({
+        resultId: resultId,
+        user: {
+            hand: hand,
+            index: index
+        },
+        computer: {
+            hand: computerChoice.hand,
+            index: computerChoice.index,
+            info: computerChoice.info
+        },
+        result: result
+     });
+});
+
+app.get('/result/:id', (req, res) => {
+    const { id } = req.params;
+    const result = gameResults[id];
+    if (result) {
+        res.json(result);
+    } else {
+        res.status(404).json({ message: 'Result not found' });
     }
 });
 
-const corsOptions = {
-    origin: process.env.CLIENT_URL, // 環境変数からクライアントのURLを取得
-    optionsSuccessStatus: 200
-  };
-  
-  app.use(cors(corsOptions));
+let waitingPlayers = [];
 
-// 環境変数からポート番号を取得し、デフォルトは3001（開発用）
+app.post('/match', (req, res) => {
+    const userId = req.body.userId; // ユーザーIDをリクエストから取得
+    waitingPlayers.push(userId);
+
+    // 2人のプレイヤーがキューにいる場合、マッチングを行う
+    if (waitingPlayers.length >= 2) {
+        const player1 = waitingPlayers.shift();
+        const player2 = waitingPlayers.shift();
+
+        // ここでマッチング成功のレスポンスを送る
+        res.json({
+            success: true,
+            message: 'マッチング成功',
+            players: [player1, player2]
+        });
+    } else {
+        res.json({
+            success: false,
+            message: 'マッチング待ち'
+        });
+    }
+});
+// サーバーを起動
 const PORT = process.env.PORT || 3001;
+
+// ルートハンドラ
+app.get('/', (req, res) => {
+    res.send('サーバーは正常に動作しています！');
+});
 
 export const images = {
     'Rock': [`${process.env.REACT_APP_IMAGE_BASE_URL}/Rock1.webp`, `${process.env.REACT_APP_IMAGE_BASE_URL}/Rock2.webp`, `${process.env.REACT_APP_IMAGE_BASE_URL}/Rock3.webp`],
@@ -87,44 +185,12 @@ function determineWinner(userHand, computerHand) {
     }
 }
 
-let waitingPlayers = [];
-
-io.on('connection', (socket) => {
-    console.log('新しいユーザーが接続しました:', socket.id);
-
-    socket.on('play', (data) => {
-        console.log('Received play event:', data);  // 受け取ったデータをログ出力
-        if (data.mode === 'vsComputer') {
-            const computerChoice = generateComputerChoice();
-            console.log('Computer choice:', computerChoice);  // コンピュータの選択をログ出力
-            const result = determineWinner(data.hand, computerChoice.hand);
-            socket.emit('result', { 
-                result: result, 
-                hand: computerChoice.hand,
-                index: computerChoice.index,
-                info: computerChoice.info
-            });
-        }
-    });
-
-    socket.on('waitingForPlayer', () => {
-        console.log('プレイヤーがマッチングを待っています:', socket.id);
-        waitingPlayers.push(socket);
-
-        if (waitingPlayers.length >= 2) {
-            const player1 = waitingPlayers.shift();
-            const player2 = waitingPlayers.shift();
-            player1.emit('matchFound');
-            player2.emit('matchFound');
-            console.log('マッチング成功:', player1.id, 'と', player2.id);
-        }
-    });
-
-    socket.on('disconnect', () => {
-        waitingPlayers = waitingPlayers.filter(player => player.id !== socket.id);
-        console.log('ユーザーが切断しました:', socket.id);
-    });
+// 他のすべてのルートとミドルウェアの後に追加
+app.use((err, req, res, next) => {
+    console.error(err.stack); // エラーの詳細をコンソールに出力
+    res.status(500).send('サーバー内部でエラーが発生しました');
 });
+
 
 server.listen(PORT, () => {
     console.log(`サーバーがポート${PORT}で起動しました`);
