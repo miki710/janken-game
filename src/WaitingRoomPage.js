@@ -9,13 +9,33 @@ function WaitingRoomPage() {
     useEffect(() => {
         const intervalId = setInterval(async () => {
             try {
-                const response = await fetch('サーバーのマッチング状態確認用URL');
-                const data = await response.json();
-                if (data.matchFound) {
+                const serverUrl = process.env.REACT_APP_SERVER_URL;
+                console.log(process.env.REACT_APP_SERVER_URL); 
+                const gameMode = 'vsPlayer'; // ゲームモードを指定
+
+                const response = await fetch(`${serverUrl}/match`, {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mode: gameMode
+                    }),
+                    credentials: 'include' // クッキーを送信するために必要
+                });
+               
+                if (!response.ok) {
+                    throw new Error('サーバーからのレスポンスが正常ではありません。');
+                }
+    
+                const data = await response.json(); // サーバーからのレスポンスデータをJSON形式で受け取る
+    
+                if (data.success) {
                     setIsMatched(true);
                     clearInterval(intervalId);
-                    navigate('/game');
+                    navigate('/game', { state: { mode: 'vsPlayer'}}); // マッチング成功時にゲームページへ遷移
                 }
+
             } catch (error) {
                 console.error('マッチング状態の確認中にエラーが発生しました:', error);
             }

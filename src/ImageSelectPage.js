@@ -15,8 +15,8 @@ export const images = {
 function ImageSelectPage() {
     const navigate = useNavigate();
     const location = useLocation();
-
-    const { mode } = location.state; // モードを取得
+    const { mode } = location.state || {}; // stateがnullの場合に備えてデフォルト値を設定
+    console.log(location.state)
     const [isMatched, setIsMatched] = useState(false);
 
     const { point = 0 } = location.state || {};

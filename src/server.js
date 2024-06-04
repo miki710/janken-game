@@ -1,5 +1,7 @@
 // server.js
 import express from 'express';
+import cookieParser from 'cookie-parser';
+import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
 import fs from 'fs';
 import dotenv from 'dotenv';
@@ -10,6 +12,10 @@ import cors from 'cors';
 
 dotenv.config(); // 環境変数を読み込む
 const app = express(); // express アプリケーションを初期化
+
+// cookie-parser ミドルウェアを使用する
+// これにより、リクエストに含まれるクッキーを解析し、req.cookies でアクセス可能にする
+app.use(cookieParser());
 
 // CORS設定はその他のミドルウェアやルートハンドラよりも前
 const corsOptions = {
@@ -44,11 +50,8 @@ app.use((req, res, next) => {
     next();
 });
 
-
 // JSON リクエストボディを解析
 app.use(express.json());
-
-
 
 // 環境に応じて証明書のパスを選択
 const keyPath = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_KEY_PATH : process.env.LOCAL_KEY_PATH;
@@ -109,7 +112,10 @@ app.get('/result/:id', (req, res) => {
 let waitingPlayers = [];
 
 app.post('/match', (req, res) => {
-    const userId = req.body.userId; // ユーザーIDをリクエストから取得
+    const userId = req.cookies.userId; // ユーザーIDをリクエストから取得
+    if (!userId) {
+        return res.status(400).send('ユーザーIDがクッキーに存在しません');
+    }
     waitingPlayers.push(userId);
 
     // 2人のプレイヤーがキューにいる場合、マッチングを行う
@@ -135,7 +141,15 @@ const PORT = process.env.PORT || 3001;
 
 // ルートハンドラ
 app.get('/', (req, res) => {
-    res.send('サーバーは正常に動作しています！');
+    if (!req.cookies.userId) {
+        // ユーザーIDがクッキーに存在しない場合、新しいIDを生成して設定
+        const userId = uuidv4();
+        res.cookie('userId', userId, { maxAge: 900000, httpOnly: true, secure: true, sameSite: 'None' });
+        res.send('新しいユーザーIDがクッキーに設定されました: ' + userId);
+    } else {
+        // ユーザーIDが既にクッキーに存在する場合
+        res.send('既存のユーザーIDを使用します: ' + req.cookies.userId);
+    }
 });
 
 export const images = {
