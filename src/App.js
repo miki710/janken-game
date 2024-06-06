@@ -13,7 +13,7 @@ function App() {
     // ルートURLにアクセスしてユーザーIDをクッキーに設定する関数
     const initializeUserId = async () => {
       try {
-        const response = await fetch('https://localhost:3001/', {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/`, {
           method: 'GET',
           credentials: 'include' // クッキーを含める
         });

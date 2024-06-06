@@ -15,9 +15,8 @@ export const images = {
 function ImageSelectPage() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { mode } = location.state || {}; // stateがnullの場合に備えてデフォルト値を設定
+    const { mode, isMatched } = location.state || {}; // stateがnullの場合に備えてデフォルト値を設定
     console.log(location.state)
-    const [isMatched, setIsMatched] = useState(false);
 
     const { point = 0 } = location.state || {};
     const [currentPoint, setCurrentPoint] = useState(point); // 受け取ったポイントを状態として保持
@@ -41,6 +40,8 @@ function ImageSelectPage() {
       }, [userInfo]); 
 
     const handleChoice = async (hand, index) => { 
+        console.log("isMatched:", isMatched, "mode:", mode);  // 状態をログに出力
+
         if (mode === 'vsPlayer' && !isMatched) {
             console.log('まだマッチングが完了していません。');
             return;
@@ -79,15 +80,22 @@ function ImageSelectPage() {
 
             // サーバーから受け取ったIDを保存
             const resultId = data.resultId;
-        
-            const resultResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/result/${resultId}`);
-            const resultData = await resultResponse.json();
-            console.log('Game result:', resultData);
-            if (!resultData || !resultData.computer || !resultData.computer.info) {
-                throw new Error('Received data is incomplete or malformed');
+
+            if (resultId) {
+                const resultResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/result/${resultId}`);
+                if (!resultResponse.ok) {
+                    throw new Error(`HTTP error! status: ${resultResponse.status}`);
+                }
+                const resultData = await resultResponse.json();
+                console.log('Game result:', resultData);
+                if (!resultData || !resultData.computer || !resultData.computer.info) {
+                    throw new Error('Received data is incomplete or malformed');
+                }
+                setComputerInfo(resultData.computer.info);
+                console.log('Set computerInfo:', resultData.computer.info);
+            } else {
+                console.log('No resultId provided, skipping fetch for game result.');
             }
-            setComputerInfo(resultData.computer.info);
-            console.log('Set computerInfo:', resultData.computer.info);
         } catch (error) {
             console.error('Error during game processing:', error);
         }

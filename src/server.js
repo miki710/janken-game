@@ -110,32 +110,56 @@ app.get('/result/:id', (req, res) => {
 });
 
 let waitingPlayers = [];
+let activeMatching = new Set(); // アクティブなマッチングプロセスに参加しているユーザーIDを追跡
 
 app.post('/match', (req, res) => {
-    const userId = req.cookies.userId; // ユーザーIDをリクエストから取得
+    const userId = req.cookies.userId;
     if (!userId) {
         return res.status(400).send('ユーザーIDがクッキーに存在しません');
     }
+
+    if (activeMatching.has(userId)) {
+        return res.json({
+            success: false,
+            message: '既にマッチングプロセス中です'
+        });
+    }
+
+    activeMatching.add(userId);
     waitingPlayers.push(userId);
 
-    // 2人のプレイヤーがキューにいる場合、マッチングを行う
-    if (waitingPlayers.length >= 2) {
+    tryMatchPlayers(res);
+});
+
+function tryMatchPlayers(res) {
+    while (waitingPlayers.length >= 2) {
         const player1 = waitingPlayers.shift();
         const player2 = waitingPlayers.shift();
 
-        // ここでマッチング成功のレスポンスを送る
+        if (player1 === player2) {
+            console.error('同一プレイヤーがマッチングしようとしました:', player1);
+            activeMatching.delete(player1); // マッチングリストから削除
+            waitingPlayers.unshift(player1); // 再度キューに戻す
+            continue; // 次のマッチングを試みる
+        }
+
+        activeMatching.delete(player1);
+        activeMatching.delete(player2);
+
         res.json({
             success: true,
-            message: 'マッチング成功',
+            isMatched: true,
             players: [player1, player2]
         });
-    } else {
-        res.json({
-            success: false,
-            message: 'マッチング待ち'
-        });
+        return; // マッチングが成功したのでレスポンスを送信
     }
-});
+
+    res.json({
+        success: false,
+        isMatched: false
+    });
+}
+
 // サーバーを起動
 const PORT = process.env.PORT || 3001;
 
