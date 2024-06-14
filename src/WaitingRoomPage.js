@@ -8,56 +8,82 @@ function WaitingRoomPage() {
     const [isMatchingProcess, setIsMatchingProcess] = useState(false);
 
     useEffect(() => {
+        console.log('ポーリング開始');
         const intervalId = setInterval(async () => {
-            if (!isMatchingProcess) { // マッチングプロセス中でない場合のみリクエストを送信
-            setIsMatchingProcess(true); // マッチングプロセスを開始
-            try {
-                const serverUrl = process.env.REACT_APP_SERVER_URL;
-                console.log(process.env.REACT_APP_SERVER_URL); 
-                const gameMode = 'vsPlayer'; // ゲームモードを指定
+            console.log('ポーリング中...', intervalId);
+            console.log('isMatchingProcess 状態:', isMatchingProcess);
+            if (!isMatchingProcess && !isMatched) { // マッチングプロセス中でない場合のみリクエストを送信
+                console.log('マッチングプロセスを開始します');
+                setIsMatchingProcess(true); // マッチングプロセスを開始
+                console.log('isMatchingProcess set to true');
+                try {
+                    const serverUrl = process.env.REACT_APP_SERVER_URL;
+                    const gameMode = 'vsPlayer'; // ゲームモードを指定
 
-                const response = await fetch(`${serverUrl}/match`, {
-                    method: 'POST',
-                    headers: {
-                    'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        mode: gameMode
-                    }),
-                    credentials: 'include' // クッキーを送信するために必要
-                });
+                    const response = await fetch(`${serverUrl}/match`, {
+                        method: 'POST',
+                        headers: {
+                        'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            mode: gameMode
+                        }),
+                        credentials: 'include' // クッキーを送信するために必要
+                    });
                
-                if (!response.ok) {
-                    throw new Error('サーバーからのレスポンスが正常ではありません。');
-                }
-    
-                const data = await response.json(); // サーバーからのレスポンスデータをJSON形式で受け取る
-                console.log('Received data:', data); // デバッグ情報をログに出力
+                    if (!response.ok) {
+                        throw new Error('サーバーからのレスポンスが正常ではありません。');
+                    }
+                    
+                    const data = await response.json(); // サーバーからのレスポンスデータをJSON形式で受け取る
+                    console.log('Received data:', data); // デバッグ情報をログに出力
 
-                if (data.success && data.isMatched) {
-                    setIsMatched(true);
-                    setIsMatchingProcess(false); // マッチングプロセスを終了
-                    clearInterval(intervalId);
-                    navigate('/game', { state: { mode: 'vsPlayer', isMatched: true }}); // マッチング成功時にゲームページへ遷移
-                } else if (!data.success && data.message === '既にマッチングプロセス中です') {
-                    console.log('isMatchingProcess:', isMatchingProcess); // ステートの値をログ出力
-                    // ポーリングを続ける
-                } else {
-                    setIsMatchingProcess(false);
-                    console.log('マッチングが完了していません');
+                    if (data.success && data.isMatched) {
+                        console.log('マッチング成功:', data);
+                        setIsMatched(true);                  
+                        setIsMatchingProcess(false); // マッチングプロセスを終了
+                        console.log('ポーリングを停止します', intervalId);
+                        clearInterval(intervalId); // ここでの停止は適切
+                    } else if (!data.success && data.message === '既にマッチングプロセス中です') {
+                        console.log('エラー: 既にマッチングプロセス中です');
+                    } else {
+                        console.log('マッチング未完了:', data);
+                        setIsMatchingProcess(false);
+                        console.log('isMatchingProcess reset to false');
+                    }
+                            
+                } catch (error) {
+                    setIsMatchingProcess(false); // エラーが発生した場合もプロセスを終了
+                    console.error('エラー発生:', error);
                 }
-
-            } catch (error) {
-                setIsMatchingProcess(false); // エラーが発生した場合もプロセスを終了
-                console.error('マッチング状態の確認中にエラーが発生しました:', error);
             }
-        }
-        }, 3000); // 3秒ごとにサーバーに問い合わせ
+        }, 30000); // 3秒ごとにサーバーに問い合わせ
+
+        console.log('intervalId:', intervalId); // intervalIdを出力
 
         return () => {
+            console.log('ポーリング停止', intervalId);
             clearInterval(intervalId); // コンポーネントのアンマウント時にポーリングを停止
         };
-    }, [navigate, isMatchingProcess]); // isMatchingProcess を依存配列に追加
+    }, []); 
+
+    useEffect(() => {
+        console.log('isMatched has been updated to:', isMatched);
+        if (isMatched) {
+            console.log('Navigating to /game with isMatched:', isMatched);
+            navigate('/game', { state: { mode: 'vsPlayer', isMatched: true }});
+        }
+    }, [isMatched]); // isMatched と navigate を依存配列に追加
+
+
+    useEffect(() => {
+        console.log('コンポーネントがマウントされました');
+
+        return () => {
+            console.log('コンポーネントがアンマウントされました');
+        };
+    }, []);
+
 
     return (
         <div>

@@ -9,13 +9,12 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.23.1",
     "react-scripts": "5.0.1",
-    "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -23,7 +22,7 @@
     "build": "react-scripts build",
     "test": "jest --detectOpenHandles",
     "eject": "react-scripts eject",
-    "start-server": "node src/server.js"
+    "start-server": "node --inspect src/server.js"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {

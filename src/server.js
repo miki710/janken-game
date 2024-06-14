@@ -30,12 +30,15 @@ console.log('クライアントURL:', process.env.CLIENT_URL);
 
 app.use(cors(corsOptions));// CORS ミドルウェアを適用
 
+// JSON リクエストボディを解析
+app.use(express.json());
 
 // リクエストの詳細をログに記録するミドルウェア
 app.use((req, res, next) => {
     console.log(`Received ${req.method} request for ${req.url}`);
     console.log('Headers:', req.headers);
     console.log('Body:', req.body);
+    console.log('Received cookies:', req.cookies); // クッキーの内容をログに出力
     next();
 });
 
@@ -50,8 +53,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// JSON リクエストボディを解析
-app.use(express.json());
+
 
 // 環境に応じて証明書のパスを選択
 const keyPath = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_KEY_PATH : process.env.LOCAL_KEY_PATH;
@@ -111,8 +113,18 @@ app.get('/result/:id', (req, res) => {
 
 let waitingPlayers = [];
 let activeMatching = new Set(); // アクティブなマッチングプロセスに参加しているユーザーIDを追跡
+let allRequests = [];
+console.log('allRequests before operation:', allRequests, Array.isArray(allRequests));
 
-app.post('/match', (req, res) => {
+function handleRequest(req, res, next) {
+    console.log('handleRequest called with:', req.url); // リクエストURLをログに出力
+    // リクエストを allRequests に追加
+    allRequests.push({ req, res });
+    console.log('allRequests after operation:', allRequests, Array.isArray(allRequests));
+    next();
+}
+
+app.post('/match', handleRequest, (req, res) => {
     const userId = req.cookies.userId;
     if (!userId) {
         return res.status(400).send('ユーザーIDがクッキーに存在しません');
@@ -125,10 +137,16 @@ app.post('/match', (req, res) => {
         });
     }
 
-    activeMatching.add(userId);
-    waitingPlayers.push(userId);
+    if (!activeMatching.has(userId)) {
+        activeMatching.add(userId);
+        waitingPlayers.push(userId); // ユーザーを待機プレイヤーリストに追加
+    }
 
-    tryMatchPlayers(res);
+    // レスポンスは即座には送らず、マッチング処理を待機
+    setTimeout(() => {
+        tryMatchPlayers(res);
+    }, 5000); // 5秒後にマッチングを試みる
+    
 });
 
 function tryMatchPlayers(res) {
@@ -136,28 +154,40 @@ function tryMatchPlayers(res) {
         const player1 = waitingPlayers.shift();
         const player2 = waitingPlayers.shift();
 
-        if (player1 === player2) {
-            console.error('同一プレイヤーがマッチングしようとしました:', player1);
-            activeMatching.delete(player1); // マッチングリストから削除
-            waitingPlayers.unshift(player1); // 再度キューに戻す
-            continue; // 次のマッチングを試みる
-        }
-
+        console.log("Match found between:", player1, "and", player2);
         activeMatching.delete(player1);
         activeMatching.delete(player2);
-
-        res.json({
-            success: true,
-            isMatched: true,
-            players: [player1, player2]
-        });
-        return; // マッチングが成功したのでレスポンスを送信
+        console.log("activeMatching after deletion:", Array.from(activeMatching));
+        
+        // マッチングに関与するクライアントにのみレスポンスを送信
+        for (let i = 0; i < allRequests.length; i++) {
+            const { req, res } = allRequests[i];
+            if (req.cookies.userId === player1 || req.cookies.userId === player2) {
+                if (!res.headersSent) {
+                    res.json({
+                        success: true,
+                        isMatched: true,
+                        players: [player1, player2]
+                    });
+                    allRequests.splice(i, 1); // レスポンスを送信したリクエストを配列から削除
+                    i--; // レスポンスを送信したのでループを抜ける
+                }
+            }
+        }
     }
 
-    res.json({
-        success: false,
-        isMatched: false
-    });
+    // マッチングが見つからなかった全てのリクエストに対してレスポンスを送信
+    for (let i = 0; i < allRequests.length; i++) {
+        const { res } = allRequests[i];
+        if (!res.headersSent) {
+            res.json({
+                success: false,
+                isMatched: false
+            });
+            allRequests.splice(i, 1);
+            i--;
+        }
+    }
 }
 
 // サーバーを起動

@@ -31,6 +31,8 @@ function ImageSelectPage() {
     const [userInfo, setUserInfo] = useState(null);
     const [computerInfo, setComputerInfo] = useState(null);
 
+    const [userHandSelected, setUserHandSelected] = useState(false); //他のプレイヤーと対戦する場合に使用
+
 
     useEffect(() => {
         console.log('Updated userInfo:', userInfo);  // userInfoが更新された後の値を確認
@@ -48,11 +50,12 @@ function ImageSelectPage() {
         }
 
         console.log("handleChoiceがトリガーされました。", hand, index);
-       // その他の処理...
+
         playSound('click');  // 選択時に音を再生
         //ユーザーの手を設定
         setUserHand(hand);
         setUserImageIndex(index); // 選択された画像のインデックスを保存
+        setUserHandSelected(true); // ユーザーが手を選択したことを示す
   
         // ユーザーの仕事を設定
         const userFileName = images[hand][index];
@@ -132,7 +135,7 @@ function ImageSelectPage() {
         if (mode === 'vsComputer') return;
 
         // ユーザー戦の場合のみポーリングを開始
-        if (mode === 'vsPlayer' && isMatched) {
+        if (mode === 'vsPlayer' && isMatched && userHandSelected) {
         const intervalId = setInterval(async () => {
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/result`);
@@ -181,8 +184,7 @@ function ImageSelectPage() {
     
         return () => clearInterval(intervalId); // コンポーネントのアンマウント時にポーリングを停止
     }
-    }, [mode, isMatched]); // 依存関係に navigate を追加
-
+    }, [mode, isMatched, userHandSelected]); 
   return (
     <div className="App">
             <header className="App-header">
