@@ -113,82 +113,58 @@ app.get('/result/:id', (req, res) => {
 
 let waitingPlayers = [];
 let activeMatching = new Set(); // アクティブなマッチングプロセスに参加しているユーザーIDを追跡
-let allRequests = [];
-console.log('allRequests before operation:', allRequests, Array.isArray(allRequests));
 
-function handleRequest(req, res, next) {
-    console.log('handleRequest called with:', req.url); // リクエストURLをログに出力
-    // リクエストを allRequests に追加
-    allRequests.push({ req, res });
-    console.log('allRequests after operation:', allRequests, Array.isArray(allRequests));
-    next();
-}
-
-app.post('/match', handleRequest, (req, res) => {
+function handleMatchRequest(req, res) {
+    console.log('handleMatchRequest called');
     const userId = req.cookies.userId;
     if (!userId) {
         return res.status(400).send('ユーザーIDがクッキーに存在しません');
     }
 
     if (activeMatching.has(userId)) {
+        console.log('User already in matching process:', userId);
         return res.json({
             success: false,
             message: '既にマッチングプロセス中です'
         });
     }
 
-    if (!activeMatching.has(userId)) {
-        activeMatching.add(userId);
-        waitingPlayers.push(userId); // ユーザーを待機プレイヤーリストに追加
-    }
+    console.log('Adding user to active matching:', userId);
+    activeMatching.add(userId);
+    waitingPlayers.push({ userId, res });
+    console.log('Current waiting players:', waitingPlayers);
 
-    // レスポンスは即座には送らず、マッチング処理を待機
-    setTimeout(() => {
-        tryMatchPlayers(res);
-    }, 5000); // 5秒後にマッチングを試みる
-    
-});
+    // マッチングを試みる
+    tryMatchPlayers();
+}
 
-function tryMatchPlayers(res) {
+function tryMatchPlayers() {
+    console.log('Trying to match players');
     while (waitingPlayers.length >= 2) {
         const player1 = waitingPlayers.shift();
         const player2 = waitingPlayers.shift();
+        console.log('Match found:', player1.userId, player2.userId);
 
-        console.log("Match found between:", player1, "and", player2);
-        activeMatching.delete(player1);
-        activeMatching.delete(player2);
-        console.log("activeMatching after deletion:", Array.from(activeMatching));
-        
-        // マッチングに関与するクライアントにのみレスポンスを送信
-        for (let i = 0; i < allRequests.length; i++) {
-            const { req, res } = allRequests[i];
-            if (req.cookies.userId === player1 || req.cookies.userId === player2) {
-                if (!res.headersSent) {
-                    res.json({
-                        success: true,
-                        isMatched: true,
-                        players: [player1, player2]
-                    });
-                    allRequests.splice(i, 1); // レスポンスを送信したリクエストを配列から削除
-                    i--; // レスポンスを送信したのでループを抜ける
-                }
-            }
+        activeMatching.delete(player1.userId);
+        activeMatching.delete(player2.userId);
+
+        const response = {
+            success: true,
+            isMatched: true,
+            players: [player1.userId, player2.userId]
+        };
+
+        if (!player1.res.headersSent) {
+            player1.res.json(response);
         }
-    }
-
-    // マッチングが見つからなかった全てのリクエストに対してレスポンスを送信
-    for (let i = 0; i < allRequests.length; i++) {
-        const { res } = allRequests[i];
-        if (!res.headersSent) {
-            res.json({
-                success: false,
-                isMatched: false
-            });
-            allRequests.splice(i, 1);
-            i--;
+        if (!player2.res.headersSent) {
+            player2.res.json(response);
         }
     }
 }
+
+app.post('/match', handleMatchRequest);
+
 
 // サーバーを起動
 const PORT = process.env.PORT || 3001;
