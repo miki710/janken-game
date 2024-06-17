@@ -10,54 +10,58 @@ function ImageDisplayPage() {
     const location = useLocation();
     console.log('Location state:', location.state);
     
-    const { user = {}, computer ={} } = location.state || {};
+    const { user = {}, opponent ={}, mode, result: initialResult } = location.state || {};
+    const [gameResult, setGameResult] = useState(initialResult); // 勝敗結果を状態として保存
+
     const initialPoint = location.state && location.state.user ? location.state.user.point : 0;
     const [point, setPoint] = useState(initialPoint);
     console.log('Received user data:', location.state.user);
-    console.log('Received computer data:', location.state.computer);
+    console.log('Received computer data:', location.state.opponent);
     console.log("受け取ったポイント:", initialPoint);
 
     // user オブジェクトから job プロパティを取り出し、存在しない場合はデフォルト値として空文字列 '' を設定
     const { job = '' } = user;
     const [userHand, setUserHand] = useState(user ? user.hand : '');
     const [userJob, setUserJob] = useState(job);
-    const [computerHand, setComputerHand] = useState(computer ? computer.hand : '');
-    const [computerJob, setComputerJob] = useState(computer ? computer.job : '');
+    const [opponentHand, setOpponentHand] = useState(opponent ? opponent.hand : '');
+    const [opponentJob, setOpponetJob] = useState(opponent ? opponent.job : '');
     const [userImageIndex, setUserImageIndex] = useState(user && user.index !== null ? user.index : 0);
-    const [computerImageIndex, setComputerImageIndex] = useState(computer && computer.index !== null ? computer.index : 0);
+    const [opponentImageIndex, setOpponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0);
     const [userInfo, setUserInfo] = useState(null);
 
     const [result, setResult] = useState('');
 
     useEffect(() => {
-      console.log("受け取ったユーザーポイント:", user.point);
-    }, []);
+      console.log('Rendering ImageDisplayPage:', { mode, userHand, opponentHand });
+    }, [mode, userHand, opponentHand]); // 依存配列に基づいてログを出力
+
 
   // じゃんけんの結果を計算し、ポイントを更新するための useEffect
   useEffect(() => {
-    console.log("userHand:", userHand, "computerHand:", computerHand); // これらの値をログに出力
-    if (userHand && computerHand) {
-      const gameResult = judgeJanken(userHand, computerHand);
-      setResult(gameResult);
-      if (gameResult === '勝ち') {
-        setPoint(prevPoint => {
-          console.log("現在のポイント:", prevPoint); // 加算前のポイントをログに出力
-          const newPoint = prevPoint + 10;
-          console.log("新しいポイント:", newPoint); // 加算後のポイントをログに出力
-          return newPoint;
-        });
+    if (mode === 'vsComputer') { // PC戦の場合のみじゃんけんロジックを実行
+      if (userHand && opponentHand) {
+        const gameResult = judgeJanken(userHand, opponentHand);
+        setResult(gameResult);
+        if (gameResult === '勝ち') {
+          setPoint(prevPoint => {
+            console.log("現在のポイント:", prevPoint); // 加算前のポイントをログに出力
+            const newPoint = prevPoint + 10;
+            console.log("新しいポイント:", newPoint); // 加算後のポイントをログに出力
+            return newPoint;
+          });
+        }
       }
     }
-  }, [userHand, computerHand,]); // userHand と computerHand が変更されたときに実行
+  }, []); // userHand と computerHand が変更されたときに実行
 
-  const judgeJanken = (userHand, computerHand) => {
-    if (userHand === computerHand) {
+  const judgeJanken = (userHand, opponentHand) => {
+    if (userHand === opponentHand) {
       playSound('draw');
       return '引き分け';
     } else if (
-      (userHand === 'Rock' && computerHand === 'Scissor') ||
-      (userHand === 'Scissor' && computerHand === 'Paper') ||
-      (userHand === 'Paper' && computerHand === 'Rock')
+      (userHand === 'Rock' && opponentHand === 'Scissor') ||
+      (userHand === 'Scissor' && opponentHand === 'Paper') ||
+      (userHand === 'Paper' && opponentHand === 'Rock')
     ) {
       playSound('win');  // 勝ったときに音を再生
       return '勝ち';
@@ -69,7 +73,7 @@ function ImageDisplayPage() {
 
   const resetGame = () => {
     setUserHand('');
-    setComputerHand('');
+    setOpponentHand('');
     setResult('');
     navigate('/', { state: { point }}); // ポイントを渡す
   };
@@ -77,7 +81,11 @@ function ImageDisplayPage() {
 
   return (
     <div className='App-header'>
-        <p>結果: {result}</p> 
+         {mode === 'vsComputer' ? (
+                <p>結果 (PC戦): {result}</p>  // PC戦の結果を表示
+            ) : (
+                <p>結果 (ユーザー戦): {initialResult}</p>  // ユーザー戦の結果を表示
+          )}
         <p>ポイント: {point}</p>  
         <div className='hand-display'>
             <div className="hand-container">
@@ -90,11 +98,11 @@ function ImageDisplayPage() {
             )}
             </div>
             <div className="hand-container">
-                <p>Computer:</p>   
-                {computerHand !== '' && (
+                <p>Opponent:</p>   
+                {opponentHand !== '' && (
                 <>
-                    <p>{getHandEmoji(computerHand)}{computerJob}</p>
-                    <img src={images[computerHand][computerImageIndex]} alt={computerHand} style={{ width: '150px' }} />
+                    <p>{getHandEmoji(opponentHand)}{opponentJob}</p>
+                    <img src={images[opponentHand][opponentImageIndex]} alt={opponentHand} style={{ width: '150px' }} />
                 </>
             )}
             </div>
@@ -104,4 +112,7 @@ function ImageDisplayPage() {
     )
 }
 
-export default ImageDisplayPage;
+// React.memoでラップする
+const MemoizedMyComponent = React.memo(ImageDisplayPage);
+
+export default MemoizedMyComponent;

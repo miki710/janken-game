@@ -6,6 +6,9 @@ function WaitingRoomPage() {
     const navigate = useNavigate();
     const [isMatched, setIsMatched] = useState(false);
     const [isMatchingProcess, setIsMatchingProcess] = useState(false);
+    const [matchId, setMatchId] = useState(null);
+    const [userId, setUserId] = useState(null);  // userIdの状態を追加
+    const [opponentId, setOpponentId] = useState(null);  // opponentIdの状態を追加
 
     useEffect(() => {
         console.log('ポーリング開始');
@@ -39,10 +42,11 @@ function WaitingRoomPage() {
                     console.log('Received data:', data); // デバッグ情報をログに出力
 
                     if (data.success && data.isMatched) {
-                        console.log('マッチング成功:', data);
+                        setMatchId(data.matchId);
+                        setUserId(data.yourId);
+                        setOpponentId(data.opponentId);
                         setIsMatched(true);                  
                         setIsMatchingProcess(false); // マッチングプロセスを終了
-                        console.log('ポーリングを停止します', intervalId);
                         clearInterval(intervalId); // ここでの停止は適切
                     } else if (!data.success && data.message === '既にマッチングプロセス中です') {
                         console.log('エラー: 既にマッチングプロセス中です');
@@ -71,7 +75,7 @@ function WaitingRoomPage() {
         console.log('isMatched has been updated to:', isMatched);
         if (isMatched) {
             console.log('Navigating to /game with isMatched:', isMatched);
-            navigate('/game', { state: { mode: 'vsPlayer', isMatched: true }});
+            navigate('/game', { state: { matchId, userId, opponentId, mode: 'vsPlayer', isMatched: true }});
         }
     }, [isMatched]); // isMatched と navigate を依存配列に追加
 

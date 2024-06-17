@@ -73,14 +73,14 @@ let gameResults = {};
 // ルート定義
 app.post('/play', (req, res) => {
     const { hand, index, mode } = req.body; // ユーザーの選択を受け取る
-    const computerChoice = generateComputerChoice(); // コンピュータの選択を生成
-    const result = determineWinner(hand, computerChoice.hand); // 勝敗を決定
+    const opponentChoice = generateOpponentChoice(); // コンピュータの選択を生成
+    const result = determineWinner(hand, opponentChoice.hand); // 勝敗を決定
 
     // 結果を保存
     const resultId = Date.now(); // 簡易的なID生成
     gameResults[resultId] = {
         result: result,
-        computer: computerChoice
+        opponent: opponentChoice
     };
 
     console.log("Generated Result ID:", resultId); // 結果IDをコンソールに出力
@@ -92,10 +92,10 @@ app.post('/play', (req, res) => {
             hand: hand,
             index: index
         },
-        computer: {
-            hand: computerChoice.hand,
-            index: computerChoice.index,
-            info: computerChoice.info
+        opponent: {
+            hand: opponentChoice.hand,
+            index: opponentChoice.index,
+            info: opponentChoice.info
         },
         result: result
      });
@@ -113,6 +113,7 @@ app.get('/result/:id', (req, res) => {
 
 let waitingPlayers = [];
 let activeMatching = new Set(); // アクティブなマッチングプロセスに参加しているユーザーIDを追跡
+let matches = {}; // すべてのマッチ情報を保持するオブジェクト
 
 function handleMatchRequest(req, res) {
     console.log('handleMatchRequest called');
@@ -145,25 +146,155 @@ function tryMatchPlayers() {
         const player2 = waitingPlayers.shift();
         console.log('Match found:', player1.userId, player2.userId);
 
+          // マッチIDの生成
+          const matchId = generateMatchId();
+
+          // マッチ情報の初期化
+          matches[matchId] = {
+              players: {
+                [player1.userId]: { ready: false, hand: null, index: null, info: {} },
+                [player2.userId]: { ready: false, hand: null, index: null, info: {} }
+              },
+              status: 'active'
+          };
+
         activeMatching.delete(player1.userId);
         activeMatching.delete(player2.userId);
 
-        const response = {
+        // ここで相互に opponentId を設定
+        const response1 = {
             success: true,
             isMatched: true,
-            players: [player1.userId, player2.userId]
+            matchId: matchId, // マッチIDをレスポンスに含める
+            yourId: player1.userId,
+            opponentId: player2.userId
+        };
+        const response2 = {
+            success: true,
+            isMatched: true,
+            matchId: matchId, // マッチIDをレスポンスに含める
+            yourId: player2.userId,
+            opponentId: player1.userId
         };
 
         if (!player1.res.headersSent) {
-            player1.res.json(response);
+            player1.res.json(response1);
         }
         if (!player2.res.headersSent) {
-            player2.res.json(response);
+            player2.res.json(response2);
         }
     }
 }
 
+function generateMatchId() {
+    return Date.now().toString(); // 簡易的なマッチID生成
+}
+
 app.post('/match', handleMatchRequest);
+
+// 新しいユーザー同士の対戦を処理するエンドポイント
+app.post('/play-match', async (req, res) => {
+    const { userId, hand, index, info, opponentId, matchId } = req.body; // ユーザーIDと選択した画像を受け取る
+    console.log("Received userId:", userId);
+    console.log("Received matchId:", matchId); // matchIdの受け取りを確認
+    console.log("Received info:", info); // info の使用例を追加
+
+    try {
+        const match = findMatchForUser(userId, matchId);
+        if (!match) {
+            return res.status(404).send('マッチング情報が見つかりません');
+        }
+    
+        console.log("Match information for userId:", match.players[userId]);
+    
+        // ユーザーの選択を保存
+        await saveUserChoice(userId, hand, index, info, matchId);
+    
+    
+        // 両ユーザーの選択が揃っているか確認
+        if (isBothUsersReady(match)) {
+            // 両ユーザーの手を取得
+            const userHand = getUserHand(userId, match);
+            const opponentHand = getUserHand(opponentId, match);
+            const opponentIndex = match.players[opponentId].index; // 対戦相手のインデックスを取得
+            const opponentInfo = match.players[opponentId].info; // 対戦相手の情報を取得
+    
+            // 勝敗を判定
+            const result = determineMatchResult(match);
+            // 結果を両ユーザーに通知
+            notifyUsers(match, result);
+
+            res.json({
+                result: result,
+                yourHand: userHand,
+                yourIndex: index, // ユーザーのインデックスを追加
+                opponentHand: opponentHand,
+                opponentIndex: opponentIndex, // 対戦相手のインデックスを追加
+                opponentInfo: opponentInfo  // 対戦相手の情報を追加
+            });
+        } else {
+            res.send('相手の選択を待っています');
+        }
+    } catch (error) {
+        console.error("Error during play-match:", error);
+        res.status(500).send('内部サーバーエラーが発生しました');
+    }
+});
+
+let userChoices = {}; // ユーザーの選択を保存するためのオブジェクト
+async function saveUserChoice(userId, hand, index, info, matchId) {
+    // ここでデータベースやメモリにユーザーの選択を保存
+    const userChoice = { hand, index };
+    userChoices[userId] = userChoice;
+    const match = matches[matchId];
+    if (match && match.players[userId]) {
+        match.players[userId].hand = hand; // ユーザーの手を保存
+        match.players[userId].index = index; // ユーザーのインデックスを保存
+        match.players[userId].info = info; // ユーザーの情報を保存
+        match.players[userId].ready = true; // ユーザーを準備完了状態に設定
+}}
+
+function findMatchForUser(userId, matchId) {
+    if (!matches[matchId]) {
+        console.log("No matching information found for matchId:", matchId);
+        return null;
+    }
+    if (!matches[matchId].players[userId]) {
+        console.log("No matching information found for userId:", userId);
+        return null;
+    }
+    return matches[matchId];
+}
+
+function isBothUsersReady(match) {
+    return Object.values(match.players).every(player => player.ready && player.hand !== null);
+}
+
+function getUserHand(userId, match) {
+    // この関数は、指定されたユーザーIDの手をマッチから取得する
+    // 実装はマッチのデータ構造に依存する
+    return match.players[userId].hand;
+}
+
+function determineMatchResult(match) {
+    const [player1, player2] = Object.values(match.players);
+    // 勝敗判定ロジックを実装
+    if (player1.hand === player2.hand) return 'Draw';
+    if ((player1.hand === 'Rock' && player2.hand === 'Scissor') ||
+        (player1.hand === 'Scissor' && player2.hand === 'Paper') ||
+        (player1.hand === 'Paper' && player2.hand === 'Rock')) {
+        return 'Player1 Wins';
+    } else {
+        return 'Player2 Wins';
+    }
+}
+
+function notifyUsers(match, result) {
+    Object.values(match.players).forEach(player => {
+        // ここでプレイヤーに結果を通知するロジックを実装
+        console.log(`Notify ${player.userId}: ${result}`);
+    });
+}
 
 
 // サーバーを起動
@@ -188,40 +319,40 @@ export const images = {
     'Paper': [`${process.env.REACT_APP_IMAGE_BASE_URL}/Paper7.webp`, `${process.env.REACT_APP_IMAGE_BASE_URL}/Paper8.webp`, `${process.env.REACT_APP_IMAGE_BASE_URL}/Paper9.webp`]
 };
 
-function generateComputerChoice() {
+function generateOpponentChoice() {
     const allImages = Object.values(images).flat();
     const randomImageIndex = Math.floor(Math.random() * allImages.length);
     const randomImage = allImages[randomImageIndex];
 
-    let newComputerHand = '';
-    let newComputerImageIndex = 0;
+    let newOpponentHand = '';
+    let newOpponentImageIndex = 0;
     Object.entries(images).forEach(([key, value]) => {
         const foundIndex = value.indexOf(randomImage);
         if (foundIndex !== -1) {
-            newComputerHand = key;
-            newComputerImageIndex = foundIndex;
+            newOpponentHand = key;
+            newOpponentImageIndex = foundIndex;
         }
     });
 
-    const computerFileName = images[newComputerHand][newComputerImageIndex];
-    const newComputerInfo = parseFilename(computerFileName, attributeMap);
+    const opponentFileName = images[newOpponentHand][newOpponentImageIndex];
+    const newOpponentInfo = parseFilename(opponentFileName, attributeMap);
 
-    console.log("Generated newComputerInfo:", newComputerInfo); // ログ出力
+    console.log("Generated newComputerInfo:", newOpponentInfo); // ログ出力
 
     return {
-        hand: newComputerHand,
-        index: newComputerImageIndex,
-        info: newComputerInfo
+        hand: newOpponentHand,
+        index: newOpponentImageIndex,
+        info: newOpponentInfo
     };
 }
 
-function determineWinner(userHand, computerHand) {
-    if (userHand === computerHand) {
+function determineWinner(userHand, opponentHand) {
+    if (userHand === opponentHand) {
         return '引き分け';
     } else if (
-        (userHand === 'Rock' && computerHand === 'Scissor') ||
-        (userHand === 'Scissor' && computerHand === 'Paper') ||
-        (userHand === 'Paper' && computerHand === 'Rock')
+        (userHand === 'Rock' && opponentHand === 'Scissor') ||
+        (userHand === 'Scissor' && opponentHand === 'Paper') ||
+        (userHand === 'Paper' && opponentHand === 'Rock')
     ) {
         return '勝ち';
     } else {
@@ -239,4 +370,4 @@ app.use((err, req, res, next) => {
 server.listen(PORT, () => {
     console.log(`サーバーがポート${PORT}で起動しました`);
     // 開発環境ではポート3001を使用し、本番環境ではポート443を推奨（環境によって設定を変更してください）
-});
+});0
