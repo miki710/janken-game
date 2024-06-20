@@ -27,23 +27,61 @@ function ImageSelectPage() {
     const [opponentHand, setOpponentHand] = useState('');
     const [opponentImageIndex, setOpponentImageIndex] = useState(null);
     const [opponentJob, setOpponentJob] = useState('');
-    // 状態の初期化
-    const [userInfo, setUserInfo] = useState(null);
+    const [userInfo, setUserInfo] = useState({});
     const [opponentInfo, setOpponentInfo] = useState(null);
 
     const [userHandSelected, setUserHandSelected] = useState(false); //他のプレイヤーと対戦する場合に使用
 
 
-    useEffect(() => {
-        console.log('Updated userInfo:', userInfo);  // userInfoが更新された後の値を確認
-        if (userInfo) {
-          setUserJob(userInfo.job);
+      const checkMatchReady = async (matchId) => {
+         // userInfoがnullまたはundefinedでないことを確認
+        if (!userInfo || !userInfo.job) {
+            console.error('userInfoが未定義、またはjobプロパティが存在しません。');
+            return;
         }
-      }, [userInfo]); 
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/check-match-ready?matchId=${matchId}`);
+            const data = await response.json();
+            if (data.ready) {
+                // マッチが準備完了した場合の処理
+                navigate('/display', {
+                    state: {
+                        user: {
+                            hand: userHand,
+                            job: userInfo.job,
+                            index: userImageIndex,
+                            point: currentPoint
+                        },
+                        opponent: {
+                            hand: data.opponentHand,
+                            job: data.opponentInfo.job,
+                            index: data.opponentImageIndex
+                        },
+                        result: data.result,
+                        mode: mode  // location.stateから受け取ったmodeを使用
+                    }
+                });
+            } else {
+                console.error('Error: opponentInfo is undefined or not ready');
+                // マッチがまだ準備中の場合、再度ポーリング
+                setTimeout(() => checkMatchReady(matchId), 3000);
+            }
+        } catch (error) {
+            console.error('Error checking match readiness:', error);
+            setTimeout(() => checkMatchReady(matchId), 5000);
+        }
+    };
 
+    // useEffectを追加してuserInfoの更新を監視
+    useEffect(() => {
+        console.log('Effect running: userInfo', userInfo);  // useEffectが実行されるタイミングとuserInfoの状態をログ出力
+        if (userInfo && userInfo.job) {
+            checkMatchReady(matchId);
+        }
+    }, [userInfo, matchId]);  // matchIdも依存配列に追加しておくと良いでしょう
+    
     const handleChoice = async (hand, index) => { 
         console.log("isMatched:", isMatched, "mode:", mode);  // 状態をログに出力
-
         playSound('click');  // 選択時に音を再生
 
         try {
@@ -56,46 +94,31 @@ function ImageSelectPage() {
                 // ユーザーの仕事を設定
                 const userFileName = images[hand][index];
                 const newUserInfo = await parseFilename(userFileName, attributeMap);
-                console.log('newUserInfo:', newUserInfo);  // newUserInfoの内容を確認
+                
+                console.log('Setting userInfo:', newUserInfo);
                 setUserInfo(newUserInfo);
-            
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/play-match`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json'},
-                    credentials: 'include',
-                    body: JSON.stringify({ 
-                        userId: userId, 
-                        hand: hand,
-                        index: index,
-                        info: newUserInfo,  // userInfoをサーバーに送信
-                        opponentId: opponentId, // 対戦相手のID
-                        matchId: matchId // マッチID
-                     }),
-                });
-                const data = await response.json();
-                console.log('Received data:', data);
-                if (data.result) {
-                    console.log('Match result:', data.result);
-                    // ここで勝敗結果を表示する処理を追加
-                    navigate('/display', {
-                        state: { 
-                            user: { 
-                                hand: userHand, 
-                                job: userInfo.job,
-                                index: userImageIndex, 
-                                point: currentPoint 
-                            },
-                            opponent: {
-                                hand: data.opponentHand, 
-                                job: data.opponentInfo.job,
-                                index: data.opponentImageIndex 
-                            },
-                            result: data.result
+                setTimeout(async () => {
+                    if (newUserInfo && newUserInfo.job) {
+                        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/play-match`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json'},
+                            credentials: 'include',
+                            body: JSON.stringify({ 
+                                userId: userId, 
+                                hand: hand,
+                                index: index,
+                                info: newUserInfo,  // userInfoをサーバーに送信
+                                opponentId: opponentId, // 対戦相手のID
+                                matchId: matchId // マッチID
+                            }),
+                        });
+                        const data = await response.json();
+                        if (data && data.ready) {
+                            checkMatchReady(matchId);
                         }
-                    });
-                } else {
-                    console.error('No match result received');
-                }
+                    }
+                }, 0);
+
             } else if (mode === 'vsComputer') {
                 // コンピューターとの対戦処理
                 setUserHand(hand);
@@ -169,27 +192,28 @@ function ImageSelectPage() {
 
     useEffect(() => {
         if (mode === 'vsComputer') {
-        if (userInfo && opponentInfo) {
-            console.log('Updated userInfo:', userInfo);
-            console.log('Updated computerInfo:', opponentInfo);
-            navigate('/display', {
-                state: { 
-                    user: { 
-                        hand: userHand, 
-                        job: userInfo.job,
-                        index: userImageIndex, 
-                        point: currentPoint 
-                    },
-                    opponent: {
-                        hand: opponentHand, 
-                        job: opponentInfo.job,
-                        index: opponentImageIndex 
-                    },
-                    mode: mode  // ここで mode を渡す
-                }
-            });
-        }}
-    }, [userInfo, opponentInfo, opponentHand, opponentImageIndex]);  // 依存関係に computerHand と computerImageIndex を追加
+            if (userInfo && opponentInfo) {
+                console.log('Updated userInfo:', userInfo);
+                console.log('Updated computerInfo:', opponentInfo);
+                navigate('/display', {
+                    state: { 
+                        user: { 
+                            hand: userHand, 
+                            job: userInfo.job,
+                            index: userImageIndex, 
+                            point: currentPoint 
+                        },
+                        opponent: {
+                            hand: opponentHand, 
+                            job: opponentInfo.job,
+                            index: opponentImageIndex 
+                        },
+                        mode: mode  // ここで mode を渡す
+                    }
+                });
+            }
+        }
+    }, [userInfo, opponentInfo, opponentHand, opponentImageIndex]);  
 
       
   return (

@@ -192,6 +192,43 @@ function generateMatchId() {
 
 app.post('/match', handleMatchRequest);
 
+
+app.get('/check-match-ready', (req, res) => {
+    const { matchId } = req.query;
+    let attempts = 0; // 試行回数を制限する
+
+    const checkMatchReady = () => {
+        console.log(`チェック試行: ${attempts + 1}回目, マッチID: ${matchId}`); // ログ出力を追加
+        const match = matches[matchId];
+        if (match && Object.values(match.players).every(player => player.ready)) {
+            const players = Object.values(match.players);
+            const player1 = players[0];
+            const player2 = players[1];
+            if (match && isBothUsersReady(match)) {
+                res.json({ 
+                    ready: true,
+                    result: determineMatchResult(match),
+                    yourHand: player1.hand,
+                    yourIndex: player1.index,
+                    opponentHand: player2.hand,
+                    opponentIndex: player2.index,
+                    opponentInfo: player2.info
+                });
+            } else {
+                res.status(500).json({ message: 'プレイヤー情報が不完全です' });
+            }
+        } else if (attempts < 30) { // 最大30秒間試行
+            setTimeout(checkMatchReady, 1000);
+            attempts++;
+        } else {
+            console.log(`マッチID: ${matchId} の準備がタイムアウトしました。`); // ログ出力を追加
+            res.status(408).json({ message: 'タイムアウト: マッチが準備完了になりませんでした。' });
+        }
+    };
+
+    checkMatchReady();
+});
+
 // 新しいユーザー同士の対戦を処理するエンドポイント
 app.post('/play-match', async (req, res) => {
     const { userId, hand, index, info, opponentId, matchId } = req.body; // ユーザーIDと選択した画像を受け取る
@@ -205,11 +242,9 @@ app.post('/play-match', async (req, res) => {
             return res.status(404).send('マッチング情報が見つかりません');
         }
     
-        console.log("Match information for userId:", match.players[userId]);
-    
         // ユーザーの選択を保存
         await saveUserChoice(userId, hand, index, info, matchId);
-    
+        console.log("Match information for userId after update:", match.players[userId]);
     
         // 両ユーザーの選択が揃っているか確認
         if (isBothUsersReady(match)) {
@@ -221,19 +256,9 @@ app.post('/play-match', async (req, res) => {
     
             // 勝敗を判定
             const result = determineMatchResult(match);
-            // 結果を両ユーザーに通知
-            notifyUsers(match, result);
 
-            res.json({
-                result: result,
-                yourHand: userHand,
-                yourIndex: index, // ユーザーのインデックスを追加
-                opponentHand: opponentHand,
-                opponentIndex: opponentIndex, // 対戦相手のインデックスを追加
-                opponentInfo: opponentInfo  // 対戦相手の情報を追加
-            });
         } else {
-            res.send('相手の選択を待っています');
+            res.json({ message: '相手の選択を待っています' });
         }
     } catch (error) {
         console.error("Error during play-match:", error);
@@ -243,6 +268,7 @@ app.post('/play-match', async (req, res) => {
 
 let userChoices = {}; // ユーザーの選択を保存するためのオブジェクト
 async function saveUserChoice(userId, hand, index, info, matchId) {
+    console.log('Received info:', info); // infoの内容をログ出力
     // ここでデータベースやメモリにユーザーの選択を保存
     const userChoice = { hand, index };
     userChoices[userId] = userChoice;
@@ -251,6 +277,7 @@ async function saveUserChoice(userId, hand, index, info, matchId) {
         match.players[userId].hand = hand; // ユーザーの手を保存
         match.players[userId].index = index; // ユーザーのインデックスを保存
         match.players[userId].info = info; // ユーザーの情報を保存
+        console.log('Updated info:', match.players[userId].info); // 更新後のinfoをログ出力
         match.players[userId].ready = true; // ユーザーを準備完了状態に設定
 }}
 
@@ -287,13 +314,6 @@ function determineMatchResult(match) {
     } else {
         return 'Player2 Wins';
     }
-}
-
-function notifyUsers(match, result) {
-    Object.values(match.players).forEach(player => {
-        // ここでプレイヤーに結果を通知するロジックを実装
-        console.log(`Notify ${player.userId}: ${result}`);
-    });
 }
 
 

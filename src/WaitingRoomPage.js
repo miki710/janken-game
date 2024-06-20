@@ -61,7 +61,7 @@ function WaitingRoomPage() {
                     console.error('エラー発生:', error);
                 }
             }
-        }, 30000); // 3秒ごとにサーバーに問い合わせ
+        }, 10000); // 10秒ごとにサーバーに問い合わせ
 
         console.log('intervalId:', intervalId); // intervalIdを出力
 
