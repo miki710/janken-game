@@ -40,8 +40,26 @@ function ImageSelectPage() {
             return;
         }
         try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/check-match-ready?matchId=${matchId}`);
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/check-match-ready?matchId=${matchId}`, {
+                method: 'GET', // リクエストメソッドをGETに変更
+                credentials: 'include' // クッキーを含める
+            });
             const data = await response.json();
+            console.log(data);  // レスポンスデータをログに出力
+            console.log({
+                user: {
+                    hand: data.yourHand,
+                    job: userInfo.job,
+                    index: data.yourIndex,
+                    point: currentPoint
+                },
+                opponent: {
+                    hand: data.opponentHand,
+                    job: data.opponentInfo.job,
+                    index: data.opponentIndex
+                },
+                result: data.result
+            });
             if (data.ready) {
                 // マッチが準備完了した場合の処理
                 navigate('/display', {
@@ -94,9 +112,12 @@ function ImageSelectPage() {
                 // ユーザーの仕事を設定
                 const userFileName = images[hand][index];
                 const newUserInfo = await parseFilename(userFileName, attributeMap);
+                console.log("newUserInfo before setting:", newUserInfo);
                 
-                console.log('Setting userInfo:', newUserInfo);
                 setUserInfo(newUserInfo);
+                // userInfoが更新された後
+                console.log("After updating userInfo:", userInfo);
+
                 setTimeout(async () => {
                     if (newUserInfo && newUserInfo.job) {
                         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/play-match`, {

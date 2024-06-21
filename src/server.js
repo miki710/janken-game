@@ -152,8 +152,8 @@ function tryMatchPlayers() {
           // マッチ情報の初期化
           matches[matchId] = {
               players: {
-                [player1.userId]: { ready: false, hand: null, index: null, info: {} },
-                [player2.userId]: { ready: false, hand: null, index: null, info: {} }
+                [player1.userId]: { userId: player1.userId, ready: false, hand: null, index: null, info: {} },
+                [player2.userId]: { userId: player2.userId, ready: false, hand: null, index: null, info: {} }
               },
               status: 'active'
           };
@@ -195,16 +195,42 @@ app.post('/match', handleMatchRequest);
 
 app.get('/check-match-ready', (req, res) => {
     const { matchId } = req.query;
-    let attempts = 0; // 試行回数を制限する
+    console.log("Received GET request for /check-match-ready with matchId:", matchId);
 
-    const checkMatchReady = () => {
-        console.log(`チェック試行: ${attempts + 1}回目, マッチID: ${matchId}`); // ログ出力を追加
+    // マッチの準備状態をチェックする関数を呼び出す前にログを出力
+    console.log("Calling checkMatchReady function");
+    checkMatchReady(matchId, matches, res, req, 0);
+    console.log("checkMatchReady function was called");
+});
+
+    const checkMatchReady = (matchId, matches, res, req, attempts = 0) => {
+        console.log(`checkMatchReady function started for matchId: ${matchId}`);
+
         const match = matches[matchId];
-        if (match && Object.values(match.players).every(player => player.ready)) {
-            const players = Object.values(match.players);
-            const player1 = players[0];
-            const player2 = players[1];
-            if (match && isBothUsersReady(match)) {
+        if (!match) {
+            console.log("No match found for matchId:", matchId);
+            return res.status(404).json({ message: "Match not found" });
+        }
+
+        const players = Object.values(match.players);
+        const player1 = players[0];
+        const player2 = players[1];
+
+        // デバッグ情報をログに出力
+        console.log("Received userId from cookies:", req.cookies.userId);
+        console.log("Player1 userId:", player1.userId); // Player1のuserIdをログに出力
+        console.log("Player2 userId:", player2.userId); // Player2のuserIdをログに出力
+
+        if (!player1 || !player2) {
+            return res.status(404).json({ message: "Player information is incomplete" });
+        }
+        
+        if (req.cookies.userId !== player1.userId && req.cookies.userId !== player2.userId) {
+            return res.status(403).json({ message: "Unauthorized access" });
+        }
+
+        if (Object.values(match.players).every(player => player.ready)) {
+            if (req.cookies.userId === player1.userId) {
                 res.json({ 
                     ready: true,
                     result: determineMatchResult(match),
@@ -214,20 +240,25 @@ app.get('/check-match-ready', (req, res) => {
                     opponentIndex: player2.index,
                     opponentInfo: player2.info
                 });
-            } else {
-                res.status(500).json({ message: 'プレイヤー情報が不完全です' });
+            } else if (req.cookies.userId === player2.userId) {
+                res.json({ 
+                    ready: true,
+                    result: determineMatchResult(match),
+                    yourHand: player2.hand,
+                    yourIndex: player2.index,
+                    opponentHand: player1.hand,
+                    opponentIndex: player1.index,
+                    opponentInfo: player1.info
+                });
             }
         } else if (attempts < 30) { // 最大30秒間試行
-            setTimeout(checkMatchReady, 1000);
-            attempts++;
+            setTimeout(() => checkMatchReady(matchId, matches, res, req, attempts + 1), 1000);
         } else {
             console.log(`マッチID: ${matchId} の準備がタイムアウトしました。`); // ログ出力を追加
             res.status(408).json({ message: 'タイムアウト: マッチが準備完了になりませんでした。' });
         }
     };
 
-    checkMatchReady();
-});
 
 // 新しいユーザー同士の対戦を処理するエンドポイント
 app.post('/play-match', async (req, res) => {
@@ -325,8 +356,13 @@ app.get('/', (req, res) => {
     if (!req.cookies.userId) {
         // ユーザーIDがクッキーに存在しない場合、新しいIDを生成して設定
         const userId = uuidv4();
-        res.cookie('userId', userId, { maxAge: 900000, httpOnly: true, secure: true, sameSite: 'None' });
-        res.send('新しいユーザーIDがクッキーに設定されました: ' + userId);
+        res.cookie('userId', userId, { 
+            expires: new Date(Date.now() + 86400000), // 24時間後に期限切れ
+            httpOnly: true, 
+            secure: true, 
+            sameSite: 'None' 
+        });
+        res.send('永続クッキーを設定しました: ' + userId);
     } else {
         // ユーザーIDが既にクッキーに存在する場合
         res.send('既存のユーザーIDを使用します: ' + req.cookies.userId);

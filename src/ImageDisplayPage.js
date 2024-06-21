@@ -32,8 +32,10 @@ function ImageDisplayPage() {
     const [result, setResult] = useState('');
 
     useEffect(() => {
-      console.log('Rendering ImageDisplayPage:', { mode, userHand, opponentHand });
-    }, [mode, userHand, opponentHand]); // 依存配列に基づいてログを出力
+      console.log('Received opponentHand:', opponentHand);
+      console.log('Received opponentImageIndex:', opponentImageIndex);
+      console.log('Image path:', images[opponentHand][opponentImageIndex]);
+    }, []);
 
 
   // じゃんけんの結果を計算し、ポイントを更新するための useEffect
