@@ -337,7 +337,7 @@ function getUserHand(userId, match) {
 function determineMatchResult(match) {
     const [player1, player2] = Object.values(match.players);
     // 勝敗判定ロジックを実装
-    if (player1.hand === player2.hand) return 'Draw';
+    if (player1.hand === player2.hand) return '引き分け';
     if ((player1.hand === 'Rock' && player2.hand === 'Scissor') ||
         (player1.hand === 'Scissor' && player2.hand === 'Paper') ||
         (player1.hand === 'Paper' && player2.hand === 'Rock')) {

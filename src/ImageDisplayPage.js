@@ -12,13 +12,12 @@ function ImageDisplayPage() {
     
     const { user = {}, opponent ={}, mode, result: initialResult } = location.state || {};
     const [gameResult, setGameResult] = useState(initialResult); // 勝敗結果を状態として保存
+    console.log("opponent object:", opponent);  // opponent オブジェクトの確認
+    console.log("opponent index:", opponent.index);  // opponent.index の値の確認
 
     const initialPoint = location.state && location.state.user ? location.state.user.point : 0;
     const [point, setPoint] = useState(initialPoint);
-    console.log('Received user data:', location.state.user);
-    console.log('Received computer data:', location.state.opponent);
-    console.log("受け取ったポイント:", initialPoint);
-
+ 
     // user オブジェクトから job プロパティを取り出し、存在しない場合はデフォルト値として空文字列 '' を設定
     const { job = '' } = user;
     const [userHand, setUserHand] = useState(user ? user.hand : '');
@@ -30,12 +29,6 @@ function ImageDisplayPage() {
     const [userInfo, setUserInfo] = useState(null);
 
     const [result, setResult] = useState('');
-
-    useEffect(() => {
-      console.log('Received opponentHand:', opponentHand);
-      console.log('Received opponentImageIndex:', opponentImageIndex);
-      console.log('Image path:', images[opponentHand][opponentImageIndex]);
-    }, []);
 
 
   // じゃんけんの結果を計算し、ポイントを更新するための useEffect

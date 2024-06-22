@@ -25,7 +25,7 @@ function ImageSelectPage() {
     const [userJob, setUserJob] = useState('');
     const [userImageIndex, setUserImageIndex] = useState(0);
     const [opponentHand, setOpponentHand] = useState('');
-    const [opponentImageIndex, setOpponentImageIndex] = useState(null);
+    const [opponentImageIndex, setOpponentImageIndex] = useState(0);
     const [opponentJob, setOpponentJob] = useState('');
     const [userInfo, setUserInfo] = useState({});
     const [opponentInfo, setOpponentInfo] = useState(null);
@@ -45,21 +45,7 @@ function ImageSelectPage() {
                 credentials: 'include' // クッキーを含める
             });
             const data = await response.json();
-            console.log(data);  // レスポンスデータをログに出力
-            console.log({
-                user: {
-                    hand: data.yourHand,
-                    job: userInfo.job,
-                    index: data.yourIndex,
-                    point: currentPoint
-                },
-                opponent: {
-                    hand: data.opponentHand,
-                    job: data.opponentInfo.job,
-                    index: data.opponentIndex
-                },
-                result: data.result
-            });
+
             if (data.ready) {
                 // マッチが準備完了した場合の処理
                 navigate('/display', {
@@ -73,7 +59,7 @@ function ImageSelectPage() {
                         opponent: {
                             hand: data.opponentHand,
                             job: data.opponentInfo.job,
-                            index: data.opponentImageIndex
+                            index: data.opponentIndex
                         },
                         result: data.result,
                         mode: mode  // location.stateから受け取ったmodeを使用
