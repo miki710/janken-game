@@ -196,44 +196,49 @@ app.post('/match', handleMatchRequest);
 app.get('/check-match-ready', (req, res) => {
     const { matchId } = req.query;
     console.log("Received GET request for /check-match-ready with matchId:", matchId);
+    const match = matches[matchId];
+    if (!match) {
+        return res.status(404).json({ message: "Match not found" });
+    }
 
-    // マッチの準備状態をチェックする関数を呼び出す前にログを出力
-    console.log("Calling checkMatchReady function");
-    checkMatchReady(matchId, matches, res, req, 0);
-    console.log("checkMatchReady function was called");
+    // ここで isBothUsersReady 関数を使用
+    if (isBothUsersReady(match)) {
+        // 両ユーザーが準備完了の場合の処理
+        // ここで checkMatchReady を呼び出す
+        checkMatchReady(matchId, matches, res, req, 0, false);
+    } else {
+        // まだ準備が整っていない場合の処理
+        res.json({ message: 'Waiting for both users to be ready.' });
+    }
 });
 
-    const checkMatchReady = (matchId, matches, res, req, attempts = 0) => {
+    const checkMatchReady = (matchId, matches, res, req, attempts = 0, responseSent = false) => {
         console.log(`checkMatchReady function started for matchId: ${matchId}`);
 
-        const match = matches[matchId];
-        if (!match) {
-            console.log("No match found for matchId:", matchId);
-            return res.status(404).json({ message: "Match not found" });
+        if (responseSent) {
+            return; // レスポンスが既に送信されていれば何もしない
         }
-
+    
+        const match = matches[matchId];
         const players = Object.values(match.players);
         const player1 = players[0];
         const player2 = players[1];
 
-        // デバッグ情報をログに出力
-        console.log("Received userId from cookies:", req.cookies.userId);
-        console.log("Player1 userId:", player1.userId); // Player1のuserIdをログに出力
-        console.log("Player2 userId:", player2.userId); // Player2のuserIdをログに出力
-
         if (!player1 || !player2) {
-            return res.status(404).json({ message: "Player information is incomplete" });
+            res.status(404).json({ message: "Player information is incomplete" });
+            return;
         }
         
         if (req.cookies.userId !== player1.userId && req.cookies.userId !== player2.userId) {
-            return res.status(403).json({ message: "Unauthorized access" });
+            res.status(403).json({ message: "Unauthorized access" });
+            return;
         }
 
         if (Object.values(match.players).every(player => player.ready)) {
             if (req.cookies.userId === player1.userId) {
                 res.json({ 
                     ready: true,
-                    result: determineMatchResult(match),
+                    result: determineMatchResult(match, player1.userId),
                     yourHand: player1.hand,
                     yourIndex: player1.index,
                     opponentHand: player2.hand,
@@ -243,7 +248,7 @@ app.get('/check-match-ready', (req, res) => {
             } else if (req.cookies.userId === player2.userId) {
                 res.json({ 
                     ready: true,
-                    result: determineMatchResult(match),
+                    result: determineMatchResult(match, player2.userId),
                     yourHand: player2.hand,
                     yourIndex: player2.index,
                     opponentHand: player1.hand,
@@ -251,46 +256,35 @@ app.get('/check-match-ready', (req, res) => {
                     opponentInfo: player1.info
                 });
             }
+            responseSent = true; // レスポンスが送信されたことを記録
         } else if (attempts < 30) { // 最大30秒間試行
-            setTimeout(() => checkMatchReady(matchId, matches, res, req, attempts + 1), 1000);
+            setTimeout(() => checkMatchReady(matchId, matches, res, req, attempts + 1, responseSent), 1000);
         } else {
             console.log(`マッチID: ${matchId} の準備がタイムアウトしました。`); // ログ出力を追加
             res.status(408).json({ message: 'タイムアウト: マッチが準備完了になりませんでした。' });
+            responseSent = true; // レスポンスが送信されたことを記録
         }
     };
 
 
 // 新しいユーザー同士の対戦を処理するエンドポイント
 app.post('/play-match', async (req, res) => {
-    const { userId, hand, index, info, opponentId, matchId } = req.body; // ユーザーIDと選択した画像を受け取る
-    console.log("Received userId:", userId);
-    console.log("Received matchId:", matchId); // matchIdの受け取りを確認
-    console.log("Received info:", info); // info の使用例を追加
-
     try {
-        const match = findMatchForUser(userId, matchId);
+        const { userId, hand, index, info, matchId } = req.body; // ユーザーIDと選択した画像を受け取る
+        const match = matches[matchId];
         if (!match) {
             return res.status(404).send('マッチング情報が見つかりません');
+        }
+        if (!match.players[userId]) {
+            console.log("No matching information found for userId:", userId);
+            return res.status(404).json({ message: "User not found in match" });
         }
     
         // ユーザーの選択を保存
         await saveUserChoice(userId, hand, index, info, matchId);
         console.log("Match information for userId after update:", match.players[userId]);
-    
-        // 両ユーザーの選択が揃っているか確認
-        if (isBothUsersReady(match)) {
-            // 両ユーザーの手を取得
-            const userHand = getUserHand(userId, match);
-            const opponentHand = getUserHand(opponentId, match);
-            const opponentIndex = match.players[opponentId].index; // 対戦相手のインデックスを取得
-            const opponentInfo = match.players[opponentId].info; // 対戦相手の情報を取得
-    
-            // 勝敗を判定
-            const result = determineMatchResult(match);
 
-        } else {
-            res.json({ message: '相手の選択を待っています' });
-        }
+        res.json({ message: '選択が保存されました。結果の準備が整うまでお待ちください。' });
     } catch (error) {
         console.error("Error during play-match:", error);
         res.status(500).send('内部サーバーエラーが発生しました');
@@ -312,38 +306,21 @@ async function saveUserChoice(userId, hand, index, info, matchId) {
         match.players[userId].ready = true; // ユーザーを準備完了状態に設定
 }}
 
-function findMatchForUser(userId, matchId) {
-    if (!matches[matchId]) {
-        console.log("No matching information found for matchId:", matchId);
-        return null;
-    }
-    if (!matches[matchId].players[userId]) {
-        console.log("No matching information found for userId:", userId);
-        return null;
-    }
-    return matches[matchId];
-}
 
 function isBothUsersReady(match) {
     return Object.values(match.players).every(player => player.ready && player.hand !== null);
 }
 
-function getUserHand(userId, match) {
-    // この関数は、指定されたユーザーIDの手をマッチから取得する
-    // 実装はマッチのデータ構造に依存する
-    return match.players[userId].hand;
-}
-
-function determineMatchResult(match) {
+function determineMatchResult(match, userId) {
     const [player1, player2] = Object.values(match.players);
     // 勝敗判定ロジックを実装
     if (player1.hand === player2.hand) return '引き分け';
     if ((player1.hand === 'Rock' && player2.hand === 'Scissor') ||
         (player1.hand === 'Scissor' && player2.hand === 'Paper') ||
         (player1.hand === 'Paper' && player2.hand === 'Rock')) {
-        return 'Player1 Wins';
+        return player1.userId === userId ? '勝ち' : '負け';
     } else {
-        return 'Player2 Wins';
+        return player1.userId === userId ? '負け' : '勝ち';
     }
 }
 
