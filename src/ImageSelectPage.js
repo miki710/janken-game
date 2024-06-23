@@ -30,8 +30,6 @@ function ImageSelectPage() {
     const [userInfo, setUserInfo] = useState({});
     const [opponentInfo, setOpponentInfo] = useState(null);
 
-    const [userHandSelected, setUserHandSelected] = useState(false); //他のプレイヤーと対戦する場合に使用
-
 
       const checkMatchReady = async (matchId) => {
          // userInfoがnullまたはundefinedでないことを確認
@@ -79,7 +77,7 @@ function ImageSelectPage() {
     // useEffectを追加してuserInfoの更新を監視
     useEffect(() => {
         console.log('Effect running: userInfo', userInfo);  // useEffectが実行されるタイミングとuserInfoの状態をログ出力
-        if (userInfo && userInfo.job) {
+        if (mode === 'vsPlayer' && userInfo && userInfo.job) {
             checkMatchReady(matchId);
         }
     }, [userInfo, matchId]);  // matchIdも依存配列に追加しておくと良いでしょう
@@ -93,7 +91,6 @@ function ImageSelectPage() {
                 // ユーザー同士の対戦処理
                 setUserHand(hand);
                 setUserImageIndex(index);
-                setUserHandSelected(true);
                 
                 // ユーザーの仕事を設定
                 const userFileName = images[hand][index];
@@ -130,7 +127,6 @@ function ImageSelectPage() {
                 // コンピューターとの対戦処理
                 setUserHand(hand);
                 setUserImageIndex(index); // 選択された画像のインデックスを保存
-                setUserHandSelected(true); // ユーザーが手を選択したことを示す
   
                 // ユーザーの仕事を設定
                 const userFileName = images[hand][index];
