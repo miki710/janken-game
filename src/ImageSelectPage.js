@@ -166,27 +166,6 @@ function ImageSelectPage() {
                     }
                     setOpponentInfo(resultData.opponent.info);
                     console.log('Set opponentInfo:', resultData.opponent.info);
-                    
-                    if (resultData && resultData.opponent && resultData.opponent.info) {
-                        setOpponentInfo(resultData.opponent.info);
-                        setTimeout(() => {
-                            navigate('/display', {
-                                state: {
-                                    user: {
-                                        hand: userHand,
-                                        job: userInfo ? userInfo.job : '未定義', // userInfoがnullでなければjobを使用、そうでなければ'未定義'を設定
-                                        index: userImageIndex,
-                                        point: currentPoint
-                                    },
-                                    opponent: {
-                                        hand: resultData.opponent.hand,
-                                        job: resultData.opponent.info.job,
-                                        index: resultData.opponent.index
-                                    }
-                                }
-                            });
-                        }, 3000); // 3000ミリ秒の遅延後にナビゲーションを実行
-                    }
                 }
             }
             } else { 

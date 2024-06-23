@@ -116,7 +116,6 @@ let activeMatching = new Set(); // アクティブなマッチングプロセス
 let matches = {}; // すべてのマッチ情報を保持するオブジェクト
 
 function handleMatchRequest(req, res) {
-    console.log('handleMatchRequest called');
     const userId = req.cookies.userId;
     if (!userId) {
         return res.status(400).send('ユーザーIDがクッキーに存在しません');
@@ -140,7 +139,6 @@ function handleMatchRequest(req, res) {
 }
 
 function tryMatchPlayers() {
-    console.log('Trying to match players');
     while (waitingPlayers.length >= 2) {
         const player1 = waitingPlayers.shift();
         const player2 = waitingPlayers.shift();
@@ -192,7 +190,7 @@ function generateMatchId() {
 
 app.post('/match', handleMatchRequest);
 
-
+// マッチが準備完了状態になっているかを確認し、その状態をクライアントに通知するエンドポイント
 app.get('/check-match-ready', (req, res) => {
     const { matchId } = req.query;
     console.log("Received GET request for /check-match-ready with matchId:", matchId);
@@ -201,7 +199,6 @@ app.get('/check-match-ready', (req, res) => {
         return res.status(404).json({ message: "Match not found" });
     }
 
-    // ここで isBothUsersReady 関数を使用
     if (isBothUsersReady(match)) {
         // 両ユーザーが準備完了の場合の処理
         // ここで checkMatchReady を呼び出す
@@ -267,7 +264,7 @@ app.get('/check-match-ready', (req, res) => {
     };
 
 
-// 新しいユーザー同士の対戦を処理するエンドポイント
+// ユーザーの選択を保存し、ランキングやポイントシステムに使用するためのエンドポイント
 app.post('/play-match', async (req, res) => {
     try {
         const { userId, hand, index, info, matchId } = req.body; // ユーザーIDと選択した画像を受け取る
@@ -282,8 +279,6 @@ app.post('/play-match', async (req, res) => {
     
         // ユーザーの選択を保存
         await saveUserChoice(userId, hand, index, info, matchId);
-        console.log("Match information for userId after update:", match.players[userId]);
-
         res.json({ message: '選択が保存されました。結果の準備が整うまでお待ちください。' });
     } catch (error) {
         console.error("Error during play-match:", error);
