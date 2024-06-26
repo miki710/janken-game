@@ -366,9 +366,6 @@ function calculatePoints(currentPoints, result) {
         // 引き分けの場合はポイント変動なし
     } else if (result === '負け') {
         newPoints -= 10;  // 負けた場合は10ポイントを減算
-        if (newPoints < 0) {
-            newPoints = 0;  // ポイントが負にならないように調整
-        }
     }
 
     return newPoints;

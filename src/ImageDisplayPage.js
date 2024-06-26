@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
 import { playSound, getHandEmoji } from './utils.js';
@@ -11,7 +12,6 @@ function ImageDisplayPage() {
     console.log('Location state:', location.state);
     
     const { user = {}, opponent ={}, mode, result: initialResult } = location.state || {};
-    const [gameResult, setGameResult] = useState(initialResult); // 勝敗結果を状態として保存
 
     const initialPoint = location.state && location.state.user ? location.state.user.point : 0;
     const [point, setPoint] = useState(initialPoint);
@@ -24,10 +24,29 @@ function ImageDisplayPage() {
     const [opponentJob, setOpponetJob] = useState(opponent ? opponent.job : '');
     const [userImageIndex, setUserImageIndex] = useState(user && user.index !== null ? user.index : 0);
     const [opponentImageIndex, setOpponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0);
-    const [userInfo, setUserInfo] = useState(null);
 
     const [result, setResult] = useState('');
 
+    useEffect(() => {
+      // クッキーから前回のポイントを読み取る
+      const savedPoint = Cookies.get('point');
+      const savedPointInt = savedPoint ? parseInt(savedPoint, 10) : 0;
+
+      if (mode === 'vsComputer') {
+        // vsComputerモードの場合、ImageSelectPageで計算されたポイントを加算
+        const totalPoint = savedPointInt + point;
+        setPoint(totalPoint);
+      } else if (mode === 'vsPlayer') {
+        // vsPlayerモードの場合、ImageSelectPageから渡されるポイントをそのまま使用
+        const totalPoint = savedPointInt + initialPoint;
+        // ポイントがマイナスにならないように調整
+        const adjustedPoint = Math.max(totalPoint, 0);
+        setPoint(adjustedPoint);
+      }
+
+      // 新しい合計ポイントをクッキーに保存
+      Cookies.set('point', point, { expires: 1 }); // クッキーの有効期限を1日に設定
+    }, [point]);
 
   // じゃんけんの結果を計算し、ポイントを更新するための useEffect
   useEffect(() => {
