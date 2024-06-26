@@ -129,10 +129,8 @@ function handleMatchRequest(req, res) {
         });
     }
 
-    console.log('Adding user to active matching:', userId);
     activeMatching.add(userId);
     waitingPlayers.push({ userId, res });
-    console.log('Current waiting players:', waitingPlayers);
 
     // マッチングを試みる
     tryMatchPlayers();
@@ -150,8 +148,8 @@ function tryMatchPlayers() {
           // マッチ情報の初期化
           matches[matchId] = {
               players: {
-                [player1.userId]: { userId: player1.userId, ready: false, hand: null, index: null, info: {} },
-                [player2.userId]: { userId: player2.userId, ready: false, hand: null, index: null, info: {} }
+                [player1.userId]: { userId: player1.userId, ready: false, hand: null, index: null, info: {}, points: 0},
+                [player2.userId]: { userId: player2.userId, ready: false, hand: null, index: null, info: {}, points: 0}
               },
               status: 'active'
           };
@@ -267,39 +265,73 @@ app.get('/check-match-ready', (req, res) => {
 // ユーザーの選択を保存し、ランキングやポイントシステムに使用するためのエンドポイント
 app.post('/play-match', async (req, res) => {
     try {
-        const { userId, hand, index, info, matchId } = req.body; // ユーザーIDと選択した画像を受け取る
-        const match = matches[matchId];
+        const { userId, hand, index, info, matchId, opponentId, point } = req.body; // ユーザーIDと選択した画像を受け取る
+        console.log("Received from client:", { userId, hand, index, info, opponentId, matchId, point });
+        const match = matches[matchId]; // マッチIDを使用してマッチ情報を取得
         if (!match) {
-            return res.status(404).send('マッチング情報が見つかりません');
+            return res.status(404).json({ error: 'マッチが見つかりません' });
         }
         if (!match.players[userId]) {
-            console.log("No matching information found for userId:", userId);
-            return res.status(404).json({ message: "User not found in match" });
+            return res.status(404).json({ error: 'プレイヤーがマッチに存在しません' });
         }
-    
+
+        const player1 = match.players[userId];
+        const player2 = match.players[opponentId];
+        if (!player1 || !player2) {
+            return res.status(404).json({ error: 'プレイヤー情報が不完全です' });
+        }
+
         // ユーザーの選択を保存
-        await saveUserChoice(userId, hand, index, info, matchId);
-        res.json({ message: '選択が保存されました。結果の準備が整うまでお待ちください。' });
+        await saveUserChoice(userId, hand, index, info, matchId, point);
+        
+        // 両プレイヤーが準備完了か確認
+        if (player1.ready && player2.ready) {
+            // 勝敗判定の呼び出し
+            const result1 = determineMatchResult(match, userId);
+            const result2 = determineMatchResult(match, opponentId);
+
+            // ポイント計算
+            const newPoints1 = calculatePoints(player1.points, result1);
+            const newPoints2 = calculatePoints(player2.points, result2);
+       
+            // ユーザーにポイントを返す
+            res.json({
+                status: 'finished',
+                message: 'マッチが完了しました。',
+                results: [
+                    { userId: userId, points: newPoints1, result: result1 },
+                    { userId: opponentId, points: newPoints2, result: result2 }
+                ]
+            });
+        } else {
+            res.json({
+                status: 'waiting',
+                message: '両プレイヤーの準備が完了していません'
+            });
+        }
     } catch (error) {
         console.error("Error during play-match:", error);
-        res.status(500).send('内部サーバーエラーが発生しました');
+        res.status(500).json({ error: '内部サーバーエラーが発生しました' });
     }
 });
 
 let userChoices = {}; // ユーザーの選択を保存するためのオブジェクト
-async function saveUserChoice(userId, hand, index, info, matchId) {
+
+async function saveUserChoice(userId, hand, index, info, matchId, point) {
     console.log('Received info:', info); // infoの内容をログ出力
-    // ここでデータベースやメモリにユーザーの選択を保存
-    const userChoice = { hand, index };
+    // ユーザーの選択を保存
+    const userChoice = { hand, index, info, points: point };
     userChoices[userId] = userChoice;
+
     const match = matches[matchId];
     if (match && match.players[userId]) {
         match.players[userId].hand = hand; // ユーザーの手を保存
         match.players[userId].index = index; // ユーザーのインデックスを保存
         match.players[userId].info = info; // ユーザーの情報を保存
-        console.log('Updated info:', match.players[userId].info); // 更新後のinfoをログ出力
+        match.players[userId].points = point; // ユーザーのポイントを保存
         match.players[userId].ready = true; // ユーザーを準備完了状態に設定
-}}
+    }
+}
 
 
 function isBothUsersReady(match) {
@@ -307,17 +339,41 @@ function isBothUsersReady(match) {
 }
 
 function determineMatchResult(match, userId) {
-    const [player1, player2] = Object.values(match.players);
+    const players = Object.values(match.players);
+    const player1 = players.find(p => p.userId === userId);
+    const player2 = players.find(p => p.userId !== userId);
     // 勝敗判定ロジックを実装
-    if (player1.hand === player2.hand) return '引き分け';
+    if (player1.hand === player2.hand) {
+        return '引き分け';
+    }
     if ((player1.hand === 'Rock' && player2.hand === 'Scissor') ||
         (player1.hand === 'Scissor' && player2.hand === 'Paper') ||
         (player1.hand === 'Paper' && player2.hand === 'Rock')) {
-        return player1.userId === userId ? '勝ち' : '負け';
+        const result = '勝ち';
+        return result;
     } else {
-        return player1.userId === userId ? '負け' : '勝ち';
+        const result = '負け';
+        return result;
     }
 }
+
+function calculatePoints(currentPoints, result) {
+    let newPoints = currentPoints;
+
+    if (result === '勝ち') {
+        newPoints += 20;  // 勝った場合は20ポイントを加算
+    } else if (result === '引き分け') {
+        // 引き分けの場合はポイント変動なし
+    } else if (result === '負け') {
+        newPoints -= 10;  // 負けた場合は10ポイントを減算
+        if (newPoints < 0) {
+            newPoints = 0;  // ポイントが負にならないように調整
+        }
+    }
+
+    return newPoints;
+}
+
 
 
 // サーバーを起動

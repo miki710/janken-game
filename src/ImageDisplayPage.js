@@ -12,8 +12,6 @@ function ImageDisplayPage() {
     
     const { user = {}, opponent ={}, mode, result: initialResult } = location.state || {};
     const [gameResult, setGameResult] = useState(initialResult); // 勝敗結果を状態として保存
-    console.log("opponent object:", opponent);  // opponent オブジェクトの確認
-    console.log("opponent index:", opponent.index);  // opponent.index の値の確認
 
     const initialPoint = location.state && location.state.user ? location.state.user.point : 0;
     const [point, setPoint] = useState(initialPoint);

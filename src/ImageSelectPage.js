@@ -20,21 +20,20 @@ function ImageSelectPage() {
 
     const { point = 0 } = location.state || {};
     const [currentPoint, setCurrentPoint] = useState(point); // 受け取ったポイントを状態として保持
+    const [isPointUpdated, setIsPointUpdated] = useState(false);  // ポイントが更新されたかどうかを追跡する状態
 
     const [userHand, setUserHand] = useState('');
-    const [userJob, setUserJob] = useState('');
     const [userImageIndex, setUserImageIndex] = useState(0);
     const [opponentHand, setOpponentHand] = useState('');
     const [opponentImageIndex, setOpponentImageIndex] = useState(0);
-    const [opponentJob, setOpponentJob] = useState('');
     const [userInfo, setUserInfo] = useState({});
     const [opponentInfo, setOpponentInfo] = useState(null);
 
 
       const checkMatchReady = async (matchId) => {
          // userInfoがnullまたはundefinedでないことを確認
-        if (!userInfo || !userInfo.job) {
-            console.error('userInfoが未定義、またはjobプロパティが存在しません。');
+        if (!userInfo && !userInfo.job && !opponentInfo && !opponentInfo.job) {
+            console.error('userInfoが未定義、またはopponentInfoが未定義、またはjobプロパティが存在しません。');
             return;
         }
         try {
@@ -76,11 +75,12 @@ function ImageSelectPage() {
 
     // useEffectを追加してuserInfoの更新を監視
     useEffect(() => {
-        console.log('Effect running: userInfo', userInfo);  // useEffectが実行されるタイミングとuserInfoの状態をログ出力
-        if (mode === 'vsPlayer' && userInfo && userInfo.job) {
+        console.log('Effect running: userInfo', userInfo, 'currentPoint', currentPoint);
+        if (mode === 'vsPlayer' && userInfo && userInfo.job && isPointUpdated) {
             checkMatchReady(matchId);
+            setIsPointUpdated(false);  // フラグをリセット
         }
-    }, [userInfo, matchId]);  // matchIdも依存配列に追加しておくと良いでしょう
+    }, [userInfo, isPointUpdated]);  
     
     const handleChoice = async (hand, index) => { 
         console.log("isMatched:", isMatched, "mode:", mode);  // 状態をログに出力
@@ -88,21 +88,17 @@ function ImageSelectPage() {
 
         try {
             if (mode === 'vsPlayer') {
-                // ユーザー同士の対戦処理
                 setUserHand(hand);
                 setUserImageIndex(index);
                 
                 // ユーザーの仕事を設定
                 const userFileName = images[hand][index];
-                const newUserInfo = await parseFilename(userFileName, attributeMap);
-                console.log("newUserInfo before setting:", newUserInfo);
-                
+                const newUserInfo = await parseFilename(userFileName, attributeMap);        
                 setUserInfo(newUserInfo);
-                // userInfoが更新された後
-                console.log("After updating userInfo:", userInfo);
-
-                setTimeout(async () => {
-                    if (newUserInfo && newUserInfo.job) {
+                
+                if (newUserInfo && newUserInfo.job) {
+                    const intervalId = setInterval(async () => {
+                        console.log("Sending to server:", { userId, hand, index, newUserInfo, opponentId, matchId, point });
                         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/play-match`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json'},
@@ -110,18 +106,26 @@ function ImageSelectPage() {
                             body: JSON.stringify({ 
                                 userId: userId, 
                                 hand: hand,
-                                index: index,
-                                info: newUserInfo,  // userInfoをサーバーに送信
-                                opponentId: opponentId, // 対戦相手のID
-                                matchId: matchId // マッチID
+                                index: index,  // 選択した画像のインデックス
+                                info: newUserInfo,  // ユーザー情報
+                                opponentId: opponentId,
+                                matchId: matchId, // マッチID
+                                point: currentPoint
                             }),
                         });
                         const data = await response.json();
-                        if (data && data.ready) {
-                            checkMatchReady(matchId);
+                        console.log("Received from server:", data);
+                        if (data && data.results) {
+                            const userResult = data.results.find(result => result.userId === userId);
+                            if (userResult && userResult.points !== undefined) {
+                                setCurrentPoint(userResult.points); // サーバーから受け取った新しいポイントで更新
+                                setIsPointUpdated(true);  // ポイントが更新されたことを示すフラグを設定
+                                clearInterval(intervalId); // ポーリングを停止
+                            }
                         }
-                    }
-                }, 0);
+                    }, 3000); // 3秒ごとにリクエストを送信
+                }
+                
 
             } else if (mode === 'vsComputer') {
                 // コンピューターとの対戦処理
