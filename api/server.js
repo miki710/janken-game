@@ -27,8 +27,6 @@ const corsOptions = {
 
 
 app.use(cors(corsOptions));// CORS ミドルウェアを適用
-
-// JSON リクエストボディを解析
 app.use(express.json());
 
 // リクエストの詳細をログに記録するミドルウェア
@@ -321,4 +319,6 @@ app.use((err, req, res, next) => {
 server.listen(PORT, () => {
     console.log(`サーバーがポート${PORT}で起動しました`);
     // 開発環境ではポート3001を使用し、本番環境ではポート443を推奨（環境によって設定を変更してください）
-});0
+});
+
+export default app;
