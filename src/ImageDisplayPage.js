@@ -18,12 +18,12 @@ function ImageDisplayPage() {
  
     // user オブジェクトから job プロパティを取り出し、存在しない場合はデフォルト値として空文字列 '' を設定
     const { job = '' } = user;
+    const [userJob] = useState(job); // setUserJobを削除
     const [userHand, setUserHand] = useState(user ? user.hand : '');
-    const [userJob, setUserJob] = useState(job);
     const [opponentHand, setOpponentHand] = useState(opponent ? opponent.hand : '');
-    const [opponentJob, setOpponetJob] = useState(opponent ? opponent.job : '');
-    const [userImageIndex, setUserImageIndex] = useState(user && user.index !== null ? user.index : 0);
-    const [opponentImageIndex, setOpponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0);
+    const [opponentJob] = useState(opponent ? opponent.job : ''); // setOpponentJobを削除
+    const [userImageIndex] = useState(user && user.index !== null ? user.index : 0); // setUserImageIndexを削除
+    const [opponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0); // setOpponentImageIndexを削除
 
     const [result, setResult] = useState('');
 

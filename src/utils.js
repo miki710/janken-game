@@ -1,7 +1,7 @@
 export const parseFilename = (filename, attributeMap) => {
-    const hand = filename.includes('Rock') ? 'Rock' :
-                     filename.includes('Scissor') ? 'Scissor' :
-                         filename.includes('Paper') ? 'Paper' : '';
+    // const hand = filename.includes('Rock') ? 'Rock' :
+    //                filename.includes('Scissor') ? 'Scissor' :
+    //                filename.includes('Paper') ? 'Paper' : '';
         
         const identifierMatch = filename.match(/(\d+)\.\w+$/); // ファイル名の末尾にある数字を抽出
         const identifier = identifierMatch ? parseInt(identifierMatch[0], 10) : null;
