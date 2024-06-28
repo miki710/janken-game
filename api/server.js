@@ -50,20 +50,6 @@ app.use((req, res, next) => {
 });
 
 
-
-// 環境に応じて証明書のパスを選択
-const keyPath = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_KEY_PATH : process.env.LOCAL_KEY_PATH;
-const certPath = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_CERT_PATH : process.env.LOCAL_CERT_PATH;
-
-// SSL/TLS 証明書の設定
-const options = {
-    key: fs.readFileSync(keyPath), // SSLキーのパス（本番環境で使用）
-    cert: fs.readFileSync(certPath) // SSL証明書のパス（本番環境で使用）
-};
-
-const server = https.createServer(options, app);
-
-
 let waitingPlayers = [];
 let activeMatching = new Set(); // アクティブなマッチングプロセスに参加しているユーザーIDを追跡
 export let matches = {}; // すべてのマッチ情報を保持するオブジェクト
@@ -316,7 +302,7 @@ app.use((err, req, res, next) => {
 });
 
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`サーバーがポート${PORT}で起動しました`);
     // 開発環境ではポート3001を使用し、本番環境ではポート443を推奨（環境によって設定を変更してください）
 });
