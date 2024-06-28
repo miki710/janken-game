@@ -79,22 +79,25 @@ export function handleMatchRequest(req, res) {
 
 function tryMatchPlayers() {
     console.log('Trying to match players...'); // デバッグ用ログ
+    console.log('Current waitingPlayers:', waitingPlayers); // デバッグ用ログ
+
     while (waitingPlayers.length >= 2) {
+        console.log('Waiting players length is sufficient for matching'); // デバッグ用ログ
         const player1 = waitingPlayers.shift();
         const player2 = waitingPlayers.shift();
         console.log('Match found:', player1.userId, player2.userId);
 
-          // マッチIDの生成
-          const matchId = generateMatchId();
+        // マッチIDの生成
+        const matchId = generateMatchId();
 
-          // マッチ情報の初期化
-          matches[matchId] = {
-              players: {
+        // マッチ情報の初期化
+        matches[matchId] = {
+            players: {
                 [player1.userId]: { userId: player1.userId, ready: false, hand: null, index: null, info: {}, points: 0},
                 [player2.userId]: { userId: player2.userId, ready: false, hand: null, index: null, info: {}, points: 0}
-              },
-              status: 'active'
-          };
+            },
+            status: 'active'
+        };
 
         activeMatching.delete(player1.userId);
         activeMatching.delete(player2.userId);
@@ -114,6 +117,9 @@ function tryMatchPlayers() {
             yourId: player2.userId,
             opponentId: player1.userId
         };
+
+        console.log('Sending response to player1:', response1); // デバッグ用ログ
+        console.log('Sending response to player2:', response2); // デバッグ用ログ
 
         if (!player1.res.headersSent) {
             player1.res.json(response1);
