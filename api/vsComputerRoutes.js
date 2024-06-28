@@ -3,7 +3,7 @@ import express from 'express';
 const router = express.Router();
 
 // 必要な関数や変数をserver.jsからインポート
-import { generateOpponentChoice, determineWinner, handleMatchRequest } from '../src/server.js';
+import { generateOpponentChoice, determineWinner, handleMatchRequest } from '../api/server.js';
 
 // ゲームの状態を管理する変数をここに移動
 const gameResults = {};
