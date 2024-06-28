@@ -4,8 +4,8 @@ import cookieParser from 'cookie-parser';
 import https from 'https';
 import fs from 'fs';
 import dotenv from 'dotenv';
-import { parseFilename } from './utils.js';
-import { attributeMap } from './attribute.js';
+import { parseFilename } from '../src/utils.js';
+import { attributeMap } from '../src/attribute.js';
 import baseRoutes from '../api/baseRoutes.js'; // baseRoutesをインポート
 import vsComputerRoutes from '../api/vsComputerRoutes.js'; // vsComputerRoutesをインポート
 import vsPlayerRoutes from '../api/vsPlayerRoutes.js';
