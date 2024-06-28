@@ -37,7 +37,7 @@ function ImageSelectPage() {
             return;
         }
         try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/vs-player/check-match-ready?matchId=${matchId}`, {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-match-ready?matchId=${matchId}`, {
                 method: 'GET', // リクエストメソッドをGETに変更
                 credentials: 'include' // クッキーを含める
             });
@@ -99,7 +99,7 @@ function ImageSelectPage() {
                 if (newUserInfo && newUserInfo.job) {
                     const intervalId = setInterval(async () => {
                         console.log("Sending to server:", { userId, hand, index, newUserInfo, opponentId, matchId, point });
-                        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/vs-player/play-match`, {
+                        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/play-match`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json'},
                             credentials: 'include',
@@ -138,7 +138,7 @@ function ImageSelectPage() {
                 console.log('newUserInfo:', newUserInfo);  // newUserInfoの内容を確認
                 setUserInfo(newUserInfo);
             
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/vs-computer/play`, {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-computer/play`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json'},
                     credentials: 'include', // サーバー側で `credentials: true` を設定している場合
@@ -154,7 +154,7 @@ function ImageSelectPage() {
                 
 
                 if (data.resultId) {
-                    const resultResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/vs-computer/result/${data.resultId}`);
+                    const resultResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-computer/result/${data.resultId}`);
                     if (!resultResponse.ok) {
                         throw new Error(`HTTP error! status: ${resultResponse.status}`);
                     }
