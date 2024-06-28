@@ -3,7 +3,9 @@ import express from 'express';
 const router = express.Router();
 
 // 必要な関数や変数をserver.jsからインポート
-import { isBothUsersReady, checkMatchReady, saveUserChoice, determineMatchResult, calculatePoints, matches } from '../api/server.js';
+import { isBothUsersReady, checkMatchReady, saveUserChoice, determineMatchResult, calculatePoints, matches, handleMatchRequest } from '../api/server.js';
+
+router.post('/match', handleMatchRequest);
 
 // マッチが準備完了状態になっているかを確認し、その状態をクライアントに通知するエンドポイント
 router.get('/check-match-ready', (req, res) => {

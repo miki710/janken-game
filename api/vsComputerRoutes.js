@@ -3,12 +3,12 @@ import express from 'express';
 const router = express.Router();
 
 // 必要な関数や変数をserver.jsからインポート
-import { generateOpponentChoice, determineWinner, handleMatchRequest } from '../api/server.js';
+import { generateOpponentChoice, determineWinner } from '../api/server.js';
 
 // ゲームの状態を管理する変数をここに移動
 const gameResults = {};
 
-router.post('/match', handleMatchRequest);
+
 
 router.post('/play', (req, res) => {
     const { hand, index, mode } = req.body; // ユーザーの選択を受け取る
