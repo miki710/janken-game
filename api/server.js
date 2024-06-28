@@ -128,6 +128,19 @@ function tryMatchPlayers() {
             player2.res.json(response2);
         }
     }
+
+    // プレイヤーが2人未満の場合のレスポンス
+    if (waitingPlayers.length < 2) {
+        console.log('Not enough players to match'); // デバッグ用ログ
+        waitingPlayers.forEach(player => {
+            if (!player.res.headersSent) {
+                player.res.json({
+                    success: false,
+                    message: 'マッチング待機中'
+                });
+            }
+        });
+    }
 }
 
 function generateMatchId() {
