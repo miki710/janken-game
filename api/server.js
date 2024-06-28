@@ -54,7 +54,10 @@ export let matches = {}; // すべてのマッチ情報を保持するオブジ�
 
 export function handleMatchRequest(req, res) {
     const userId = req.cookies.userId;
+    console.log('Received match request from user:', userId); // デバッグ用ログ
+
     if (!userId) {
+        console.log('ユーザーIDがクッキーに存在しません');
         return res.status(400).send('ユーザーIDがクッキーに存在しません');
     }
 
@@ -68,12 +71,14 @@ export function handleMatchRequest(req, res) {
 
     activeMatching.add(userId);
     waitingPlayers.push({ userId, res });
+    console.log('Added user to waitingPlayers:', userId); // デバッグ用ログ
 
     // マッチングを試みる
     tryMatchPlayers();
 }
 
 function tryMatchPlayers() {
+    console.log('Trying to match players...'); // デバッグ用ログ
     while (waitingPlayers.length >= 2) {
         const player1 = waitingPlayers.shift();
         const player2 = waitingPlayers.shift();
