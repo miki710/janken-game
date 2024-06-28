@@ -1,8 +1,6 @@
 // server.js
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import https from 'https';
-import fs from 'fs';
 import dotenv from 'dotenv';
 import { parseFilename } from '../src/utils.js';
 import { attributeMap } from '../src/attribute.js';
@@ -290,14 +288,14 @@ export function determineWinner(userHand, opponentHand) {
 const PORT = process.env.PORT || 3001;
 
 // ルートハンドラ
-app.use('/', baseRoutes);
-app.use('/vs-computer', vsComputerRoutes);
-app.use('/vs-player', vsPlayerRoutes);
+app.use('/api', baseRoutes);
+app.use('/api/vs-computer', vsComputerRoutes);
+app.use('/api/vs-player', vsPlayerRoutes);
 
-// 他のすべてのルートとミドルウェアの後に追加
+// エラーハンドリングミドルウェアをルートハンドラの後に追加
 app.use((err, req, res, next) => {
-    console.error(err.stack); // エラーの詳細をコンソールに出力
-    res.status(500).send('サーバー内部でエラーが発生しました');
+    console.error('Post-route Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
     next();
 });
 

@@ -23,7 +23,7 @@ function WaitingRoomPage() {
                     const serverUrl = process.env.REACT_APP_SERVER_URL;
                     const gameMode = 'vsPlayer'; // ゲームモードを指定
 
-                    const response = await fetch(`${serverUrl}/vs-computer/match`, {
+                    const response = await fetch(`${serverUrl}/api/vs-computer/match`, {
                         method: 'POST',
                         headers: {
                         'Content-Type': 'application/json'

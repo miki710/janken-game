@@ -23,7 +23,7 @@
     "build": "react-scripts build",
     "test": "jest --detectOpenHandles",
     "eject": "react-scripts eject",
-    "start-server": "node --inspect src/server.js"
+    "start-server": "node --inspect api/server.js"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {
