@@ -118,15 +118,19 @@ function tryMatchPlayers() {
             opponentId: player1.userId
         };
 
-        console.log('Sending response to player1:', response1); // デバッグ用ログ
-        console.log('Sending response to player2:', response2); // デバッグ用ログ
-
         if (!player1.res.headersSent) {
+            console.log('Sending response to player1:', response1); // デバッグ用ログ
             player1.res.json(response1);
+        } else {
+            console.log('Response already sent to player1:', player1.userId); // デバッグ用ログ
         }
+
         if (!player2.res.headersSent) {
+            console.log('Sending response to player2:', response2); // デバッグ用ログ
             player2.res.json(response2);
-        }
+        } else {
+            console.log('Response already sent to player2:', player2.userId); // デバッグ用ログ
+        }       
     }
 
     // プレイヤーが2人未満の場合のレスポンス
@@ -138,6 +142,8 @@ function tryMatchPlayers() {
                     success: false,
                     message: 'マッチング待機中'
                 });
+            } else {
+                console.log('Response already sent to waiting player:', player.userId); // デバッグ用ログ
             }
         });
     }
