@@ -94,6 +94,21 @@ function tryMatchPlayers() {
     console.log('Trying to match players...'); // デバッグ用ログ
     console.log('Current waitingPlayers:', waitingPlayers); // デバッグ用ログ
 
+    // プレイヤーが2人未満の場合のレスポンス
+    if (waitingPlayers.length < 2) {
+        console.log('Not enough players to match'); // デバッグ用ログ
+        waitingPlayers.forEach(player => {
+            if (!player.res.headersSent) {
+                console.log('Sending waiting response to player:', player.userId); // デバッグ用ログ
+                player.res.json({
+                    success: false,
+                    message: 'マッチング待機中'
+                });
+            }
+        });
+        return;
+    }
+
     while (waitingPlayers.length >= 2) {
         console.log('Waiting players length is sufficient for matching'); // デバッグ用ログ
         const player1 = waitingPlayers.shift();
