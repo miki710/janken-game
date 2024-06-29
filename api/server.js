@@ -120,6 +120,7 @@ function tryMatchPlayers() {
 
         // マッチ情報の初期化
         matches[matchId] = {
+            matchId: matchId, // マッチIDを保存
             players: {
                 [player1.userId]: { userId: player1.userId, ready: false, hand: null, index: null, info: {}, points: 0},
                 [player2.userId]: { userId: player2.userId, ready: false, hand: null, index: null, info: {}, points: 0}
