@@ -1,11 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
+import { playSound } from './utils.js';
 
 function ModeSelectPage() {
     const navigate = useNavigate();
 
     const handleModeSelect = (mode) => {
+        // クリック音を再生
+        playSound('click');
+
         if (mode === 'vsPlayer') {
             navigate('/waiting');
         } else {
