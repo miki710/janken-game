@@ -136,12 +136,14 @@ function tryMatchPlayers() {
 
         // レスポンスが既に送信されているかどうかを確認
         if (!player1.res.headersSent) {
+            console.log('Sending response to player1:', response1); // デバッグ用ログ
             player1.res.json(response1);
         } else {
             console.log('Response already sent to player1:', player1.userId); // デバッグ用ログ
         }
 
         if (!player2.res.headersSent) {
+            console.log('Sending response to player2:', response2); // デバッグ用ログ
             player2.res.json(response2);
         } else {
             console.log('Response already sent to player2:', player2.userId); // デバッグ用ログ
