@@ -61,6 +61,19 @@ export function handleMatchRequest(req, res) {
         return res.status(400).send('ユーザーIDがクッキーに存在しません');
     }
 
+    // 既にマッチングが完了しているか確認
+    const match = Object.values(matches).find(match => match.players[userId]);
+    if (match) {
+        const opponentId = Object.keys(match.players).find(id => id !== userId);
+        return res.json({
+            success: true,
+            isMatched: true,
+            matchId: match.matchId,
+            yourId: userId,
+            opponentId: opponentId
+        });
+    }
+
     if (activeMatching.has(userId)) {
         console.log('User already in matching process:', userId);
         return res.json({
@@ -121,25 +134,18 @@ function tryMatchPlayers() {
         console.log('Sending response to player1:', response1); // デバッグ用ログ
         console.log('Sending response to player2:', response2); // デバッグ用ログ
 
+        // レスポンスが既に送信されているかどうかを確認
         if (!player1.res.headersSent) {
             player1.res.json(response1);
+        } else {
+            console.log('Response already sent to player1:', player1.userId); // デバッグ用ログ
         }
+
         if (!player2.res.headersSent) {
             player2.res.json(response2);
+        } else {
+            console.log('Response already sent to player2:', player2.userId); // デバッグ用ログ
         }
-    }
-
-    // プレイヤーが2人未満の場合のレスポンス
-    if (waitingPlayers.length < 2) {
-        console.log('Not enough players to match'); // デバッグ用ログ
-        waitingPlayers.forEach(player => {
-            if (!player.res.headersSent) {
-                player.res.json({
-                    success: false,
-                    message: 'マッチング待機中'
-                });
-            }
-        });
     }
 }
 
