@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
         const userId = uuidv4();
         res.cookie('userId', userId, { 
             expires: new Date(Date.now() + 86400000), // 24時間後に期限切れ
-            httpOnly: true, 
+            httpOnly: false, 
             secure: process.env.NODE_ENV === 'production', // 本番環境ではsecureをtrueに設定
             sameSite: 'None' 
         });
