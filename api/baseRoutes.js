@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
         res.cookie('userId', userId, { 
             expires: new Date(Date.now() + 86400000), // 24時間後に期限切れ
             httpOnly: false, 
-            secure: process.env.NODE_ENV === 'production', // 本番環境ではsecureをtrueに設定
+            secure: true, // 本番環境ではsecureをtrueに設定
             sameSite: 'None' 
         });
         res.send('永続クッキーを設定しました: ' + userId);
