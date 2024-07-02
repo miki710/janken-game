@@ -6,8 +6,20 @@ import Cookies from 'js-cookie';
 
 function ModeSelectPage() {
     const navigate = useNavigate();
-    const savedPoint = Cookies.get('point') || 0; // クッキーからポイントを取得
-    const cookieUserId = Cookies.get('userId') || 'Unknown User'; // クッキーからuserIdを取得
+    const [cookieUserId, setCookieUserId] = useState('Unknown User');
+    const [savedPoint, setSavedPoint] = useState(0);
+
+    useEffect(() => {
+        const userId = Cookies.get('userId');
+        const point = Cookies.get('point') || 0;
+        console.log('User ID from cookie:', userId); // デバッグ用ログ
+        console.log('Point from cookie:', point); // デバッグ用ログ
+        if (userId) {
+            setCookieUserId(userId);
+        }
+        setSavedPoint(point);
+    }, []);
+    
 
     const handleModeSelect = (mode) => {
         // クリック音を再生
