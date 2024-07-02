@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { parseFilename, playSound } from './utils.js';  // functionName を utils.js からインポート
 import { attributeMap } from './attribute.js';
+import Cookies from 'js-cookie'
 
 
 export const images = {
@@ -28,6 +29,9 @@ function ImageSelectPage() {
     const [opponentImageIndex, setOpponentImageIndex] = useState(0);
     const [userInfo, setUserInfo] = useState({});
     const [opponentInfo, setOpponentInfo] = useState(null);
+
+    const savedPoint = Cookies.get('point') || 0; // クッキーからポイントを取得
+    const cookieUserId = Cookies.get('userId') || 'Unknown User';　// クッキーからuserIdを取得
 
 
       const checkMatchReady = async (matchId) => {
@@ -204,8 +208,7 @@ function ImageSelectPage() {
       
   return (
     <div className="App">
-            <header className="App-header">
-                <p>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</p>
+            <header className="App-header">           
                 {isMatched || mode !== 'vsPlayer' ? (
                     Object.entries(images).map(([hand, imagePaths]) => (
                     <div key={hand}>
@@ -224,6 +227,9 @@ function ImageSelectPage() {
                 ))
                 ) : null}
             </header>
+            <p>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</p>
+            <p>User ID: {cookieUserId}</p>
+            <p>Points: {savedPoint}</p>
         </div>
     );
 }

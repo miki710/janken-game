@@ -79,16 +79,6 @@ function WaitingRoomPage() {
         }
     }, [isMatched]); // isMatched と navigate を依存配列に追加
 
-
-    useEffect(() => {
-        console.log('コンポーネントがマウントされました');
-
-        return () => {
-            console.log('コンポーネントがアンマウントされました');
-        };
-    }, []);
-
-
     return (
         <div>
             <h1>他のプレイヤーを待っています...</h1>

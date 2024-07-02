@@ -27,6 +27,9 @@ function ImageDisplayPage() {
 
     const [result, setResult] = useState('');
 
+    // クッキーからuserIdを取得
+    const userId = Cookies.get('userId') || 'Unknown User';
+
     useEffect(() => {
       // クッキーから前回のポイントを読み取る
       const savedPoint = Cookies.get('point');
@@ -120,6 +123,7 @@ function ImageDisplayPage() {
             </div>
         </div>
         <button onClick={resetGame}>もう一度勝負する</button>
+        <p>User ID: {userId}</p>
     </div>
     )
 }
