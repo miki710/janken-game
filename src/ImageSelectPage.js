@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import React, { useState, useEffect, useContext } from 'react';
-import { parseFilename, playSound } from './utils.js';  // functionName を utils.js からインポート
+import { parseFilename, playSound, getHandEmoji } from './utils.js';  // functionName を utils.js からインポート
 import { attributeMap } from './attribute.js';
 import { UserContext } from './UserContext.js';
 import Cookies from 'js-cookie'
