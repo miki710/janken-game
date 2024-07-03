@@ -48,7 +48,7 @@ function ImageDisplayPage() {
 
       // 新しい合計ポイントをクッキーに保存
       Cookies.set('point', point, { expires: 1 }); // クッキーの有効期限を1日に設定
-    }, [point]);
+    }, [mode, initialPoint]);
 
   // じゃんけんの結果を計算し、ポイントを更新するための useEffect
   useEffect(() => {
