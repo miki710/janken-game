@@ -168,8 +168,8 @@ function ImageSelectPage() {
                     if (!resultData || !resultData.opponent || !resultData.opponent.info) {
                         throw new Error('Received data is incomplete or malformed');
                     }
-                    setOpponentInfo(resultData.opponent.info);
-                    console.log('Set opponentInfo:', resultData.opponent.info);
+                    // setOpponentInfo(resultData.opponent.info);
+                    // console.log('Set opponentInfo:', resultData.opponent.info);
                 }
             }
             } else { 
