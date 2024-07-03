@@ -1,14 +1,16 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import ModeSelectPage from './ModeSelectPage.js'; // ModeSelectPage をインポート
 import WaitingRoomPage from './WaitingRoomPage.js';
 import ImageSelectPage from './ImageSelectPage.js';
 import ImageDisplayPage from './ImageDisplayPage.js';
-
+import { UserProvider, UserContext } from './UserContext';
 
 function App() {
+  const { setUserId } = useContext(UserContext);
+
   useEffect(() => {
     // ルートURLにアクセスしてユーザーIDをクッキーに設定する関数
     const initializeUserId = async () => {
@@ -25,16 +27,19 @@ function App() {
     };
 
     initializeUserId();
-  }, []);
+  }, [setUserId]);
+
   return (
-    <BrowserRouter>
+    <UserProvider>
+       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ModeSelectPage />} /> 
           <Route path="/waiting" element={<WaitingRoomPage />} />
           <Route path="/game" element={<ImageSelectPage />} /> 
           <Route path="/display" element={<ImageDisplayPage />} />
         </Routes>
-  </BrowserRouter>
+      </BrowserRouter>
+    </UserProvider>
   );
 }
       

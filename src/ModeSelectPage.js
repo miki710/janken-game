@@ -1,25 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 import { playSound } from './utils.js';
-import Cookies from 'js-cookie';
+import { UserContext } from './UserContext';
+import Cookies from 'js-cookie'
 
 function ModeSelectPage() {
     const navigate = useNavigate();
-    const [cookieUserId, setCookieUserId] = useState('Unknown User');
-    const [savedPoint, setSavedPoint] = useState(0);
-
-    useEffect(() => {
-        const userId = Cookies.get('userId');
-        const point = Cookies.get('point') || 0;
-        console.log('User ID from cookie:', userId); // デバッグ用ログ
-        console.log('Point from cookie:', point); // デバッグ用ログ
-        if (userId) {
-            setCookieUserId(userId);
-        }
-        setSavedPoint(point);
-    }, []);
-    
+    const { userId } = useContext(UserContext);
+    const savedPoint = Cookies.get('point') || 0; // クッキーからポイントを取得
 
     const handleModeSelect = (mode) => {
         // クリック音を再生
@@ -37,7 +26,7 @@ function ModeSelectPage() {
             <h2>じゃんけんゲーム</h2>
             <button onClick={() => handleModeSelect('vsPlayer')}>他のプレイヤーと対戦</button>
             <button onClick={() => handleModeSelect('vsComputer')}>PCと対戦</button>
-            <p>User ID: {cookieUserId}</p>
+            <p>User ID: {userId}</p>
             <p>Points: {savedPoint}</p>
         </div>
     );

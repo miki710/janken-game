@@ -31,7 +31,6 @@ function ImageSelectPage() {
     const [opponentInfo, setOpponentInfo] = useState(null);
 
     const savedPoint = Cookies.get('point') || 0; // クッキーからポイントを取得
-    const cookieUserId = Cookies.get('userId') || 'Unknown User';　// クッキーからuserIdを取得
 
 
       const checkMatchReady = async (matchId) => {
@@ -226,10 +225,9 @@ function ImageSelectPage() {
                     </div>
                 ))
                 ) : null}
+                <p>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</p>
+                <p>Points: {savedPoint}</p>
             </header>
-            <p>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</p>
-            <p>User ID: {cookieUserId}</p>
-            <p>Points: {savedPoint}</p>
         </div>
     );
 }
