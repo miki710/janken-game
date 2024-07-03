@@ -29,6 +29,10 @@ function AppContent() {
         });
         const data = await response.text();
         console.log(data); // レスポンスの確認
+        
+        // ユーザーIDだけを抽出
+        const userId = data.replace(/.*: /, '').trim();
+        setUserId(userId); // ユーザーIDをコンテキストに設定
       } catch (error) {
         console.error('ユーザーIDの初期化中にエラーが発生しました:', error);
       }
