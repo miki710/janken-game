@@ -224,9 +224,9 @@ function ImageSelectPage() {
             <header className="App-header">           
                 {isMatched || mode !== 'vsPlayer' ? (
                     Object.entries(images).map(([hand, imagePaths]) => (
-                    <div key={hand}>
+                    <div key={hand} style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
                         {imagePaths.map((path, index) => (
-                            <div key={index} style={{ textAlign: 'center' }}>
+                            <div key={index} style={{ textAlign: 'center', margin: '0 5px' }}>
                             <img
                                 src={path}
                                 alt={hand}
