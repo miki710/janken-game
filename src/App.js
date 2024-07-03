@@ -39,7 +39,7 @@ function AppContent() {
     };
 
     initializeUserId();
-  }, [setUserId]);
+  }, [setCookieUserId]);
 
   return (
        <BrowserRouter>
