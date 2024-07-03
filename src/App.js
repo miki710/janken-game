@@ -6,7 +6,7 @@ import ModeSelectPage from './ModeSelectPage.js'; // ModeSelectPage をインポ
 import WaitingRoomPage from './WaitingRoomPage.js';
 import ImageSelectPage from './ImageSelectPage.js';
 import ImageDisplayPage from './ImageDisplayPage.js';
-import { UserProvider, UserContext } from './UserContext';
+import { UserProvider, UserContext } from './UserContext.js';
 
 function App() {
   const { setUserId } = useContext(UserContext);

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 import { playSound } from './utils.js';
-import { UserContext } from './UserContext';
+import { UserContext } from './UserContext.js';
 import Cookies from 'js-cookie'
 
 function ModeSelectPage() {
