@@ -205,6 +205,19 @@ function ImageSelectPage() {
         }
     }, [userInfo, opponentInfo, opponentHand, opponentImageIndex]);  
 
+    // handに基づいてattributeMapのキーを計算する関数
+    const getAttributeKey = (hand, index) => {
+        switch (hand) {
+            case 'Rock':
+                return index + 1;
+            case 'Scissor':
+                return index + 4;
+            case 'Paper':
+                return index + 7;
+            default:
+                return null;
+        }
+    };
       
   return (
     <div className="App">
@@ -212,16 +225,17 @@ function ImageSelectPage() {
                 {isMatched || mode !== 'vsPlayer' ? (
                     Object.entries(images).map(([hand, imagePaths]) => (
                     <div key={hand}>
-                        <p>{hand}</p>
                         {imagePaths.map((path, index) => (
+                            <div key={index} style={{ textAlign: 'center' }}>
                             <img
-                                key={index}
                                 src={path}
                                 alt={hand}
                                 className={`image ${userHand === hand && userImageIndex === index ? 'selected' : ''}`}
                                 style={{ width: '100px', margin: '5px' }}
                                 onClick={() => handleChoice(hand, index)}
                             />
+                            <p>{getHandEmoji(hand)} {attributeMap[getAttributeKey(hand, index)].job}</p>
+                            </div>
                         ))}
                     </div>
                 ))
