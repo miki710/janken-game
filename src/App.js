@@ -9,6 +9,14 @@ import ImageDisplayPage from './ImageDisplayPage.js';
 import { UserProvider, UserContext } from './UserContext.js';
 
 function App() {
+  return (
+    <UserProvider>
+      <AppContent />
+    </UserProvider>
+  );
+}
+
+function AppContent() {
   const { setUserId } = useContext(UserContext);
 
   useEffect(() => {
@@ -30,7 +38,6 @@ function App() {
   }, [setUserId]);
 
   return (
-    <UserProvider>
        <BrowserRouter>
         <Routes>
           <Route path="/" element={<ModeSelectPage />} /> 
@@ -39,7 +46,6 @@ function App() {
           <Route path="/display" element={<ImageDisplayPage />} />
         </Routes>
       </BrowserRouter>
-    </UserProvider>
   );
 }
       
