@@ -156,7 +156,7 @@ function ImageSelectPage() {
                     setOpponentImageIndex(data.opponent.index);
                     setOpponentInfo(data.opponent.info);
                 
-
+                /*
                 if (data.resultId) {
                     const resultResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-computer/result/${data.resultId}`);
                     if (!resultResponse.ok) {
@@ -171,6 +171,7 @@ function ImageSelectPage() {
                     // setOpponentInfo(resultData.opponent.info);
                     // console.log('Set opponentInfo:', resultData.opponent.info);
                 }
+                */
             }
             } else { 
                 console.error('No valid mode selected');
