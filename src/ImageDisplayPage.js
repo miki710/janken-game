@@ -30,6 +30,7 @@ function ImageDisplayPage() {
     const { cookieUserId } = useContext(UserContext);
 
     useEffect(() => {
+      console.log('useEffect for initial point and mode');
       // クッキーから前回のポイントを読み取る
       const savedPoint = Cookies.get('point');
       const savedPointInt = savedPoint ? parseInt(savedPoint, 10) : 0;
@@ -45,13 +46,17 @@ function ImageDisplayPage() {
         const adjustedPoint = Math.max(totalPoint, 0);
         setPoint(adjustedPoint);
       }
-
-      // 新しい合計ポイントをクッキーに保存
-      Cookies.set('point', point, { expires: 1 }); // クッキーの有効期限を1日に設定
     }, [mode, initialPoint]);
+
+    // ポイントが更新されるたびにクッキーに保存
+    useEffect(() => {
+      console.log('useEffect for point update');
+      Cookies.set('point', point, { expires: 1 }); // クッキーの有効期限を1日に設定
+    }, [point]);
 
   // じゃんけんの結果を計算し、ポイントを更新するための useEffect
   useEffect(() => {
+    console.log('useEffect for janken result');
     if (mode === 'vsComputer') { // PC戦の場合のみじゃんけんロジックを実行
       if (userHand && opponentHand) {
         const gameResult = judgeJanken(userHand, opponentHand);
@@ -61,7 +66,7 @@ function ImageDisplayPage() {
             console.log("現在のポイント:", prevPoint); // 加算前のポイントをログに出力
             const newPoint = prevPoint + 10;
             console.log("新しいポイント:", newPoint); // 加算後のポイントをログに出力
-            return newPoint;
+            return Math.max(newPoint, 0); // ポイントがマイナスにならないように調整
           });
         }
       }
@@ -89,7 +94,7 @@ function ImageDisplayPage() {
     setUserHand('');
     setOpponentHand('');
     setResult('');
-    navigate('/', { state: { point }}); // ポイントを渡す
+    navigate('/'); // ポイントを渡さずに遷移
   };
 
 
