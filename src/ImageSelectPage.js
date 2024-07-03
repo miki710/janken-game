@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { parseFilename, playSound } from './utils.js';  // functionName を utils.js からインポート
 import { attributeMap } from './attribute.js';
+import { UserContext } from './UserContext.js';
 import Cookies from 'js-cookie'
 
 
@@ -31,7 +32,7 @@ function ImageSelectPage() {
     const [opponentInfo, setOpponentInfo] = useState(null);
 
     const savedPoint = Cookies.get('point') || 0; // クッキーからポイントを取得
-
+    const { cookieUserId } = useContext(UserContext);
 
       const checkMatchReady = async (matchId) => {
          // userInfoがnullまたはundefinedでないことを確認
@@ -226,7 +227,8 @@ function ImageSelectPage() {
                 ))
                 ) : null}
                 <p>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</p>
-                <p>Points: {savedPoint}</p>
+                <p>User ID: {cookieUserId}</p>
+                <p>ポイント: {savedPoint}</p>
             </header>
         </div>
     );

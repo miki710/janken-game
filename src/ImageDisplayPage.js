@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
 import { playSound, getHandEmoji } from './utils.js';
 import { images } from './ImageSelectPage.js';
+import { UserContext } from './UserContext.js';
 import './App.css';
 
 function ImageDisplayPage() {
@@ -24,8 +25,9 @@ function ImageDisplayPage() {
     const [opponentJob] = useState(opponent ? opponent.job : ''); // setOpponentJobを削除
     const [userImageIndex] = useState(user && user.index !== null ? user.index : 0); // setUserImageIndexを削除
     const [opponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0); // setOpponentImageIndexを削除
-
     const [result, setResult] = useState('');
+
+    const { cookieUserId } = useContext(UserContext);
 
     useEffect(() => {
       // クッキーから前回のポイントを読み取る
@@ -92,13 +94,7 @@ function ImageDisplayPage() {
 
 
   return (
-    <div className='App-header'>
-         {mode === 'vsComputer' ? (
-                <p>結果 (PC戦): {result}</p>  // PC戦の結果を表示
-            ) : (
-                <p>結果 (ユーザー戦): {initialResult}</p>  // ユーザー戦の結果を表示
-          )}
-        <p>ポイント: {point}</p>  
+    <div className='App-header'> 
         <div className='hand-display'>
             <div className="hand-container">
                 <p>You:</p>
@@ -120,6 +116,13 @@ function ImageDisplayPage() {
             </div>
         </div>
         <button onClick={resetGame}>もう一度勝負する</button>
+        {mode === 'vsComputer' ? (
+                <p>結果 (PC戦): {result}</p>  // PC戦の結果を表示
+            ) : (
+                <p>結果 (ユーザー戦): {initialResult}</p>  // ユーザー戦の結果を表示
+          )}
+        <p>User ID: {cookieUserId}</p>
+        <p>ポイント: {point}</p> 
     </div>
     )
 }

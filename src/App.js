@@ -17,7 +17,7 @@ function App() {
 }
 
 function AppContent() {
-  const { setUserId } = useContext(UserContext);
+  const { setCookieUserId } = useContext(UserContext);
 
   useEffect(() => {
     // ルートURLにアクセスしてユーザーIDをクッキーに設定する関数
@@ -32,7 +32,7 @@ function AppContent() {
         
         // ユーザーIDだけを抽出
         const userId = data.replace(/.*: /, '').trim();
-        setUserId(userId); // ユーザーIDをコンテキストに設定
+        setCookieUserId(userId); // ユーザーIDをコンテキストに設定
       } catch (error) {
         console.error('ユーザーIDの初期化中にエラーが発生しました:', error);
       }
