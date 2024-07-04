@@ -91,7 +91,7 @@ function ImageDisplayPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
         setShowResult(true);
-        setTimeout(() => setShowPoint(true), 200); // 0.2秒後にポイントを表示
+        setTimeout(() => setShowPoint(true), 500); // 0.5秒後にポイントを表示
     }, 500); // 0.5秒後に表示
 
     return () => clearTimeout(timer); // クリーンアップ
