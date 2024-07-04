@@ -33,8 +33,9 @@ function ImageDisplayPage() {
     useEffect(() => {
       console.log('useEffect for initial point and mode');
       // クッキーから前回のポイントを読み取る
-      const savedPoint = Cookies.get('point');
-      const savedPointInt = savedPoint ? parseInt(savedPoint, 10) : 0;
+      const savedPoint = Cookies.get('point') || '0'; // クッキーからポイントを取得、存在しない場合は'0'
+      setPrevPoint(savedPoint); // 初期化時に設定
+      const savedPointInt = parseInt(savedPoint, 10);
 
       if (mode === 'vsComputer') {
         // vsComputerモードの場合、ImageSelectPageで計算されたポイントを加算
