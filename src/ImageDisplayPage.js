@@ -99,14 +99,16 @@ function ImageDisplayPage() {
 
 
   return (
-    <div className='App-header'> 
+    <div className='App-header'>
+        <h2>{mode === 'vsComputer' ? 'PC戦' : 'ユーザー戦'}</h2>
+
         <div className='hand-display'>
             <div className="hand-container">
                 <p>You:</p>
                 {userHand !== '' && (
                 <>
-                    <p>{getHandEmoji(userHand)}{userJob}</p>
                     <img src={images[userHand][userImageIndex]} alt={userHand} style={{ width: '150px' }} />
+                    <p>{getHandEmoji(userHand)}{userJob}</p>
                 </>
             )}
             </div>
@@ -114,20 +116,25 @@ function ImageDisplayPage() {
                 <p>Opponent:</p>   
                 {opponentHand !== '' && (
                 <>
-                    <p>{getHandEmoji(opponentHand)}{opponentJob}</p>
                     <img src={images[opponentHand][opponentImageIndex]} alt={opponentHand} style={{ width: '150px' }} />
+                    <p>{getHandEmoji(opponentHand)}{opponentJob}</p>
                 </>
             )}
             </div>
         </div>
-        <button onClick={resetGame}>もう一度勝負する</button>
         {mode === 'vsComputer' ? (
-                <p>結果 (PC戦): {result}</p>  // PC戦の結果を表示
+                <p style={{ fontSize: '24px' }}>{result}</p>  // PC戦の結果を表示
             ) : (
-                <p>結果 (ユーザー戦): {initialResult}</p>  // ユーザー戦の結果を表示
+                <p style={{ fontSize: '24px' }}>{initialResult}</p>  // ユーザー戦の結果を表示
           )}
-        <p>User ID: {cookieUserId}</p>
-        <p>ポイント: {point}</p> 
+        <p>ポイント: {Cookies.get('point')} ➡ {point}</p> 
+        <p>User ID: {cookieUserId}</p>       
+        <button 
+          onClick={resetGame}
+          style={{ fontSize: '18px' }}
+        >
+          Top画面へ戻る
+        </button>
     </div>
     )
 }
