@@ -127,7 +127,7 @@ function ImageDisplayPage() {
             ) : (
                 <p style={{ fontSize: '24px' }}>{initialResult}</p>  // ユーザー戦の結果を表示
           )}
-        <p>ポイント: {Cookies.get('point')} ➡ {point}</p> 
+        <p>ポイント: {point - initialPoint} ➡ {point}</p> 
         <p>User ID: {cookieUserId}</p>       
         <button 
           onClick={resetGame}
