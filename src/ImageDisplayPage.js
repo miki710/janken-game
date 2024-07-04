@@ -26,6 +26,7 @@ function ImageDisplayPage() {
     const [userImageIndex] = useState(user && user.index !== null ? user.index : 0); // setUserImageIndexを削除
     const [opponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0); // setOpponentImageIndexを削除
     const [result, setResult] = useState('');
+    const [savedPoint, setSavedPoint] = useState(0);
 
     const { cookieUserId } = useContext(UserContext);
 
@@ -34,6 +35,7 @@ function ImageDisplayPage() {
       // クッキーから前回のポイントを読み取る
       const savedPoint = Cookies.get('point');
       const savedPointInt = savedPoint ? parseInt(savedPoint, 10) : 0;
+      setSavedPoint(savedPointInt);
 
       if (mode === 'vsComputer') {
         // vsComputerモードの場合、ImageSelectPageで計算されたポイントを加算
@@ -127,7 +129,7 @@ function ImageDisplayPage() {
             ) : (
                 <p style={{ fontSize: '24px' }}>{initialResult}</p>  // ユーザー戦の結果を表示
           )}
-        <p>ポイント: {point - initialPoint} ➡ {point}</p> 
+        <p>ポイント: {savedPoint} ➡ {point}</p> 
         <p>User ID: {cookieUserId}</p>       
         <button 
           onClick={resetGame}
