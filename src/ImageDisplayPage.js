@@ -34,6 +34,7 @@ function ImageDisplayPage() {
       console.log('useEffect for initial point and mode');
       // クッキーから前回のポイントを読み取る
       const savedPoint = Cookies.get('point') || '0'; // クッキーからポイントを取得、存在しない場合は'0'
+      console.log('savedPoint:', savedPoint); // savedPointの値をログに出力
       setPrevPoint(savedPoint); // 初期化時に設定
       const savedPointInt = parseInt(savedPoint, 10);
 
