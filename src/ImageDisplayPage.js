@@ -27,7 +27,9 @@ function ImageDisplayPage() {
     const [userImageIndex] = useState(user && user.index !== null ? user.index : 0); // setUserImageIndexを削除
     const [opponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0); // setOpponentImageIndexを削除
     const [result, setResult] = useState('');
+    
     const [showResult, setShowResult] = useState(false);
+    const [showPoint, setShowPoint] = useState(false); // 追加
 
     const { cookieUserId } = useContext(UserContext);
 
@@ -65,7 +67,7 @@ function ImageDisplayPage() {
       if (userHand && opponentHand) {
         const gameResult = judgeJanken(userHand, opponentHand);
         setResult(gameResult);
-        if (gameResult === '勝ち') {
+        if (gameResult === 'Win') {
           setPoint(prevPoint => {
             console.log("現在のポイント:", prevPoint); // 加算前のポイントをログに出力
             setPrevPoint(prevPoint); // 追加
@@ -73,7 +75,7 @@ function ImageDisplayPage() {
             console.log("新しいポイント:", newPoint); // 加算後のポイントをログに出力
             return Math.max(newPoint, 0); // ポイントがマイナスにならないように調整
           });
-        } else if (gameResult === '負け') {
+        } else if (gameResult === 'Lose') {
           setPoint(prevPoint => {
             console.log("現在のポイント:", prevPoint); // 減算前のポイントをログに出力
             setPrevPoint(prevPoint); // 追加
@@ -89,7 +91,8 @@ function ImageDisplayPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
         setShowResult(true);
-    }, 1000); // 1秒後に表示
+        setTimeout(() => setShowPoint(true), 200); // 0.2秒後にポイントを表示
+    }, 500); // 0.5秒後に表示
 
     return () => clearTimeout(timer); // クリーンアップ
   }, []);
@@ -97,17 +100,17 @@ function ImageDisplayPage() {
   const judgeJanken = (userHand, opponentHand) => {
     if (userHand === opponentHand) {
       playSound('draw');
-      return '引き分け';
+      return 'Draw';
     } else if (
       (userHand === 'Rock' && opponentHand === 'Scissor') ||
       (userHand === 'Scissor' && opponentHand === 'Paper') ||
       (userHand === 'Paper' && opponentHand === 'Rock')
     ) {
       playSound('win');  // 勝ったときに音を再生
-      return '勝ち';
+      return 'Win';
     } else {
       playSound('lose');
-      return '負け';
+      return 'Lose';
     }
   };
 
@@ -167,7 +170,9 @@ function ImageDisplayPage() {
                 )}
             </>
         )}
-        <p>ポイント: {prevPoint} ➡ {point}</p>     
+        {showPoint && (
+                <p className="flydown">ポイント: {prevPoint} ➡ {point}</p>
+        )}    
         <button 
           onClick={resetGame}
           style={{ fontSize: '18px' }}

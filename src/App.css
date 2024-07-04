@@ -66,5 +66,20 @@
 
 .bounce {
   animation: bounce 1s infinite !important;
-  animation-delay: 1s; /* 0.5秒の遅延を追加 */
+  animation-delay: 0.5s; /* 0.5秒の遅延を追加 */
+}
+
+@keyframes flydown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.flydown {
+  animation: flydown 0.5s ease-out;
 }
