@@ -27,7 +27,7 @@ function ImageDisplayPage() {
     const [userImageIndex] = useState(user && user.index !== null ? user.index : 0); // setUserImageIndexを削除
     const [opponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0); // setOpponentImageIndexを削除
     const [result, setResult] = useState('');
-    
+
     const [showResult, setShowResult] = useState(false);
     const [showPoint, setShowPoint] = useState(false); // 追加
 
@@ -171,7 +171,7 @@ function ImageDisplayPage() {
             </>
         )}
         {showPoint && (
-                <p className="flydown">ポイント: {prevPoint} ➡ {point}</p>
+                <p>ポイント: {prevPoint} ➡ <span className="flydown">{point}</span></p>
         )}    
         <button 
           onClick={resetGame}
