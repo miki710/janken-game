@@ -276,7 +276,7 @@ export function calculatePoints(currentPoints, result) {
     } else if (result === '引き分け') {
         // 引き分けの場合はポイント変動なし
     } else if (result === '負け') {
-        newPoints -= 10;  // 負けた場合は10ポイントを減算
+        newPoints -= 20;  // 負けた場合は20ポイントを減算
     }
 
     return newPoints;

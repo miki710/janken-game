@@ -152,14 +152,14 @@ function ImageDisplayPage() {
             ) : (
                 <p style={{ fontSize: '24px' }}>{initialResult}</p>  // ユーザー戦の結果を表示
           )}
-        <p>ポイント: {prevPoint} ➡ {point}</p> 
-        <p>User ID: {cookieUserId}</p>       
+        <p>ポイント: {prevPoint} ➡ {point}</p>     
         <button 
           onClick={resetGame}
           style={{ fontSize: '18px' }}
         >
           Top画面へ戻る
         </button>
+        <p>User ID: {cookieUserId}</p>
     </div>
     )
 }

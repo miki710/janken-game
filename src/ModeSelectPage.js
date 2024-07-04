@@ -36,8 +36,8 @@ function ModeSelectPage() {
             >
                 PCと対戦
             </button>
-            <p>User ID: {cookieUserId}</p>
             <p>ポイント: {savedPoint}</p>
+            <p>User ID: {cookieUserId}</p>
         </div>
     );
 }

@@ -214,7 +214,7 @@ function ImageSelectPage() {
                             display: 'flex', 
                             justifyContent: 'center', 
                             marginBottom: '10px',
-                            marginTop: hand === 'Rock' ? '40px' : '0'  // グーの画像の上に余白を追加
+                            marginTop: hand === 'Rock' ? '20px' : '0'  // グーの画像の上に余白を追加
                         }}
                     >
                         {imagePaths.map((path, index) => (
@@ -233,8 +233,11 @@ function ImageSelectPage() {
                 ))
                 ) : null}
                 <p>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</p>
-                <p>User ID: {cookieUserId}</p>
                 <p>ポイント: {savedPoint}</p>
+                <p>User ID: {cookieUserId}</p>
+                {mode === 'vsComputer' && (
+                    <button onClick={() => navigate('/')}>Top画面へ戻る</button>
+                )}
             </header>
         </div>
     );
