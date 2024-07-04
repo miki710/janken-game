@@ -101,6 +101,9 @@ function ImageDisplayPage() {
     navigate('/'); // ポイントを渡さずに遷移
   };
 
+  const playAgain = () => {
+    navigate('/game'); // /gameに遷移
+  };
 
   return (
     <div className='App-header'>
@@ -127,7 +130,15 @@ function ImageDisplayPage() {
             </div>
         </div>
         {mode === 'vsComputer' ? (
+              <>
                 <p style={{ fontSize: '24px' }}>{result}</p>  // PC戦の結果を表示
+                <button 
+                      onClick={playAgain}
+                      style={{ fontSize: '18px' }}
+                    >
+                      もう一度勝負する
+                    </button>
+                </>
             ) : (
                 <p style={{ fontSize: '24px' }}>{initialResult}</p>  // ユーザー戦の結果を表示
           )}
