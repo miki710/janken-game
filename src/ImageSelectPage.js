@@ -155,23 +155,6 @@ function ImageSelectPage() {
                     setOpponentHand(data.opponent.hand);
                     setOpponentImageIndex(data.opponent.index);
                     setOpponentInfo(data.opponent.info);
-                
-                /*
-                if (data.resultId) {
-                    const resultResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-computer/result/${data.resultId}`);
-                    if (!resultResponse.ok) {
-                        throw new Error(`HTTP error! status: ${resultResponse.status}`);
-                    }
-
-                    const resultData = await resultResponse.json();
-                    console.log('Game result:', resultData);
-                    if (!resultData || !resultData.opponent || !resultData.opponent.info) {
-                        throw new Error('Received data is incomplete or malformed');
-                    }
-                    // setOpponentInfo(resultData.opponent.info);
-                    // console.log('Set opponentInfo:', resultData.opponent.info);
-                }
-                */
             }
             } else { 
                 console.error('No valid mode selected');
@@ -225,14 +208,22 @@ function ImageSelectPage() {
             <header className="App-header">           
                 {isMatched || mode !== 'vsPlayer' ? (
                     Object.entries(images).map(([hand, imagePaths]) => (
-                    <div key={hand} style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px' }}>
+                    <div 
+                        key={hand} 
+                        style={{ 
+                            display: 'flex', 
+                            justifyContent: 'center', 
+                            marginBottom: '10px',
+                            marginTop: hand === 'Rock' ? '20px' : '0'  // グーの画像の上に余白を追加
+                        }}
+                    >
                         {imagePaths.map((path, index) => (
                             <div key={index} style={{ textAlign: 'center', margin: '0 5px' }}>
                             <img
                                 src={path}
                                 alt={hand}
                                 className={`image ${userHand === hand && userImageIndex === index ? 'selected' : ''}`}
-                                style={{ width: '100px', margin: '5px' }}
+                                style={{ width: '100px', margin: '5px 5px 2px 5px' }}  // 下のマージンを2pxに設定
                                 onClick={() => handleChoice(hand, index)}
                             />
                             <p>{getHandEmoji(hand)} {attributeMap[getAttributeKey(hand, index)].job}</p>
