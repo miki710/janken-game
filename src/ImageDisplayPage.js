@@ -27,6 +27,7 @@ function ImageDisplayPage() {
     const [userImageIndex] = useState(user && user.index !== null ? user.index : 0); // setUserImageIndexを削除
     const [opponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0); // setOpponentImageIndexを削除
     const [result, setResult] = useState('');
+    const [showResult, setShowResult] = useState(false);
 
     const { cookieUserId } = useContext(UserContext);
 
@@ -85,6 +86,14 @@ function ImageDisplayPage() {
     }
   }, []); // userHand と computerHand が変更されたときに実行
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        setShowResult(true);
+    }, 500); // 0.5秒後に表示
+
+    return () => clearTimeout(timer); // クリーンアップ
+  }, []);
+
   const judgeJanken = (userHand, opponentHand) => {
     if (userHand === opponentHand) {
       playSound('draw');
@@ -140,18 +149,24 @@ function ImageDisplayPage() {
             </div>
         </div>
         {mode === 'vsComputer' ? (
-              <>
-                <p style={{ fontSize: '24px' }}>{result}</p>  
+            <>
+                {showResult && (
+                    <p style={{ fontSize: '24px' }} className="bounce">{result}</p>
+                )}
                 <button 
-                      onClick={playAgain}
-                      style={{ fontSize: '18px' }}
-                    >
-                      もう一度勝負する
-                    </button>
-                </>
-            ) : (
-                <p style={{ fontSize: '24px' }}>{initialResult}</p>  // ユーザー戦の結果を表示
-          )}
+                    onClick={playAgain}
+                    style={{ fontSize: '18px' }}
+                >
+                    もう一度勝負する
+                </button>
+            </>
+        ) : (
+            <>
+                {showResult && (
+                    <p style={{ fontSize: '24px' }} className="bounce">{initialResult}</p>
+                )}
+            </>
+        )}
         <p>ポイント: {prevPoint} ➡ {point}</p>     
         <button 
           onClick={resetGame}
