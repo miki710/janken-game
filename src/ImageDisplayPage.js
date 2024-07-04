@@ -65,9 +65,9 @@ function ImageDisplayPage() {
         const gameResult = judgeJanken(userHand, opponentHand);
         setResult(gameResult);
         if (gameResult === '勝ち') {
-          setPrevPoint(prevPoint); // 追加
           setPoint(prevPoint => {
             console.log("現在のポイント:", prevPoint); // 加算前のポイントをログに出力
+            setPrevPoint(prevPoint); // 追加
             const newPoint = prevPoint + 10;
             console.log("新しいポイント:", newPoint); // 加算後のポイントをログに出力
             return Math.max(newPoint, 0); // ポイントがマイナスにならないように調整
