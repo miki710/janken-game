@@ -102,7 +102,7 @@ function ImageDisplayPage() {
   };
 
   const playAgain = () => {
-    navigate('/game'); // /gameに遷移
+    navigate('/game', { state: { mode }}); // /gameに遷移
   };
 
   return (
@@ -131,7 +131,7 @@ function ImageDisplayPage() {
         </div>
         {mode === 'vsComputer' ? (
               <>
-                <p style={{ fontSize: '24px' }}>{result}</p>  // PC戦の結果を表示
+                <p style={{ fontSize: '24px' }}>{result}</p>  
                 <button 
                       onClick={playAgain}
                       style={{ fontSize: '18px' }}
