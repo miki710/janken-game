@@ -214,7 +214,7 @@ function ImageSelectPage() {
                             display: 'flex', 
                             justifyContent: 'center', 
                             marginBottom: '10px',
-                            marginTop: hand === 'Rock' ? '20px' : '0'  // グーの画像の上に余白を追加
+                            marginTop: hand === 'Rock' ? '40px' : '0'  // グーの画像の上に余白を追加
                         }}
                     >
                         {imagePaths.map((path, index) => (
@@ -226,7 +226,7 @@ function ImageSelectPage() {
                                 style={{ width: '100px', margin: '5px 5px 2px 5px' }}  // 下のマージンを2pxに設定
                                 onClick={() => handleChoice(hand, index)}
                             />
-                            <p>{getHandEmoji(hand)} {attributeMap[getAttributeKey(hand, index)].job}</p>
+                            <p style={{ fontSize: '12px' }}>{getHandEmoji(hand)} {attributeMap[getAttributeKey(hand, index)].job}</p>
                             </div>
                         ))}
                     </div>
