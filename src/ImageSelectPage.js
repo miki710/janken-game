@@ -226,7 +226,7 @@ function ImageSelectPage() {
                                 style={{ width: '100px', margin: '5px 5px 0px 5px' }}  // 下のマージンを2pxに設定
                                 onClick={() => handleChoice(hand, index)}
                             />
-                            <p style={{ fontSize: '12px' }}>{getHandEmoji(hand)} {attributeMap[getAttributeKey(hand, index)].job}</p>
+                            <p style={{ fontSize: '12px', paddingTop: '0px' }}>{getHandEmoji(hand)} {attributeMap[getAttributeKey(hand, index)].job}</p>
                             </div>
                         ))}
                     </div>
