@@ -89,7 +89,7 @@ function ImageDisplayPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
         setShowResult(true);
-    }, 500); // 0.5秒後に表示
+    }, 1000); // 1秒後に表示
 
     return () => clearTimeout(timer); // クリーンアップ
   }, []);

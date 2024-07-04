@@ -51,3 +51,20 @@
   from { box-shadow: 0 0 8px 4px rgba(255, 255, 0, 0.8); }
   to { box-shadow: none; }
 }
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-30px);
+  }
+  60% {
+    transform: translateY(-15px);
+  }
+}
+
+.bounce {
+  animation: bounce 1s infinite !important;
+  animation-delay: 1s; /* 0.5秒の遅延を追加 */
+}
