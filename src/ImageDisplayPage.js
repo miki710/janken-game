@@ -16,6 +16,7 @@ function ImageDisplayPage() {
 
     const initialPoint = location.state && location.state.user ? location.state.user.point : 0;
     const [point, setPoint] = useState(initialPoint);
+    const [prevPoint, setPrevPoint] = useState(initialPoint); // 追加
  
     // user オブジェクトから job プロパティを取り出し、存在しない場合はデフォルト値として空文字列 '' を設定
     const { job = '' } = user;
@@ -26,7 +27,6 @@ function ImageDisplayPage() {
     const [userImageIndex] = useState(user && user.index !== null ? user.index : 0); // setUserImageIndexを削除
     const [opponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0); // setOpponentImageIndexを削除
     const [result, setResult] = useState('');
-    const [savedPoint, setSavedPoint] = useState(0);
 
     const { cookieUserId } = useContext(UserContext);
 
@@ -35,7 +35,7 @@ function ImageDisplayPage() {
       // クッキーから前回のポイントを読み取る
       const savedPoint = Cookies.get('point');
       const savedPointInt = savedPoint ? parseInt(savedPoint, 10) : 0;
-      setSavedPoint(savedPointInt);
+      setPrevPoint(savedPointInt); // 初期化時に設定
 
       if (mode === 'vsComputer') {
         // vsComputerモードの場合、ImageSelectPageで計算されたポイントを加算
@@ -64,6 +64,7 @@ function ImageDisplayPage() {
         const gameResult = judgeJanken(userHand, opponentHand);
         setResult(gameResult);
         if (gameResult === '勝ち') {
+          setPrevPoint(prevPoint); // 追加
           setPoint(prevPoint => {
             console.log("現在のポイント:", prevPoint); // 加算前のポイントをログに出力
             const newPoint = prevPoint + 10;
@@ -129,7 +130,7 @@ function ImageDisplayPage() {
             ) : (
                 <p style={{ fontSize: '24px' }}>{initialResult}</p>  // ユーザー戦の結果を表示
           )}
-        <p>ポイント: {savedPoint} ➡ {point}</p> 
+        <p>ポイント: {prevPoint} ➡ {point}</p> 
         <p>User ID: {cookieUserId}</p>       
         <button 
           onClick={resetGame}
