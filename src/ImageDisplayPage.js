@@ -95,6 +95,7 @@ function ImageDisplayPage() {
   };
 
   const resetGame = () => {
+    playSound('click');
     setUserHand('');
     setOpponentHand('');
     setResult('');
@@ -102,6 +103,7 @@ function ImageDisplayPage() {
   };
 
   const playAgain = () => {
+    playSound('click');
     navigate('/game', { state: { mode }}); // /gameに遷移
   };
 
