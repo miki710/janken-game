@@ -255,15 +255,15 @@ export function determineMatchResult(match, userId) {
     const player2 = players.find(p => p.userId !== userId);
     // 勝敗判定ロジックを実装
     if (player1.hand === player2.hand) {
-        return '引き分け';
+        return 'Draw';
     }
     if ((player1.hand === 'Rock' && player2.hand === 'Scissor') ||
         (player1.hand === 'Scissor' && player2.hand === 'Paper') ||
         (player1.hand === 'Paper' && player2.hand === 'Rock')) {
-        const result = '勝ち';
+        const result = 'Win';
         return result;
     } else {
-        const result = '負け';
+        const result = 'Lose';
         return result;
     }
 }
@@ -271,11 +271,11 @@ export function determineMatchResult(match, userId) {
 export function calculatePoints(currentPoints, result) {
     let newPoints = currentPoints;
 
-    if (result === '勝ち') {
+    if (result === 'Win') {
         newPoints += 20;  // 勝った場合は20ポイントを加算
-    } else if (result === '引き分け') {
+    } else if (result === 'Draw') {
         // 引き分けの場合はポイント変動なし
-    } else if (result === '負け') {
+    } else if (result === 'Lose') {
         newPoints -= 20;  // 負けた場合は20ポイントを減算
     }
 
@@ -319,15 +319,15 @@ export function generateOpponentChoice() {
 
 export function determineWinner(userHand, opponentHand) {
     if (userHand === opponentHand) {
-        return '引き分け';
+        return 'Draw';
     } else if (
         (userHand === 'Rock' && opponentHand === 'Scissor') ||
         (userHand === 'Scissor' && opponentHand === 'Paper') ||
         (userHand === 'Paper' && opponentHand === 'Rock')
     ) {
-        return '勝ち';
+        return 'Win';
     } else {
-        return '負け';
+        return 'Lose';
     }
 }
 

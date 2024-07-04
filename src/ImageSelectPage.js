@@ -234,10 +234,10 @@ function ImageSelectPage() {
                 ) : null}
                 <p>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</p>
                 <p>ポイント: {savedPoint}</p>
-                <p>User ID: {cookieUserId}</p>
                 {mode === 'vsComputer' && (
-                    <button onClick={() => navigate('/')}>Top画面へ戻る</button>
+                    <button onClick={() => navigate('/')} style={{ fontSize: '18px' }}>Top画面へ戻る</button>
                 )}
+                <p>User ID: {cookieUserId}</p>
             </header>
         </div>
     );

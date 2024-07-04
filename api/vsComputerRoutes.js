@@ -13,9 +13,9 @@ const gameResults = {};
 router.post('/play', (req, res) => {
     const { hand, index, mode } = req.body; // ユーザーの選択を受け取る
     const opponentChoice = generateOpponentChoice(); // コンピュータの選択を生成
-    const result = determineWinner(hand, opponentChoice.hand); // 勝敗を決定
+    //const result = determineWinner(hand, opponentChoice.hand); // 勝敗を決定
 
-    // 結果を保存
+    /*
     const resultId = Date.now(); // 簡易的なID生成
     gameResults[resultId] = {
         result: result,
@@ -23,10 +23,11 @@ router.post('/play', (req, res) => {
     };
 
     console.log("Generated Result ID:", resultId); // 結果IDをコンソールに出力
+    */
 
     // 結果をクライアントに送信
     res.json({
-        resultId: resultId,
+        //resultId: resultId,
         user: {
             hand: hand,
             index: index
@@ -36,10 +37,11 @@ router.post('/play', (req, res) => {
             index: opponentChoice.index,
             info: opponentChoice.info
         },
-        result: result
+        //result: result
      });
 });
 
+/*
 router.get('/result/:id', (req, res) => {
     const { id } = req.params;
     const result = gameResults[id];
@@ -49,6 +51,6 @@ router.get('/result/:id', (req, res) => {
         res.status(404).json({ message: 'Result not found' });
     }
 });
-
+*/
 
 export default router;
