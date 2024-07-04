@@ -35,7 +35,6 @@ function ImageDisplayPage() {
       // クッキーから前回のポイントを読み取る
       const savedPoint = Cookies.get('point');
       const savedPointInt = savedPoint ? parseInt(savedPoint, 10) : 0;
-      setPrevPoint(savedPointInt); // 初期化時に設定
 
       if (mode === 'vsComputer') {
         // vsComputerモードの場合、ImageSelectPageで計算されたポイントを加算
