@@ -11,7 +11,12 @@ import { playBGM } from './utils.js'; // 関数をインポート
 
 function App() {
   useEffect(() => {
-    playBGM(); // BGMを再生
+    const handleUserInteraction = () => {
+      playBGM(); // BGMを再生
+      window.removeEventListener('click', handleUserInteraction); // イベントリスナーを削除
+    };
+
+    window.addEventListener('click', handleUserInteraction); // ユーザーのクリックを待つ
 
     // BGMを停止しないので、アンマウント時の処理は不要
   }, []);
