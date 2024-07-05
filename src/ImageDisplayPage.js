@@ -133,7 +133,7 @@ function ImageDisplayPage() {
 
   return (
     <div className='App-header'>
-        <h2 className="highlighted-title">{mode === 'vsComputer' ? 'PC戦' : 'ユーザー戦'}</h2>
+        <h1 className="highlighted-title">{mode === 'vsComputer' ? 'PC戦' : 'ユーザー戦'}</h1>
 
         <div className='hand-display'>
             <div className="hand-container">
@@ -158,7 +158,7 @@ function ImageDisplayPage() {
         {mode === 'vsComputer' ? (
             <>
                 {showResult && (
-                    <p style={{ fontSize: '24px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold' }} className="bounce glowing-text">{result}</p>
+                    <p style={{ fontSize: '28px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{result}</p>
                 )}
                 <button 
                     onClick={playAgain}
@@ -170,7 +170,7 @@ function ImageDisplayPage() {
         ) : (
             <>
                 {showResult && (
-                    <p style={{ fontSize: '24px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold' }} className="bounce glowing-text">{initialResult}</p>
+                    <p style={{ fontSize: '28px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{initialResult}</p>
                 )}
             </>
         )}
