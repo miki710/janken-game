@@ -116,7 +116,6 @@
 }
 
 .rainbow-border .rainbow-button {
-  width: 200px;
   height: 50px;
   border-radius: 180px;
   background-color: #282c34; /* App-headerの背景色に合わせる */
@@ -151,4 +150,12 @@
   transition: 0.3s opacity ease-in-out;
   filter: blur(25px);
   background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+}
+
+.rainbow-button.vs-player {
+  width: 200px; /* 他のプレイヤーと対戦ボタンの幅 */
+}
+
+.rainbow-button.vs-computer {
+  width: 150px; /* PCと対戦ボタンの幅 */
 }
