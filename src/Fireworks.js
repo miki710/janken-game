@@ -16,7 +16,7 @@ function Fireworks() {
         this.size = size;
         this.color = color;
         this.velocity = velocity;
-        this.alpha = 1;
+        this.alpha -= 0.01; // 透明度の減少速度を遅くする
       }
 
       draw() {
