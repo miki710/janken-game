@@ -235,15 +235,15 @@ function ImageSelectPage() {
                 <p>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</p>
                 <p>ポイント: {savedPoint}</p>
                 {mode === 'vsComputer' && (
-                    <button 
-                    onClick={() => {
-                        playSound('click'); 
-                        navigate('/');
-                    }} 
-                    style={{ fontSize: '18px' }}
-                >
-                    Top画面へ戻る
-                </button>
+                    <div className="rainbow-border">
+                        <button 
+                            onClick={resetGame}
+                            className="rainbow-button vs-player"  // クラスを追加
+                            style={{ fontSize: '18px' }}
+                        >
+                            Top画面へ戻る
+                        </button>
+                    </div>
                 )}
                 <p>User ID: {cookieUserId}</p>
                 {mode === 'vsPlayer' && <p>対戦相手ID: {opponentId}</p>}
