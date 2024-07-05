@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
@@ -131,9 +131,9 @@ function ImageDisplayPage() {
     navigate('/game', { state: { mode }}); // /gameに遷移
   };
 
-  const particlesInit = async (main) => {
-    await loadFull(main);
-};
+  const particlesInit = useCallback(async (engine) => {
+    await loadFull(engine);
+  }, []);
 
 const particlesOptions = {
     particles: {
