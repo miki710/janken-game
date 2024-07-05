@@ -23,7 +23,7 @@ function ModeSelectPage() {
 
     return (
         <div className='App-header'>
-            <h2 className="highlighted-title">じゃんけんゲーム</h2>
+            <h1 className="highlighted-title">じゃんけんゲーム</h1>
             <div className="rainbow-border">
                 <button 
                     onClick={() => handleModeSelect('vsPlayer')}

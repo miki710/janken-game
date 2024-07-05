@@ -159,3 +159,10 @@
 .rainbow-button.vs-computer {
   width: 150px; /* PCと対戦ボタンの幅 */
 }
+
+/* メディアクエリを追加して、画面サイズに応じたスタイルを適用 */
+@media (max-width: 375px) {
+  .rainbow-button.vs-player {
+    width: 250px; /* 小さい画面での幅をさらに広げる */
+  }
+}
