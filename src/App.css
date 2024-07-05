@@ -84,30 +84,6 @@
   animation: flydown 0.5s ease-out;
 }
 
-.highlighted-title {
-  text-shadow:
-        2px 2px 4px #000000, /* 黒い影 */ 
-        1px 1px 0 blue, /* 青色の影 */
-        -1px -1px 0 blue,
-        1px -1px 0 blue,
-        -1px 1px 0 blue,
-        2px 2px 0 blue,
-        -2px -2px 0 blue,
-        2px -2px 0 blue,
-        -2px 2px 0 blue, /* 影を複数追加して囲み文字を実現 */
-        3px 3px 0 blue, /* さらに太くするための影 */
-        -3px -3px 0 blue,
-        3px -3px 0 blue,
-        -3px 3px 0 blue,
-        4px 4px 0 blue,
-        -4px -4px 0 blue,
-        4px -4px 0 blue,
-        -4px 4px 0 blue; /* さらに太くするための影 */
-  display: inline-block; /* 背景色をテキストの周りに適用 */
-  padding: 5px; /* テキスト周りの余白 */
-  border-radius: 5px; /* 角を丸くする */
-}
-
 .rainbow-border {
   display: inline-block;
   padding: 3px; /* ボタン周りの余白 */

@@ -133,7 +133,7 @@ function ImageDisplayPage() {
 
   return (
     <div className='App-header'>
-        <h1 className="highlighted-title">{mode === 'vsComputer' ? 'PC戦' : 'ユーザー戦'}</h1>
+        <h1>{mode === 'vsComputer' ? 'PC戦' : 'ユーザー戦'}</h1>
 
         <div className='hand-display'>
             <div className="hand-container">
