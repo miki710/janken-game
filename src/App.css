@@ -110,7 +110,7 @@
 
 .rainbow-border {
   display: inline-block;
-  padding: 2px; /* ボタン周りの余白 */
+  padding: 3px; /* ボタン周りの余白 */
   border-radius: 180px; /* ボタンの形に合わせて角を丸くする */
   background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
   margin: 10px 0; /* ボタン間のマージンを追加 */
