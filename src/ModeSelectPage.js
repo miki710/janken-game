@@ -27,6 +27,7 @@ function ModeSelectPage() {
             <button 
                 onClick={() => handleModeSelect('vsPlayer')}
                 style={{ margin: '5px 0', fontSize: '18px' }}  // 上下に5pxのマージンを追加
+                className="rainbow-button"  // クラスを追加
             >
                 他のプレイヤーと対戦
             </button>

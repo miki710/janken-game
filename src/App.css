@@ -107,3 +107,58 @@
   padding: 5px; /* テキスト周りの余白 */
   border-radius: 5px; /* 角を丸くする */
 }
+
+.rainbow-button {
+  width: 150px;
+  height: 50px;
+  border-radius: 180px;
+  position: relative;
+  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+  cursor: pointer;
+  line-height: 50px; /* ボタンの高さに合わせて中央揃え */
+  overflow: hidden;
+  font-size: 18px; /* 文字サイズを18pxに設定 */
+  color: rgba(235, 235, 235, 1); /* 文字色を設定 */
+  font-weight: bold; /* 文字を太字に設定 */
+  text-align: center; /* テキストを中央揃え */
+  margin: 5px 0; /* 上下に5pxのマージンを追加 */
+}
+
+.rainbow-button:before {
+  content: '';
+  z-index: 1;
+  position: absolute;
+  display: block;
+  width: 80%;
+  height: 70%;
+  top: 15%;
+  left: 10%;
+  transition: 0.3s opacity ease-in-out;
+  filter: blur(15px);
+  opacity: 0;
+  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+}
+
+.rainbow-button:hover:before {
+  opacity: 1;
+  transition: 0.3s opacity ease-in-out;
+  filter: blur(25px);
+  background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+}
+
+.rainbow-button:after {
+  text-align: center;
+  line-height: 40px;
+  font-size: 18px;
+  color: rgba(235, 235, 235, 1);
+  font-weight: bold;
+  z-index: 5;
+  position: absolute;
+  display: block;
+  border-radius: 180px;
+  width: 92%;
+  height: 80%;
+  top: 10%;
+  left: 4%;
+  background-color: rgb(19, 20, 22);
+}

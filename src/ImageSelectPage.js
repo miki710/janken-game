@@ -238,6 +238,7 @@ function ImageSelectPage() {
                     <button onClick={() => navigate('/')} style={{ fontSize: '18px' }}>Top画面へ戻る</button>
                 )}
                 <p>User ID: {cookieUserId}</p>
+                {mode === 'vsPlayer' && <p>対戦相手ID: {opponentId}</p>}
             </header>
         </div>
     );
