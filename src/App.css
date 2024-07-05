@@ -94,7 +94,15 @@
         2px 2px 0 #FFA500,
         -2px -2px 0 #FFA500,
         2px -2px 0 #FFA500,
-        -2px 2px 0 #FFA500; /* 影を複数追加して囲み文字を実現 */
+        -2px 2px 0 #FFA500, /* 影を複数追加して囲み文字を実現 */
+        3px 3px 0 #FFA500, /* さらに太くするための影 */
+        -3px -3px 0 #FFA500,
+        3px -3px 0 #FFA500,
+        -3px 3px 0 #FFA500,
+        4px 4px 0 #FFA500,
+        -4px -4px 0 #FFA500,
+        4px -4px 0 #FFA500,
+        -4px 4px 0 #FFA500; /* さらに太くするための影 */
   display: inline-block; /* 背景色をテキストの周りに適用 */
   padding: 5px; /* テキスト周りの余白 */
   border-radius: 5px; /* 角を丸くする */
