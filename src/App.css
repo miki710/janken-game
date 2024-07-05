@@ -83,3 +83,11 @@
 .flydown {
   animation: flydown 0.5s ease-out;
 }
+
+.highlighted-title {
+  text-shadow: 2px 2px 4px #000000; /* 黒い影 */
+  background-color: #FFA500; /* 黄色の背景 */
+  display: inline-block; /* 背景色をテキストの周りに適用 */
+  padding: 5px; /* テキスト周りの余白 */
+  border-radius: 5px; /* 角を丸くする */
+}
