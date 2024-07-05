@@ -171,9 +171,9 @@
 }
 
 .glowing-text {
-  color: blue;
-  text-shadow: 0 0 10px blue, 0 0 15px blue;
+  color: #00bfff;
+  text-shadow: 0 0 10px #00bfff, 0 0 15px #00bfff;
   padding: 50px;
   font-size: 50px;
-  background: #022b45;
+  background: none;
 }
