@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
 import { playSound, getHandEmoji } from './utils.js';
 import { images } from './ImageSelectPage.js';
 import { UserContext } from './UserContext.js';
+import Fireworks from './Fireworks.js'; // Fireworksコンポーネントをインポート
 import './App.css';
 
 function ImageDisplayPage() {
@@ -158,7 +159,10 @@ function ImageDisplayPage() {
         {mode === 'vsComputer' ? (
             <>
                 {showResult && (
-                    <p style={{ fontSize: '32px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{result}</p>
+                    <div>
+                      <p style={{ fontSize: '28px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{result}</p>
+                      {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
+                    </div>      
                 )}
                 <button 
                     onClick={playAgain}
