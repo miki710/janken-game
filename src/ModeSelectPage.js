@@ -26,14 +26,15 @@ function ModeSelectPage() {
             <h2 className="highlighted-title">じゃんけんゲーム</h2>
             <button 
                 onClick={() => handleModeSelect('vsPlayer')}
-                style={{ margin: '5px 0', fontSize: '18px' }}  // 上下に5pxのマージンを追加
+                style={{ margin: '5px 0' }}  // 上下に5pxのマージンを追加
                 className="rainbow-button"  // クラスを追加
             >
                 他のプレイヤーと対戦
             </button>
             <button 
                 onClick={() => handleModeSelect('vsComputer')}
-                style={{ margin: '5px 0', fontSize: '18px' }}  // 上下に5pxのマージンを追加
+                style={{ margin: '5px 0'}}  // 上下に5pxのマージンを追加
+                className="rainbow-button"  // クラスを追加
             >
                 PCと対戦
             </button>
