@@ -54,8 +54,7 @@ function Fireworks() {
     }
 
     function animate() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < particlesArray.length; i++) {
         particlesArray[i].update();
         particlesArray[i].draw();
@@ -71,7 +70,7 @@ function Fireworks() {
     animate();
   }, []);
 
-  return <canvas ref={canvasRef} width={200} height={200} style={{ background: 'transparent' }}></canvas>;
+  return <canvas ref={canvasRef} width={200} height={200} style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}></canvas>;
 }
 
 export default Fireworks;

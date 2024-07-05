@@ -159,7 +159,7 @@ function ImageDisplayPage() {
         {mode === 'vsComputer' ? (
             <>
                 {showResult && (
-                    <div>
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
                       <p style={{ fontSize: '28px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{result}</p>
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div>      
