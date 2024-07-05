@@ -120,7 +120,7 @@
   border-radius: 180px;
   background-color: #282c34; /* App-headerの背景色に合わせる */
   color: rgba(235, 235, 235, 1); /* 文字色 */
-  font-size: 18px; /* 文字サイズを18pxに設定 */
+  font-size: 16px; /* 文字サイズを18pxに設定 */
   font-weight: bold; /* 文字を太字に設定 */
   text-align: center; /* テキストを中央揃え */
   line-height: 50px; /* ボタンの高さに合わせて中央揃え */
@@ -128,6 +128,7 @@
   cursor: pointer; /* カーソルをポインタに変更 */
   margin: 0; /* マージンをリセット */
   position: relative; /* 擬似要素のために相対位置を設定 */
+  white-space: nowrap; /* テキストを一行にする */
 }
 
 .rainbow-border .rainbow-button:before {
@@ -153,7 +154,7 @@
 }
 
 .rainbow-button.vs-player {
-  width: 200px; /* 他のプレイヤーと対戦ボタンの幅 */
+  width: 250px; /* 他のプレイヤーと対戦ボタンの幅 */
 }
 
 .rainbow-button.vs-computer {
