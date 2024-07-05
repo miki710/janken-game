@@ -237,8 +237,11 @@ function ImageSelectPage() {
                 {mode === 'vsComputer' && (
                     <div className="rainbow-border">
                         <button 
-                            onClick={resetGame}
-                            className="rainbow-button vs-player"  // クラスを追加
+                            onClick={() => {
+                                playSound('click'); 
+                                navigate('/');
+                            }} 
+                            className="rainbow-button vs-player" 
                             style={{ fontSize: '18px' }}
                         >
                             Top画面へ戻る
