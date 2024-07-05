@@ -29,6 +29,16 @@ export const playSound = (soundType) => {
   audio.play();
 };
 
+let bgmAudio = null; // BGMオーディオオブジェクトを保持
+// BGMを再生する関数
+export const playBGM = () => {
+    if (!bgmAudio) {
+      bgmAudio = new Audio(`${process.env.REACT_APP_SOUND_BASE_URL}sound/bgm.mp3`);
+      bgmAudio.loop = true; // ループ再生
+      bgmAudio.play();
+    }
+};
+
 // 手の絵文字を返す関数
 export const getHandEmoji = (hand) => {
   switch (hand) {

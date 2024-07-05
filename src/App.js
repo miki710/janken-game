@@ -7,8 +7,15 @@ import WaitingRoomPage from './WaitingRoomPage.js';
 import ImageSelectPage from './ImageSelectPage.js';
 import ImageDisplayPage from './ImageDisplayPage.js';
 import { UserProvider, UserContext } from './UserContext.js';
+import { playSound, playBGM } from './utils'; // 関数をインポート
 
 function App() {
+  useEffect(() => {
+    playBGM(); // BGMを再生
+
+    // BGMを停止しないので、アンマウント時の処理は不要
+  }, []);
+  
   return (
     <UserProvider>
       <AppContent />
