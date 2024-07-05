@@ -35,7 +35,7 @@ export const playBGM = () => {
     if (!bgmAudio) {
       bgmAudio = new Audio(`${process.env.REACT_APP_SOUND_BASE_URL}sound/bgm.mp3`);
       bgmAudio.loop = true; // ループ再生
-      bgmAudio.volume = 0.5; // 音量を50%に設定   
+      bgmAudio.volume = 0.2; // 音量を50%に設定   
     }
     bgmAudio.play();
 };
