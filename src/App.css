@@ -87,22 +87,22 @@
 .highlighted-title {
   text-shadow:
         2px 2px 4px #000000, /* 黒い影 */ 
-        1px 1px 0 #FFA500, /* オレンジっぽい黄色の影 */
-        -1px -1px 0 #FFA500,
-        1px -1px 0 #FFA500,
-        -1px 1px 0 #FFA500,
-        2px 2px 0 #FFA500,
-        -2px -2px 0 #FFA500,
-        2px -2px 0 #FFA500,
-        -2px 2px 0 #FFA500, /* 影を複数追加して囲み文字を実現 */
-        3px 3px 0 #FFA500, /* さらに太くするための影 */
-        -3px -3px 0 #FFA500,
-        3px -3px 0 #FFA500,
-        -3px 3px 0 #FFA500,
-        4px 4px 0 #FFA500,
-        -4px -4px 0 #FFA500,
-        4px -4px 0 #FFA500,
-        -4px 4px 0 #FFA500; /* さらに太くするための影 */
+        1px 1px 0 blue, /* 青色の影 */
+        -1px -1px 0 blue,
+        1px -1px 0 blue,
+        -1px 1px 0 blue,
+        2px 2px 0 blue,
+        -2px -2px 0 blue,
+        2px -2px 0 blue,
+        -2px 2px 0 blue, /* 影を複数追加して囲み文字を実現 */
+        3px 3px 0 blue, /* さらに太くするための影 */
+        -3px -3px 0 blue,
+        3px -3px 0 blue,
+        -3px 3px 0 blue,
+        4px 4px 0 blue,
+        -4px -4px 0 blue,
+        4px -4px 0 blue,
+        -4px 4px 0 blue; /* さらに太くするための影 */
   display: inline-block; /* 背景色をテキストの周りに適用 */
   padding: 5px; /* テキスト周りの余白 */
   border-radius: 5px; /* 角を丸くする */
@@ -168,4 +168,12 @@
   .rainbow-button.vs-player {
     width: 220px; /* 小さい画面での幅をさらに広げる */
   }
+}
+
+.glowing-text {
+  color: blue;
+  text-shadow: 0 0 10px blue, 0 0 15px blue;
+  padding: 50px;
+  font-size: 50px;
+  background: #022b45;
 }
