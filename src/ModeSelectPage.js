@@ -23,7 +23,7 @@ function ModeSelectPage() {
 
     return (
         <div className='App-header'>
-            <h2>じゃんけんゲーム</h2>
+            <h2 className="highlighted-title">じゃんけんゲーム</h2>
             <button 
                 onClick={() => handleModeSelect('vsPlayer')}
                 style={{ margin: '5px 0', fontSize: '18px' }}  // 上下に5pxのマージンを追加

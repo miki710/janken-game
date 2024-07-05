@@ -316,7 +316,7 @@ export function generateOpponentChoice() {
         info: newOpponentInfo
     };
 }
-
+/*
 export function determineWinner(userHand, opponentHand) {
     if (userHand === opponentHand) {
         return 'Draw';
@@ -330,7 +330,7 @@ export function determineWinner(userHand, opponentHand) {
         return 'Lose';
     }
 }
-
+*/
 
 // サーバーを起動
 const PORT = process.env.PORT || 3001;
