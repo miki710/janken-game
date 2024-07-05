@@ -110,20 +110,20 @@
 
 .rainbow-border {
   display: inline-block;
-  padding: 5px; /* ボタン周りの余白 */
+  padding: 3px; /* ボタン周りの余白 */
   border-radius: 180px; /* ボタンの形に合わせて角を丸くする */
   background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
 }
 
 .rainbow-border .rainbow-button {
-  height: 50px;
+  height: 40px;
   border-radius: 180px;
   background-color: #282c34; /* App-headerの背景色に合わせる */
   color: rgba(235, 235, 235, 1); /* 文字色 */
   font-size: 16px; /* 文字サイズを18pxに設定 */
   font-weight: bold; /* 文字を太字に設定 */
   text-align: center; /* テキストを中央揃え */
-  line-height: 50px; /* ボタンの高さに合わせて中央揃え */
+  line-height: 40px; /* ボタンの高さに合わせて中央揃え */
   border: none; /* ボタンのデフォルトの枠線を削除 */
   cursor: pointer; /* カーソルをポインタに変更 */
   margin: 0; /* マージンをリセット */
@@ -154,16 +154,16 @@
 }
 
 .rainbow-button.vs-player {
-  width: 250px; /* 他のプレイヤーと対戦ボタンの幅 */
+  width: 230px; /* 他のプレイヤーと対戦ボタンの幅 */
 }
 
 .rainbow-button.vs-computer {
-  width: 150px; /* PCと対戦ボタンの幅 */
+  width: 130px; /* PCと対戦ボタンの幅 */
 }
 
 /* メディアクエリを追加して、画面サイズに応じたスタイルを適用 */
 @media (max-width: 375px) {
   .rainbow-button.vs-player {
-    width: 250px; /* 小さい画面での幅をさらに広げる */
+    width: 230px; /* 小さい画面での幅をさらに広げる */
   }
 }
