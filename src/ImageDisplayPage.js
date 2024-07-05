@@ -158,7 +158,7 @@ function ImageDisplayPage() {
         {mode === 'vsComputer' ? (
             <>
                 {showResult && (
-                    <p style={{ fontSize: '28px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{result}</p>
+                    <p style={{ fontSize: '32px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{result}</p>
                 )}
                 <button 
                     onClick={playAgain}
@@ -170,7 +170,7 @@ function ImageDisplayPage() {
         ) : (
             <>
                 {showResult && (
-                    <p style={{ fontSize: '28px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{initialResult}</p>
+                    <p style={{ fontSize: '32px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{initialResult}</p>
                 )}
             </>
         )}
