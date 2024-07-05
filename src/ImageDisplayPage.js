@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
 import { playSound, getHandEmoji } from './utils.js';
 import { images } from './ImageSelectPage.js';
 import { UserContext } from './UserContext.js';
+import Particles from 'react-tsparticles'; // パーティクルライブラリをインポート
+import { loadFull } from 'tsparticles';
 import './App.css';
 
 function ImageDisplayPage() {
@@ -29,7 +31,8 @@ function ImageDisplayPage() {
     const [result, setResult] = useState('');
 
     const [showResult, setShowResult] = useState(false);
-    const [showPoint, setShowPoint] = useState(false); // 追加
+    const [showPoint, setShowPoint] = useState(false); 
+    const [showParticles, setShowParticles] = useState(false); // パーティクル表示用のステート
 
     const { cookieUserId } = useContext(UserContext);
 
@@ -91,6 +94,7 @@ function ImageDisplayPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
         setShowResult(true);
+        setShowParticles(true); // パーティクルを表示
         setTimeout(() => setShowPoint(true), 1000); // 1秒後にポイントを表示
     }, 500); // 0.5秒後に表示
 
@@ -127,6 +131,74 @@ function ImageDisplayPage() {
     navigate('/game', { state: { mode }}); // /gameに遷移
   };
 
+  const particlesInit = async (main) => {
+    await loadFull(main);
+};
+
+const particlesOptions = {
+    particles: {
+        number: {
+            value: 50,
+            density: {
+                enable: false,
+            },
+        },
+        color: {
+            value: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8B00FF"], // レインボーカラー
+        },
+        shape: {
+            type: "circle",
+        },
+        opacity: {
+            value: 0.8,
+            random: true,
+        },
+        size: {
+            value: 5,
+            random: true,
+        },
+        move: {
+            enable: true,
+            speed: 6,
+            direction: "none",
+            random: false,
+            straight: false,
+            out_mode: "out",
+            bounce: false,
+            attract: {
+                enable: true,
+                rotateX: 600,
+                rotateY: 1200,
+            },
+        },
+    },
+    interactivity: {
+        detect_on: "canvas",
+        events: {
+            onhover: {
+                enable: true,
+                mode: "repulse",
+            },
+            onclick: {
+                enable: true,
+                mode: "push",
+            },
+            resize: true,
+        },
+        modes: {
+            repulse: {
+                distance: 100,
+                duration: 0.4,
+            },
+            push: {
+                particles_nb: 4,
+            },
+        },
+    },
+    retina_detect: true,
+};
+
+
   return (
     <div className='App-header'>
         <h2 className="highlighted-title">{mode === 'vsComputer' ? 'PC戦' : 'ユーザー戦'}</h2>
@@ -154,7 +226,10 @@ function ImageDisplayPage() {
         {mode === 'vsComputer' ? (
             <>
                 {showResult && (
+                  <div style={{ position: 'relative' }}>
+                    {showParticles && <Particles id="tsparticles" init={particlesInit} options={particlesOptions} />}
                     <p style={{ fontSize: '24px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold' }} className="bounce">{result}</p>
+                  </div>
                 )}
                 <button 
                     onClick={playAgain}
