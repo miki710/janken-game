@@ -28,7 +28,6 @@ function ModeSelectPage() {
                 <button 
                     onClick={() => handleModeSelect('vsPlayer')}
                     className="rainbow-button vs-player"  // クラスを追加
-                    style={{ margin: '5px 0' }}  // 上下に5pxのマージンを追加
                 >
                     他のプレイヤーと対戦
                 </button>
@@ -37,7 +36,6 @@ function ModeSelectPage() {
                 <button 
                     onClick={() => handleModeSelect('vsComputer')}
                     className="rainbow-button vs-computer"  // クラスを追加
-                    style={{ margin: '5px 0' }}  // 上下に5pxのマージンを追加
                 >
                     PCと対戦
                 </button>
