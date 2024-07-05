@@ -7,7 +7,7 @@ import WaitingRoomPage from './WaitingRoomPage.js';
 import ImageSelectPage from './ImageSelectPage.js';
 import ImageDisplayPage from './ImageDisplayPage.js';
 import { UserProvider, UserContext } from './UserContext.js';
-import { playSound, playBGM } from './utils'; // 関数をインポート
+import { playBGM } from './utils.js'; // 関数をインポート
 
 function App() {
   useEffect(() => {
@@ -15,7 +15,7 @@ function App() {
 
     // BGMを停止しないので、アンマウント時の処理は不要
   }, []);
-  
+
   return (
     <UserProvider>
       <AppContent />
