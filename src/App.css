@@ -115,11 +115,11 @@
   background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
 }
 
-.rainbow-border {
+.rainbow-border .rainbow-button {
   width: 150px;
   height: 50px;
   border-radius: 180px;
-  background-color: inherit;
+  background-color: #282c34; /* App-headerの背景色に合わせる */
   color: rgba(235, 235, 235, 1); /* 文字色 */
   font-size: 18px; /* 文字サイズを18pxに設定 */
   font-weight: bold; /* 文字を太字に設定 */
@@ -131,7 +131,7 @@
   position: relative; /* 擬似要素のために相対位置を設定 */
 }
 
-.rainbow-button:before {
+.rainbow-border .rainbow-button:before {
   content: '';
   z-index: 1;
   position: absolute;
@@ -146,7 +146,7 @@
   background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
 }
 
-.rainbow-button:hover:before {
+.rainbow-border .rainbow-button:hover:before {
   opacity: 1;
   transition: 0.3s opacity ease-in-out;
   filter: blur(25px);
