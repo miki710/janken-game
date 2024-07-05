@@ -164,12 +164,15 @@ function ImageDisplayPage() {
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div>      
                 )}
-                <button 
-                    onClick={playAgain}
-                    style={{ fontSize: '18px' }}
-                >
-                    もう一度勝負する
-                </button>
+                <div className="rainbow-border">
+                    <button 
+                        onClick={playAgain}
+                        className="rainbow-button vs-player"  // クラスを追加
+                        style={{ fontSize: '18px' }}
+                    >
+                            もう一度勝負する
+                        </button>
+                </div>
             </>
         ) : (
             <>
@@ -180,13 +183,16 @@ function ImageDisplayPage() {
         )}
         {showPoint && (
                 <p>ポイント: {prevPoint} ➡ <span className="flydown">{point}</span></p>
-        )}    
-        <button 
-          onClick={resetGame}
-          style={{ fontSize: '18px' }}
-        >
-          Top画面へ戻る
-        </button>
+        )}
+        <div className="rainbow-border">
+            <button 
+              onClick={resetGame}
+              className="rainbow-button vs-player"  // クラスを追加
+              style={{ fontSize: '18px' }}
+            >
+              Top画面へ戻る
+            </button>
+        </div> 
         <p>User ID: {cookieUserId}</p>
     </div>
     )
