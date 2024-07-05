@@ -232,7 +232,7 @@ function ImageSelectPage() {
                     </div>
                 ))
                 ) : null}
-                <h2>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</h2>
+                <h3>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</h3>
                 <p>ポイント: {savedPoint}</p>
                 {mode === 'vsComputer' && (
                     <div className="rainbow-border">
