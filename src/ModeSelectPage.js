@@ -25,7 +25,7 @@ function ModeSelectPage() {
         <div className='App-header'>
             <h1>じゃんけんゲーム</h1>
             <div>
-                <img src="/image/backImage.jpg" alt="Card Back" style={{ width: '200px' }} />
+                <img src="/image/backImage.jpg" alt="Card Back" style={{ width: '200px', marginBottom: '20px'  }} />
             </div>
             <div className="rainbow-border">
                 <button 
