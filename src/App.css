@@ -13,10 +13,12 @@
   color: white;
 }
 
+/* @ImageDisplayPageと@ModeSelecctPageの画像表示CSS */
+
 .hand-display {
   display: flex;
   flex-direction: row; /* Flexboxの方向を横に設定 */
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   width: 100%; /* コンテナの幅を親要素に合わせる */
   min-height: 250px; /* 最小の高さを設定 */
@@ -26,7 +28,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 10px;
+  margin: 0 10px;
 }
 
 .hand-container p {
@@ -37,6 +39,8 @@
 .loading-text {
   font-size: 16px;
 }
+
+/* imageSelectPageで画像を選択するときのアニメーション */
 
 .image {
   transition: box-shadow 0.3s ease-in-out;
@@ -53,7 +57,7 @@
 }
 
 /*
-勝敗、ポイントのアニメーション設定
+勝敗、ポイントのアニメーション設定 @ImageDisplayPage
 */
 
 .glowing-text {
@@ -100,9 +104,7 @@
   animation: flydown 0.5s ease-out;
 }
 
-/*
-レインボーボタンのCSS
-*/
+/* レインボーボタンのCSS */
 
 .rainbow-border {
   display: inline-block;
@@ -169,9 +171,7 @@
   }
 }
 
-/*
-@ImageDisplayPageのカードが裏返る演出
-*/
+/* @ImageDisplayPageのカードが裏返る演出 */
 
 
 .flip-card {
