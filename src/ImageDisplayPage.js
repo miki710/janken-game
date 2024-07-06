@@ -110,17 +110,17 @@ function ImageDisplayPage() {
 
   const judgeJanken = (userHand, opponentHand) => {
     if (userHand === opponentHand) {
-      playSound('draw');
+      setTimeout(() => playSound('draw'), 1300); // 0.3秒後に音を再生
       return 'Draw';
     } else if (
       (userHand === 'Rock' && opponentHand === 'Scissor') ||
       (userHand === 'Scissor' && opponentHand === 'Paper') ||
       (userHand === 'Paper' && opponentHand === 'Rock')
     ) {
-      playSound('win');  // 勝ったときに音を再生
+      setTimeout(() => playSound('win'), 1300); // 0.3秒後に音を再生
       return 'Win';
     } else {
-      playSound('lose');
+      setTimeout(() => playSound('lose'), 1300); // 0.3秒後に音を再生
       return 'Lose';
     }
   };
@@ -159,7 +159,7 @@ function ImageDisplayPage() {
                   </div>
                 </div>
                 )}
-                <p>{getHandEmoji(userHand)}{userJob}</p> {/* 追加 */}
+                <p>{isFlipped ? `${getHandEmoji(userHand)}${userJob}` : '❔❔❔'}</p> {/* 追加 */}
             </div>
             <div className="hand-container">
                 <p>Opponent:</p>   
@@ -175,7 +175,7 @@ function ImageDisplayPage() {
                   </div>
                 </div>
                 )}
-                <p>{getHandEmoji(opponentHand)}{opponentJob}</p> {/* 追加 */}
+                <p>{isOpponentFlipped ? `${getHandEmoji(opponentHand)}${opponentJob}` : '❔❔❔'}</p> {/* 追加 */}
             </div>
         </div>
         {mode === 'vsComputer' ? (
