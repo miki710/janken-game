@@ -186,15 +186,6 @@ function ImageDisplayPage() {
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div>      
                 )}
-                <div className="rainbow-border">
-                    <button 
-                        onClick={playAgain}
-                        className="rainbow-button vs-player"  // クラスを追加
-                        style={{ fontSize: '18px' }}
-                    >
-                            もう一度勝負する
-                        </button>
-                </div>
             </>
         ) : (
             <>
@@ -208,6 +199,17 @@ function ImageDisplayPage() {
         )}
         {showPoint && (
                 <p>ポイント: {prevPoint} ➡ <span className="flydown">{point}</span></p>
+        )}
+        {mode === 'vsComputer' && (
+          <div className="rainbow-border">
+            <button 
+              onClick={playAgain}
+              className="rainbow-button vs-player"  // クラスを追加
+              style={{ fontSize: '18px' }}
+            >
+              もう一度勝負する
+            </button>
+          </div>
         )}
         <div className="rainbow-border">
             <button 
