@@ -151,14 +151,15 @@ function ImageDisplayPage() {
                 <div className={`flip-card ${isFlipped ? 'flipped' : ''}`}>
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                        <img src={images[userHand][userImageIndex]} alt={userHand} style={{ width: '150px' }} />
+                        <img src="/image/backImage.webp" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
                     </div>
                     <div className="flip-card-back">
-                        <img src="/images/backImage.webp" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
+                        <img src={images[userHand][userImageIndex]} alt={userHand} style={{ width: '150px' }} />
                     </div>
                   </div>
                 </div>
                 )}
+                <p>{getHandEmoji(userHand)}{userJob}</p> {/* 追加 */}
             </div>
             <div className="hand-container">
                 <p>Opponent:</p>   
@@ -166,14 +167,15 @@ function ImageDisplayPage() {
                 <div className={`flip-card ${isOpponentFlipped ? 'flipped' : ''}`}>
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                        <img src={images[opponentHand][opponentImageIndex]} alt={opponentHand} style={{ width: '150px' }} />
+                        <img src="/image/backImage.webp" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
                     </div>
                     <div className="flip-card-back">
-                        <img src="/images/backImage.webp" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
+                        <img src={images[opponentHand][opponentImageIndex]} alt={opponentHand} style={{ width: '150px' }} />
                     </div>
                   </div>
                 </div>
                 )}
+                <p>{getHandEmoji(opponentHand)}{opponentJob}</p> {/* 追加 */}
             </div>
         </div>
         {mode === 'vsComputer' ? (
