@@ -97,14 +97,14 @@ function ImageDisplayPage() {
     setTimeout(() => {
         setIsFlipped(true);
         setIsOpponentFlipped(true);
-    }, 500); // 0.5秒後にフリップ
+    }, 1000); // 1秒後にフリップ
 
     // フリップアニメーションが完了した後に結果を表示
     setTimeout(() => {
         setShowResult(true);
         setShowParticles(true); // パーティクルを表示
         setTimeout(() => setShowPoint(true), 1000); // 1秒後にポイントを表示
-    }, 800); // 0.3秒のアニメーション時間 + 0.5秒の遅延
+    }, 1300); // 0.3秒のアニメーション時間 + 1秒の遅延
 }, []);
 
 
@@ -151,7 +151,7 @@ function ImageDisplayPage() {
                 <div className={`flip-card ${isFlipped ? 'flipped' : ''}`}>
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                        <img src="/image/backImage.webp" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
+                        <img src="/image/backImage.jpg" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
                     </div>
                     <div className="flip-card-back">
                         <img src={images[userHand][userImageIndex]} alt={userHand} style={{ width: '150px' }} />
@@ -167,7 +167,7 @@ function ImageDisplayPage() {
                 <div className={`flip-card ${isOpponentFlipped ? 'flipped' : ''}`}>
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                        <img src="/image/backImage.webp" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
+                        <img src="/image/backImage.jpg" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
                     </div>
                     <div className="flip-card-back">
                         <img src={images[opponentHand][opponentImageIndex]} alt={opponentHand} style={{ width: '150px' }} />
