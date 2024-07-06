@@ -2,11 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
-import { playSound, getHandEmoji } from './utils.js';
+import { playSound } from './utils.js';
 import { images } from './ImageSelectPage.js';
 import { UserContext } from './UserContext.js';
 import Fireworks from './Fireworks.js'; // Fireworksコンポーネントをインポート
 import './App.css';
+import backImage from './images/backImage.webp'; // backImageをインポート
 
 function ImageDisplayPage() {
     const navigate = useNavigate(); // useNavigateフックを使用
@@ -29,6 +30,8 @@ function ImageDisplayPage() {
     const [opponentImageIndex] = useState(opponent && opponent.index !== null ? opponent.index : 0); // setOpponentImageIndexを削除
     const [result, setResult] = useState('');
 
+    const [isFlipped, setIsFlipped] = useState(false); // 追加
+    const [isOpponentFlipped, setIsOpponentFlipped] = useState(false); // 追加
     const [showResult, setShowResult] = useState(false);
     const [showPoint, setShowPoint] = useState(false); 
     const [showParticles, setShowParticles] = useState(false); // パーティクル表示用のステート
@@ -91,14 +94,19 @@ function ImageDisplayPage() {
   }, []); // userHand と computerHand が変更されたときに実行
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    setTimeout(() => {
+        setIsFlipped(true);
+        setIsOpponentFlipped(true);
+    }, 500); // 0.5秒後にフリップ
+
+    // フリップアニメーションが完了した後に結果を表示
+    setTimeout(() => {
         setShowResult(true);
         setShowParticles(true); // パーティクルを表示
         setTimeout(() => setShowPoint(true), 1000); // 1秒後にポイントを表示
-    }, 500); // 0.5秒後に表示
+    }, 800); // 0.3秒のアニメーション時間 + 0.5秒の遅延
+}, []);
 
-    return () => clearTimeout(timer); // クリーンアップ
-  }, []);
 
   const judgeJanken = (userHand, opponentHand) => {
     if (userHand === opponentHand) {
@@ -140,20 +148,32 @@ function ImageDisplayPage() {
             <div className="hand-container">
                 <p>You:</p>
                 {userHand !== '' && (
-                <>
-                    <img src={images[userHand][userImageIndex]} alt={userHand} style={{ width: '150px' }} />
-                    <p>{getHandEmoji(userHand)}{userJob}</p>
-                </>
-            )}
+                <div className={`flip-card ${isFlipped ? 'flipped' : ''}`}>
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                        <img src={images[userHand][userImageIndex]} alt={userHand} style={{ width: '150px' }} />
+                    </div>
+                    <div className="flip-card-back">
+                        <img src={backImage} alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
+                    </div>
+                  </div>
+                </div>
+                )}
             </div>
             <div className="hand-container">
                 <p>Opponent:</p>   
                 {opponentHand !== '' && (
-                <>
-                    <img src={images[opponentHand][opponentImageIndex]} alt={opponentHand} style={{ width: '150px' }} />
-                    <p>{getHandEmoji(opponentHand)}{opponentJob}</p>
-                </>
-            )}
+                <div className={`flip-card ${isOpponentFlipped ? 'flipped' : ''}`}>
+                  <div className="flip-card-inner">
+                    <div className="flip-card-front">
+                        <img src={images[opponentHand][opponentImageIndex]} alt={opponentHand} style={{ width: '150px' }} />
+                    </div>
+                    <div className="flip-card-back">
+                        <img src={backImage} alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
+                    </div>
+                  </div>
+                </div>
+                )}
             </div>
         </div>
         {mode === 'vsComputer' ? (
@@ -177,7 +197,10 @@ function ImageDisplayPage() {
         ) : (
             <>
                 {showResult && (
-                    <p style={{ fontSize: '32px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{initialResult}</p>
+                    <div style={{ position: 'relative', display: 'inline-block' }}>
+                      <p style={{ fontSize: '28px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{initialResult}</p>
+                      {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
+                    </div> 
                 )}
             </>
         )}
