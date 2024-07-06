@@ -2,12 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
-import { playSound } from './utils.js';
+import { playSound, getHandEmoji } from './utils.js';
 import { images } from './ImageSelectPage.js';
 import { UserContext } from './UserContext.js';
 import Fireworks from './Fireworks.js'; // Fireworksコンポーネントをインポート
 import './App.css';
-import backImage from './images/backImage.webp'; // backImageをインポート
+
 
 function ImageDisplayPage() {
     const navigate = useNavigate(); // useNavigateフックを使用
@@ -154,7 +154,7 @@ function ImageDisplayPage() {
                         <img src={images[userHand][userImageIndex]} alt={userHand} style={{ width: '150px' }} />
                     </div>
                     <div className="flip-card-back">
-                        <img src={backImage} alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
+                        <img src="/images/backImage.webp" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
                     </div>
                   </div>
                 </div>
@@ -169,7 +169,7 @@ function ImageDisplayPage() {
                         <img src={images[opponentHand][opponentImageIndex]} alt={opponentHand} style={{ width: '150px' }} />
                     </div>
                     <div className="flip-card-back">
-                        <img src={backImage} alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
+                        <img src="/images/backImage.webp" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
                     </div>
                   </div>
                 </div>
