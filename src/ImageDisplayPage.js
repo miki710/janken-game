@@ -182,7 +182,7 @@ function ImageDisplayPage() {
             <>
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
-                      <p style={{ fontSize: '28px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{result}</p>
+                      <p className="bounce glowing-text">{result}</p> {/* クラスを追加 */}
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div>      
                 )}
@@ -191,7 +191,7 @@ function ImageDisplayPage() {
             <>
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
-                      <p style={{ fontSize: '28px', fontFamily: 'Impact, Charcoal, sans-serif', fontWeight: 'bold', margin: '10px 0' }} className="bounce glowing-text">{initialResult}</p>
+                      <p className="bounce glowing-text">{initialResult}</p> {/* クラスを追加 */}
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div> 
                 )}
