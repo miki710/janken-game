@@ -205,7 +205,8 @@ function ImageSelectPage() {
       
   return (
     <div className="App">
-            <header className="App-header">           
+            <header className="App-header">
+            <h3>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</h3>           
                 {isMatched || mode !== 'vsPlayer' ? (
                     Object.entries(images).map(([hand, imagePaths]) => (
                     <div 
@@ -231,8 +232,7 @@ function ImageSelectPage() {
                         ))}
                     </div>
                 ))
-                ) : null}
-                <h3>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</h3>
+                ) : null}   
                 <p>ポイント: {savedPoint}</p>
                 {mode === 'vsComputer' && (
                     <div className="rainbow-border">
