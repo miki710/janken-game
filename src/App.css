@@ -239,8 +239,7 @@
 }
 
 @keyframes reflection {
-  0% { transform: scale(0) rotate(45deg); opacity: 0; }
-  80% { transform: scale(0) rotate(45deg); opacity: 0.2; }
-  81% { transform: scale(4) rotate(45deg); opacity: 0.4; }
-  100% { transform: scale(50) rotate(45deg); opacity: 0; }
+  0% { transform: translateX(-100%) rotate(45deg); opacity: 0; }
+  50% { opacity: 0.3; }
+  100% { transform: translateX(100%) rotate(45deg); opacity: 0; }
 }
