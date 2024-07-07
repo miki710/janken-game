@@ -141,6 +141,12 @@ function ImageDisplayPage() {
 
 
   return (
+    <>
+    <ul className="background">
+        {Array.from({ length: 25 }).map((_, index) => (
+            <li key={index}></li>
+        ))}
+    </ul>
     <div className='App-header'>
         <h1>{mode === 'vsComputer' ? 'PC戦' : 'ユーザー戦'}</h1>
 
@@ -151,7 +157,7 @@ function ImageDisplayPage() {
                 <div className={`flip-card ${isFlipped ? 'flipped' : ''}`}>
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                        <img src="/image/backImage.jpg" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
+                        <img src="/image/backImage.jpg" alt="Back" style={{ width: '150px' }} /> 
                     </div>
                     <div className="flip-card-back">
                         <img src={images[userHand][userImageIndex]} alt={userHand} style={{ width: '150px' }} />
@@ -159,7 +165,7 @@ function ImageDisplayPage() {
                   </div>
                 </div>
                 )}
-                <p>{isFlipped ? `${getHandEmoji(userHand)}${userJob}` : '❔❔❔'}</p> {/* 追加 */}
+                <p>{isFlipped ? `${getHandEmoji(userHand)}${userJob}` : '❔❔❔'}</p> 
             </div>
             <div className="hand-container">
                 <p>Opponent:</p>   
@@ -167,7 +173,7 @@ function ImageDisplayPage() {
                 <div className={`flip-card ${isOpponentFlipped ? 'flipped' : ''}`}>
                   <div className="flip-card-inner">
                     <div className="flip-card-front">
-                        <img src="/image/backImage.jpg" alt="Back" style={{ width: '150px' }} /> {/* 変更 */}
+                        <img src="/image/backImage.jpg" alt="Back" style={{ width: '150px' }} /> 
                     </div>
                     <div className="flip-card-back">
                         <img src={images[opponentHand][opponentImageIndex]} alt={opponentHand} style={{ width: '150px' }} />
@@ -175,14 +181,14 @@ function ImageDisplayPage() {
                   </div>
                 </div>
                 )}
-                <p>{isOpponentFlipped ? `${getHandEmoji(opponentHand)}${opponentJob}` : '❔❔❔'}</p> {/* 追加 */}
+                <p>{isOpponentFlipped ? `${getHandEmoji(opponentHand)}${opponentJob}` : '❔❔❔'}</p> 
             </div>
         </div>
         {mode === 'vsComputer' ? (
             <>
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
-                      <p className="bounce glowing-text">{result}</p> {/* クラスを追加 */}
+                      <h3 className="bounce glowing-text">{result}</h3> 
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div>      
                 )}
@@ -191,7 +197,7 @@ function ImageDisplayPage() {
             <>
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
-                      <p className="bounce glowing-text">{initialResult}</p> {/* クラスを追加 */}
+                      <h3 className="bounce glowing-text">{initialResult}</h3> 
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div> 
                 )}
@@ -222,6 +228,7 @@ function ImageDisplayPage() {
         </div> 
         <p>User ID: {cookieUserId}</p>
     </div>
+    </>
     )
 }
 

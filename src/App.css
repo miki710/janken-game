@@ -1,6 +1,5 @@
 body {
   margin: 0;
-  /* overflow: hidden; 削除 */
 }
 
 .App {
@@ -74,7 +73,6 @@ body {
   color: #00bfff;
   text-shadow: 0 0 10px #00bfff, 0 0 15px #00bfff;
   padding: 30px;
-  font-size: 28px;
   background: none;
   font-family: 'Impact, Charcoal, sans-serif' !important;
   font-weight: bold !important;
