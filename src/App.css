@@ -228,11 +228,11 @@
    
   .reflection:after {
     content: "";
-    height: 200px;
-    width: 200px;
+    height: 100％;
+    width: 30px;
     position: absolute;
     top: 0;
-    left: 0;
+    left: -30px;
     background-color: #fff;
     opacity: 0;
     transform: rotate(45deg);
