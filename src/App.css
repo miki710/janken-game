@@ -225,7 +225,7 @@
   position:relative;
   overflow:hidden;
   width: 200px; /* 親要素の幅を画像の幅に合わせる */
-  height: 200px; /* 親要素の高さを画像の高さに合わせる */
+  height: auto; /* 親要素の高さを画像の高さに合わせる */
   }
    
   .reflection:after {
