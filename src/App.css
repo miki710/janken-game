@@ -12,6 +12,8 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  position: relative; /* 背景の上に表示するために追加 */
+  z-index: 1; /* 背景の上に表示するために追加 */
 }
 
 /* @ImageDisplayPageの画像表示CSS */
@@ -317,6 +319,7 @@
   padding: 0;
   background: #1a0132;
   overflow: hidden;
+  z-index: 0; /* 背景を後ろに配置 */
 }
 
 .background li {
