@@ -23,6 +23,11 @@ function ModeSelectPage() {
 
     return (
         <div className='App-header'>
+            <ul className="background">
+                {Array.from({ length: 25 }).map((_, index) => (
+                    <li key={index}></li>
+                ))}
+            </ul>
             <h1>じゃんけんゲーム</h1>
             <div className="reflection neon-border">
                 <img src="/image/backImage.jpg" alt="Card Back" style={{ width: '200px' }} />
