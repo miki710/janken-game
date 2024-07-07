@@ -1,13 +1,16 @@
 body {
   margin: 0;
-  overflow: hidden; /* 背景のアニメーションが画面外に出ないようにする */
+  /* overflow: hidden; 削除 */
 }
 
 .App {
   text-align: center;
+  position: relative;
+  z-index: 10; /* 背景の上に表示するために追加 */
+  height: 100vh; /* ビューポート全体の高さを設定 */
 }
 
-.App-header, .ImageSelectPage, .ImageDisplayPage {
+.App-header {
   background: #1a0132; /* 背景色を設定 */
   min-height: 100vh;
   display: flex;
@@ -18,7 +21,6 @@ body {
   color: white;
   position: relative; /* 背景の上に表示するために追加 */
   z-index: 10; /* 背景の上に表示するために追加 */
-  overflow: auto; /* スクロールを可能にするために追加 */
 }
 
 /* @ImageDisplayPageの画像表示CSS */
