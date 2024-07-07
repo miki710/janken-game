@@ -25,12 +25,13 @@ function ModeSelectPage() {
         <div className='App-header'>
             <h1>じゃんけんゲーム</h1>
             <div className="reflection">
-                <img src="/image/backImage.jpg" alt="Card Back" style={{ width: '200px', marginBottom: '20px'  }} />
+                <img src="/image/backImage.jpg" alt="Card Back" style={{ width: '200px' }} />
             </div>
             <div className="rainbow-border">
                 <button 
                     onClick={() => handleModeSelect('vsPlayer')}
                     className="rainbow-button vs-player"  // クラスを追加
+                    style={{ marginTop: '20px' }}  // インラインスタイルで余白を追加
                 >
                     他のプレイヤーと対戦
                 </button>
