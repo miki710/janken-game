@@ -219,27 +219,29 @@
 }
 
 /* @ModeSelectPageのカードがきらりと光る演出 */
-.reflection {
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-}
 
-.reflection:after {
-  content: "";
-  height: 100%;
-  width: 200px;
-  position: absolute;
-  top: 0;
-  left: -100%;
-  background-color: #fff;
-  opacity: 0;
-  transform: rotate(45deg) translateX(-50%);
-  animation: reflection 2s ease-in-out infinite;
-}
-
-@keyframes reflection {
-  0% { transform: translateX(-100%) rotate(45deg); opacity: 0; }
-  50% { opacity: 0.3; }
-  100% { transform: translateX(100%) rotate(45deg); opacity: 0; }
-}
+.reflection{
+  display:inline-block;
+  position:relative;
+  overflow:hidden;
+  }
+   
+  .reflection:after {
+    content: "";
+    height: 200px;
+    width: 200px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    opacity: 0;
+    transform: rotate(45deg);
+    animation: reflection 2s ease-in-out infinite;
+  }
+   
+  @keyframes reflection {
+  0% { transform: scale(0) rotate(45deg); opacity: 0; }
+  80% { transform: scale(0) rotate(45deg); opacity: 0.2; }
+  81% { transform: scale(4) rotate(45deg); opacity: 0.4; }
+  100% { transform: scale(50) rotate(45deg); opacity: 0; }
+  }
