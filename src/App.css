@@ -228,7 +228,7 @@
    
   .reflection:after {
     content: "";
-    height: calc(100% - 20px); /* 画像の高さからマージン分を引く */
+    height: 180px; /* 画像の高さからマージン分を引く */
     width: 30px;
     position: absolute;
     top: 0;
