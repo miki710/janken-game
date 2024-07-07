@@ -204,6 +204,12 @@ function ImageSelectPage() {
     };
       
   return (
+    <>
+    <ul className="background">
+        {Array.from({ length: 25 }).map((_, index) => (
+            <li key={index}></li>
+        ))}
+    </ul>
     <div className="App">
             <header className="App-header">
             <h3>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</h3>           
@@ -252,6 +258,7 @@ function ImageSelectPage() {
                 {mode === 'vsPlayer' && <p>対戦相手ID: {opponentId}</p>}
             </header>
         </div>
+    </>
     );
 }
 
