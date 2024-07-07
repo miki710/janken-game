@@ -204,14 +204,13 @@ function ImageSelectPage() {
     };
       
   return (
-    <>
-    <ul className="background">
-        {Array.from({ length: 25 }).map((_, index) => (
-            <li key={index}></li>
-        ))}
-    </ul>
     <div className="App">
-            <header className="App-header">
+        <header className="App-header">
+            <ul className="background">
+                {Array.from({ length: 25 }).map((_, index) => (
+                    <li key={index}></li>
+                ))}
+            </ul>
             <h3>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</h3>           
                 {isMatched || mode !== 'vsPlayer' ? (
                     Object.entries(images).map(([hand, imagePaths]) => (
@@ -258,7 +257,6 @@ function ImageSelectPage() {
                 {mode === 'vsPlayer' && <p>対戦相手ID: {opponentId}</p>}
             </header>
         </div>
-    </>
     );
 }
 
