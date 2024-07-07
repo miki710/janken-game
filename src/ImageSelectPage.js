@@ -259,7 +259,7 @@ function ImageSelectPage() {
                         </button>
                     </div>
                 )}
-                <p>User ID: {cookieUserId}</p>
+                <p style={{ fontSize: '12px' }}>User ID: {cookieUserId}</p>
                 {mode === 'vsPlayer' && <p>対戦相手ID: {opponentId}</p>}
             </header>
         </div>

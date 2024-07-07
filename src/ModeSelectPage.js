@@ -49,7 +49,7 @@ function ModeSelectPage() {
                 </button>
             </div>
             <p>ポイント: {savedPoint}</p>
-            <p>User ID: {cookieUserId}</p>
+            <p style={{ fontSize: '12px' }}>User ID: {cookieUserId}</p>
         </div>
     );
 }

@@ -188,7 +188,7 @@ function ImageDisplayPage() {
             <>
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
-                      <h3 className="bounce glowing-text">{result}</h3> 
+                      <h2 className="bounce glowing-text">{result}</h2> 
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div>      
                 )}
@@ -226,7 +226,7 @@ function ImageDisplayPage() {
               Top画面へ戻る
             </button>
         </div> 
-        <p>User ID: {cookieUserId}</p>
+        <p style={{ fontSize: '12px' }}>User ID: {cookieUserId}</p>
     </div>
     </>
     )
