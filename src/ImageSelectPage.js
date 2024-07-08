@@ -17,7 +17,7 @@ export const images = {
 function ImageSelectPage() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { matchId, userId, opponentId, mode, isMatched } = location.state || {}; // stateがnullの場合に備えてデフォルト値を設定
+    const { matchId, userId, opponentId, mode, room, isMatched } = location.state || {}; // stateがnullの場合に備えてデフォルト値を設定
     console.log(location.state)
 
     const { point = 0 } = location.state || {};

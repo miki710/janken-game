@@ -3,11 +3,117 @@ import express from 'express';
 const router = express.Router();
 
 // 必要な関数や変数をserver.jsからインポート
-import { isBothUsersReady, checkMatchReady, saveUserChoice, determineMatchResult, calculatePoints, matches, handleMatchRequest } from '../api/server.js';
+import { isBothUsersReady, checkMatchReady, saveUserChoice, determineMatchResult, calculatePoints, matches, rooms, generateMatchId } from '../api/server.js';
 
-router.post('/match', handleMatchRequest);
 
-// マッチが準備完了状態になっているかを確認し、その状態をクライアントに通知するエンドポイント
+// 部屋の状態を取得するエンドポイント
+router.get('/rooms', (req, res) => {
+    try {
+        const roomStates = Object.keys(rooms).map(room => ({
+            name: room,
+            players: rooms[room].players,
+        }));
+        res.json({ rooms: roomStates });
+    } catch (error) {
+        console.error('Error fetching rooms:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.get('/check-matching', (req, res) => {
+    const room = req.query.room;
+    if (rooms[room].players.length >= 2) {
+        res.json({ matched: true });
+    } else {
+        res.json({ matched: false });
+    }
+});
+
+// プレイヤーが部屋に参加するエンドポイント
+router.post('/join-room', (req, res) => {
+    try {
+        const room = req.query.room;
+        const playerId = req.cookies.userId;
+        console.log('Joining room:', room); // デバッグ情報を追加
+        if (rooms[room]) { // 部屋が存在するか確認
+            if (rooms[room].players.length < 2) { // 最大4人まで参加可能
+                rooms[room].players.push(playerId);
+                console.log('Room state after join:', rooms[room]); // ログ出力を追加
+                res.json({ success: true });
+            } else {
+                res.json({ success: false, message: 'Room is full' });
+            }
+        } else {
+            console.error('Room not found:', room); // エラーログを追加
+            res.status(404).json({ error: 'Room not found' });
+        }
+    } catch (error) {
+        console.error('Error joining room:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+// マッチが準備完了状態になっているかを確認し、そのマッチリクエストを処理するエンドポイント
+router.post('/match', (req, res) => {
+    const userId = req.cookies.userId;
+    const room = req.query.room;
+
+    if (!userId) {
+        return res.status(400).send('ユーザーIDがクッキーに存在しません');
+    }
+
+    if (!rooms[room]) {
+        return res.status(404).send('部屋が存在しません');
+    }
+
+    const players = rooms[room].players;
+    if (!players.includes(userId)) {
+        return res.status(403).send('ユーザーはこの部屋に参加していません');
+    }
+
+    const opponentId = players.find(id => id !== userId);
+    const matchId = generateMatchId();
+
+    // マッチ情報の初期化
+    matches[matchId] = {
+        matchId: matchId, // マッチIDを保存
+        players: players.reduce((acc, playerId) => {
+            acc[playerId] = { userId: playerId, ready: false, hand: null, index: null, info: {}, points: 0 };
+            return acc;
+        }, {}),
+        status: 'active'
+    };
+
+    // 各プレイヤーに対してレスポンスを送信
+    players.forEach(playerId => {
+        const response = {
+            success: true,
+            isMatched: true,
+            matchId: matchId,
+            yourId: playerId,
+            opponentId: players.find(id => id !== playerId)
+        };
+
+        // ここでレスポンスを送信
+        // 例えば、WebSocketを使用してリアルタイムにレスポンスを送信することができます
+        // ここでは簡単のため、コンソールに出力します
+        console.log('Sending response to player:', response);
+    });
+
+    // 最後にリクエストを送信したユーザーにレスポンスを返す
+    res.json({
+        success: true,
+        isMatched: true,
+        matchId: matchId,
+        yourId: userId,
+        opponentId: opponentId
+    });
+});
+
+
+
+//状態をクライアントに通知するエンドポイント
 router.get('/check-match-ready', (req, res) => {
     const { matchId } = req.query;
     console.log("Received GET request for /check-match-ready with matchId:", matchId);

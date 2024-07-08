@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { UserContext } from './UserContext.js'; // UserContextをインポート
 
-function RoomSelectionPage({ userId, mode }) {
+function RoomSelectionPage() {
   const [rooms, setRooms] = useState(['Room 1', 'Room 2', 'Room 3']);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { mode } = location.state || {}; // location.stateからmodeを取得
+  const { cookieUserId } = useContext(UserContext); // UserContextからcookieUserIdを取得
 
   useEffect(() => {
     // サーバーから部屋の状態を取得
-    fetch('http://localhost:3000/api/rooms')
+    fetch(`${process.env.REACT_APP_SERVER_URL}/rooms`, {
+        method: 'GET',
+        credentials: 'include'
+    })
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -34,7 +39,7 @@ function RoomSelectionPage({ userId, mode }) {
     // サーバーに部屋参加リクエストを送信
     console.log('Joining room:', room.name); // ログ出力を追加
     // サーバーに部屋参加リクエストを送信
-    fetch(`http://localhost:3000/api/join-room?room=${room.name}`, { // ポート3000を使用
+    fetch(`${process.env.REACT_APP_SERVER_URL}/api/join-room?room=${room.name}`, { 
       method: 'POST',
       credentials: 'include'
     })
@@ -58,9 +63,10 @@ function RoomSelectionPage({ userId, mode }) {
       <h1>対戦部屋を選択</h1>
       {rooms.map((room, index) => (
         <button key={index} onClick={() => handleRoomSelect(room)}>
-          {room.name} - {room.players.length === 0 ? '0人' : room.players.length === 2 ? '満員' : `${room.players.length}人 - ID: ${userId.slice(-5)}`}
+          {room.name} - {room.players.length === 0 ? '0人' : room.players.length === 2 ? '満員' : `${room.players.length}人 - ID: ${room.players[0].slice(-5)}`}
         </button>
       ))}
+       <p style={{ fontSize: '12px' }}>User ID: {cookieUserId}</p>
     </div>
   );
 }
