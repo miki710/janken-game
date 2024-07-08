@@ -84,9 +84,13 @@ function MatchPage() {
             <div>
                 <h2>参加プレイヤー:</h2>
                 <ul>
-                    {players.map((player, index) => (
-                        <li key={index}>{player}</li>
-                    ))}
+                    {players && players.length > 0 ? (
+                        players.map((player, index) => (
+                            <li key={index}>{player}</li>
+                        ))
+                    ) : (
+                        <li>プレイヤーがいません</li>
+                    )} 
                 </ul>
             </div>
         </div>
