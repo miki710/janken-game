@@ -34,7 +34,7 @@ function MatchPage() {
 
                     if (checkData.matched) {
                         // マッチングが完了している場合、詳細情報を取得
-                        const matchResponse = await fetch(`${serverUrl}/match?room=${room}`, {
+                        const matchResponse = await fetch(`${serverUrl}/vs-player/match?room=${room}`, {
                             method: 'POST',
                             credentials: 'include'
                         });

@@ -13,7 +13,7 @@ function RoomSelectionPage() {
 
   useEffect(() => {
     // サーバーから部屋の状態を取得
-    fetch(`${process.env.REACT_APP_SERVER_URL}/rooms`, {
+    fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/rooms`, {
         method: 'GET',
         credentials: 'include'
     })
@@ -39,7 +39,7 @@ function RoomSelectionPage() {
     // サーバーに部屋参加リクエストを送信
     console.log('Joining room:', room.name); // ログ出力を追加
     // サーバーに部屋参加リクエストを送信
-    fetch(`${process.env.REACT_APP_SERVER_URL}/api/join-room?room=${room.name}`, { 
+    fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/join-room?room=${room.name}`, { 
       method: 'POST',
       credentials: 'include'
     })
