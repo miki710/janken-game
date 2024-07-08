@@ -20,7 +20,7 @@ function MatchPage() {
                     const serverUrl = process.env.REACT_APP_SERVER_URL;
 
                     // マッチング状態を確認
-                    const checkResponse = await fetch(`${serverUrl}/check-matching?room=${room}`, {
+                    const checkResponse = await fetch(`${serverUrl}/vs-player/check-matching?room=${room}`, {
                         method: 'GET',
                         credentials: 'include'
                     });
