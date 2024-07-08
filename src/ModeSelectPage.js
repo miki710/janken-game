@@ -15,7 +15,7 @@ function ModeSelectPage() {
         playSound('click');
 
         if (mode === 'vsPlayer') {
-            navigate('/waiting');
+            navigate('/waiting', { state: { mode } }); // modeをstateで渡す
         } else {
             navigate('/game', { state: { mode } });
         }

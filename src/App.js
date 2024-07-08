@@ -3,7 +3,8 @@ import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { useEffect, useContext } from 'react';
 import ModeSelectPage from './ModeSelectPage.js'; // ModeSelectPage をインポート
-import WaitingRoomPage from './WaitingRoomPage.js';
+import RoomSelectionPage from './RoomSelectionPage.js';
+import MatchPage from './MatchPage.js';
 import ImageSelectPage from './ImageSelectPage.js';
 import ImageDisplayPage from './ImageDisplayPage.js';
 import { UserProvider, UserContext } from './UserContext.js';
@@ -57,7 +58,8 @@ function AppContent() {
        <BrowserRouter>
         <Routes>
           <Route path="/" element={<ModeSelectPage />} /> 
-          <Route path="/waiting" element={<WaitingRoomPage />} />
+          <Route path="/waiting" element={<RoomSelectionPage />} /> {/* 新しいルートを追加 */}
+          <Route path="/match" element={<MatchPage />} /> {/* 新しいルートを追加 */}
           <Route path="/game" element={<ImageSelectPage />} /> 
           <Route path="/display" element={<ImageDisplayPage />} />
         </Routes>

@@ -47,127 +47,16 @@ app.use((req, res, next) => {
     next();
 });
 
+// 仮のデータベース
+export let rooms = {
+    'Room 1': { players: [] },
+    'Room 2': { players: [] },
+    'Room 3': { players: [] },
+};
 
-let waitingPlayers = [];
-let activeMatching = new Set(); // アクティブなマッチングプロセスに参加しているユーザーIDを追跡
 export let matches = {}; // すべてのマッチ情報を保持するオブジェクト
 
-export function handleMatchRequest(req, res) {
-    const userId = req.cookies.userId;
-    console.log('Received match request from user:', userId); // デバッグ用ログ
-
-    if (!userId) {
-        console.log('ユーザーIDがクッキーに存在しません');
-        return res.status(400).send('ユーザーIDがクッキーに存在しません');
-    }
-
-    // 既にマッチングが完了しているか確認
-    const match = Object.values(matches).find(match => match.players[userId]);
-    if (match) {
-        const opponentId = Object.keys(match.players).find(id => id !== userId);
-        return res.json({
-            success: true,
-            isMatched: true,
-            matchId: match.matchId,
-            yourId: userId,
-            opponentId: opponentId
-        });
-    }
-
-    if (activeMatching.has(userId)) {
-        console.log('User already in matching process:', userId);
-        return res.json({
-            success: false,
-            message: '既にマッチングプロセス中です'
-        });
-    }
-
-    activeMatching.add(userId);
-    waitingPlayers.push({ userId, res });
-    console.log('Added user to waitingPlayers:', userId); // デバッグ用ログ
-
-    // マッチングを試みる
-    tryMatchPlayers();
-}
-
-function tryMatchPlayers() {
-    console.log('Trying to match players...'); // デバッグ用ログ
-    console.log('Current waitingPlayers:', waitingPlayers); // デバッグ用ログ
-
-    // プレイヤーが2人未満の場合のレスポンス
-    if (waitingPlayers.length < 2) {
-        console.log('Not enough players to match'); // デバッグ用ログ
-        waitingPlayers.forEach(player => {
-            if (!player.res.headersSent) {
-                console.log('Sending waiting response to player:', player.userId); // デバッグ用ログ
-                player.res.json({
-                    success: false,
-                    message: 'マッチング待機中'
-                });
-            }
-        });
-        return;
-    }
-
-    while (waitingPlayers.length >= 2) {
-        console.log('Waiting players length is sufficient for matching'); // デバッグ用ログ
-        const player1 = waitingPlayers.shift();
-        const player2 = waitingPlayers.shift();
-        console.log('Match found:', player1.userId, player2.userId);
-
-        // マッチIDの生成
-        const matchId = generateMatchId();
-
-        // マッチ情報の初期化
-        matches[matchId] = {
-            matchId: matchId, // マッチIDを保存
-            players: {
-                [player1.userId]: { userId: player1.userId, ready: false, hand: null, index: null, info: {}, points: 0},
-                [player2.userId]: { userId: player2.userId, ready: false, hand: null, index: null, info: {}, points: 0}
-            },
-            status: 'active'
-        };
-
-        activeMatching.delete(player1.userId);
-        activeMatching.delete(player2.userId);
-
-        // ここで相互に opponentId を設定
-        const response1 = {
-            success: true,
-            isMatched: true,
-            matchId: matchId, // マッチIDをレスポンスに含める
-            yourId: player1.userId,
-            opponentId: player2.userId
-        };
-        const response2 = {
-            success: true,
-            isMatched: true,
-            matchId: matchId, // マッチIDをレスポンスに含める
-            yourId: player2.userId,
-            opponentId: player1.userId
-        };
-
-        console.log('Sending response to player1:', response1); // デバッグ用ログ
-        console.log('Sending response to player2:', response2); // デバッグ用ログ
-
-        // レスポンスが既に送信されているかどうかを確認
-        if (!player1.res.headersSent) {
-            console.log('Sending response to player1:', response1); // デバッグ用ログ
-            player1.res.json(response1);
-        } else {
-            console.log('Response already sent to player1:', player1.userId); // デバッグ用ログ
-        }
-
-        if (!player2.res.headersSent) {
-            console.log('Sending response to player2:', response2); // デバッグ用ログ
-            player2.res.json(response2);
-        } else {
-            console.log('Response already sent to player2:', player2.userId); // デバッグ用ログ
-        }
-    }
-}
-
-function generateMatchId() {
+export function generateMatchId() {
     return Date.now().toString(); // 簡易的なマッチID生成
 }
 
@@ -316,21 +205,7 @@ export function generateOpponentChoice() {
         info: newOpponentInfo
     };
 }
-/*
-export function determineWinner(userHand, opponentHand) {
-    if (userHand === opponentHand) {
-        return 'Draw';
-    } else if (
-        (userHand === 'Rock' && opponentHand === 'Scissor') ||
-        (userHand === 'Scissor' && opponentHand === 'Paper') ||
-        (userHand === 'Paper' && opponentHand === 'Rock')
-    ) {
-        return 'Win';
-    } else {
-        return 'Lose';
-    }
-}
-*/
+
 
 // サーバーを起動
 const PORT = process.env.PORT || 3001;
