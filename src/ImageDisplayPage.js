@@ -194,14 +194,18 @@ function ImageDisplayPage() {
 
     // 5秒ごとに部屋の状態を更新
     intervalRef.current = setInterval(fetchRooms, 5000);
-
+    console.log('Polling started with ID:', intervalRef.current);
     // クリーンアップ
-    return () => clearInterval(intervalRef.current);
+    return () => {
+      console.log('Clearing interval with ID:', intervalRef.current);
+      clearInterval(intervalRef.current);
+    }
   }, []);
 
 
   const handleRoomSelect = async (room) => {
     // ポーリングを停止
+    console.log('Clearing interval with ID:', intervalRef.current);
     clearInterval(intervalRef.current);
 
     // 現在の部屋から退出
