@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import Cookies from 'js-cookie';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
@@ -41,6 +41,7 @@ function ImageDisplayPage() {
     const [rooms, setRooms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const intervalRef = useRef(null);
 
     useEffect(() => {
       console.log('useEffect for initial point and mode');
@@ -192,14 +193,17 @@ function ImageDisplayPage() {
     fetchRooms();
 
     // 5秒ごとに部屋の状態を更新
-    const interval = setInterval(fetchRooms, 5000);
+    intervalRef.current = setInterval(fetchRooms, 5000);
 
     // クリーンアップ
-    return () => clearInterval(interval);
+    return () => clearInterval(intervalRef.current);
   }, []);
 
 
   const handleRoomSelect = async (room) => {
+    // ポーリングを停止
+    clearInterval(intervalRef.current);
+
     // 現在の部屋から退出
     try {
       const leaveResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
