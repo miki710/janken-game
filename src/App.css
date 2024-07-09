@@ -362,13 +362,6 @@ body {
 
 /* @RoomSelectionPggeのボタン */
 
-
-
-:root {
-  --neon-text-color: #f40;
-  --neon-border-color: #08f;
-}
-
 .room-button {
   margin: 20px; /* ボタン同士の間隔を広げる */
   padding: 15px 30px; /* ボタンを大きくする */
@@ -379,7 +372,7 @@ body {
   cursor: pointer; /* カーソルをポインタに変更 */
   position: relative; /* 擬似要素のために相対位置を設定 */
   text-transform: uppercase; /* テキストを大文字に変換 */
-  border: 0.4rem solid #fff; /* 白い枠線を追加 */
+  border: 0.2rem solid #fff; /* 白い枠線を追加 */
   border-radius: 2rem; /* 角を丸くする */
   box-shadow:
     0 0 10px rgba(128, 0, 128, 0.8), /* パープルのネオンの影 */
