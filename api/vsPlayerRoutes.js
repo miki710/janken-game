@@ -55,6 +55,22 @@ router.post('/join-room', (req, res) => {
 });
 
 
+// プレイヤーを部屋から出すためのエンドポイント
+// 待機部屋からユーザーを削除するエンドポイント
+router.post('/leave-room', (req, res) => {
+    const { room } = req.body;
+    const userId = req.cookies.userId; // クッキーからuserIdを取得
+
+    // 待機部屋からユーザーを削除するロジックを実装
+    if (rooms[room] && rooms[room].players.includes(userId)) {
+        rooms[room].players = rooms[room].players.filter(player => player !== userId);
+        res.status(200).send('Successfully left the room');
+    } else {
+        res.status(400).send('User not found in the specified room');
+    }
+});
+
+
 // マッチが準備完了状態になっているかを確認し、そのマッチリクエストを処理するエンドポイント
 router.post('/match', (req, res) => {
     const userId = req.cookies.userId;

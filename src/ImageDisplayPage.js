@@ -14,7 +14,7 @@ function ImageDisplayPage() {
     const location = useLocation();
     console.log('Location state:', location.state);
     
-    const { user = {}, opponent ={}, mode, result: initialResult } = location.state || {};
+    const { user = {}, opponent ={}, mode, room, result: initialResult } = location.state || {};
 
     const initialPoint = location.state && location.state.user ? location.state.user.point : 0;
     const [point, setPoint] = useState(initialPoint);
@@ -125,8 +125,30 @@ function ImageDisplayPage() {
     }
   };
 
-  const resetGame = () => {
+  const resetGame = async () => {
     playSound('click');
+    if (mode === 'vsPlayer') {
+      // 待機部屋から出るためのAPIリクエストを送信
+      try {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ room: room }),
+          credentials: 'include'
+        });
+
+      if (!response.ok) {
+          throw new Error('Failed to leave the room');
+      }
+
+      console.log('Successfully left the room');
+      } catch (error) {
+        console.error('Error leaving the room:', error);
+      }
+    }
+    // ゲームの状態をリセット
     setUserHand('');
     setOpponentHand('');
     setResult('');

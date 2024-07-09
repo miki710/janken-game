@@ -63,7 +63,8 @@ function ImageSelectPage() {
                             index: data.opponentIndex
                         },
                         result: data.result,
-                        mode: mode  // location.stateから受け取ったmodeを使用
+                        mode: mode,  // location.stateから受け取ったmodeを使用
+                        room: room
                     }
                 });
             } else {
