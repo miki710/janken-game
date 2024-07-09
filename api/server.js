@@ -61,7 +61,7 @@ export function generateMatchId() {
 }
 
 export const checkMatchReady = (room, matches, res, req, attempts = 0, responseSent = false) => {
-        console.log(`checkMatchReady function started for matchId: ${matchId}`);
+        console.log(`checkMatchReady function started for matchId: ${room}`);
 
         if (responseSent) {
             return; // レスポンスが既に送信されていれば何もしない
