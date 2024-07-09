@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { UserContext } from './UserContext.js'; // UserContext をインポート
 import './App.css';
 
 function MatchPage() {
+    const { cookieUserId } = useContext(UserContext); // UserContext から userId を取得
     const [isMatched, setIsMatched] = useState(false);
-    const [players, setPlayers] = useState([]);
+    const [players, setPlayers] = useState([cookieUserId]);
     const [isMatchingProcess, setIsMatchingProcess] = useState(false);
     const [userId, setUserId] = useState(null);
     const [opponentId, setOpponentId] = useState([]);
@@ -46,10 +48,8 @@ function MatchPage() {
                         const matchData = await matchResponse.json();
                         console.log('Received match data:', matchData);
 
-                        // matchData.players が配列であることを確認
-                        const playersArray = Array.isArray(matchData.players) ? matchData.players : [];
-
-                        setPlayers([matchData.yourId, ...playersArray]);
+                        // yourId と opponentId を players 配列に追加
+                        setPlayers([matchData.yourId, matchData.opponentId]);
                         setUserId(matchData.yourId);
                         setOpponentId(matchData.opponentId);
                         setIsMatched(true);
