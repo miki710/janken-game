@@ -35,6 +35,7 @@ router.post('/join-room', (req, res) => {
         const room = req.query.room;
         const playerId = req.cookies.userId;
         console.log('Joining room:', room); // デバッグ情報を追加
+        
         if (rooms[room]) { // 部屋が存在するか確認
             if (rooms[room].players.length < 2) { // 最大4人まで参加可能
                 rooms[room].players.push(playerId);
@@ -132,7 +133,7 @@ router.get('/check-match-ready', (req, res) => {
     }
 });
 
-// ユーザーの選択を保存し、ランキングやポイントシステムに使用するためのエンドポイント
+// ユーザーの選択を保存
 router.post('/play-match', async (req, res) => {
     try {
         const { userId, hand, index, info, matchId, opponentId, point } = req.body; // ユーザーIDと選択した画像を受け取る
@@ -153,6 +154,10 @@ router.post('/play-match', async (req, res) => {
 
         // ユーザーの選択を保存
         await saveUserChoice(userId, hand, index, info, matchId, point);
+
+        // デバッグ用ログ
+        console.log("Player 1 ready state:", match.players[userId].ready);
+        console.log("Player 2 ready state:", match.players[opponentId].ready);
         
         // 両プレイヤーが準備完了か確認
         if (player1.ready && player2.ready) {

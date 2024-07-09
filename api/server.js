@@ -130,6 +130,7 @@ export async function saveUserChoice(userId, hand, index, info, matchId, point) 
         match.players[userId].info = info; // ユーザーの情報を保存
         match.players[userId].points = point; // ユーザーのポイントを保存
         match.players[userId].ready = true; // ユーザーを準備完了状態に設定
+        console.log(`Player ${userId} is ready:`, match.players[userId].ready); // デバッグ用ログ
     }
 }
 
