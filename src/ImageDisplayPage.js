@@ -166,25 +166,25 @@ function ImageDisplayPage() {
 
   // 部屋の情報を取得する関数
   const fetchRooms = async () => {
-  try {
-    const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/rooms`, {
-      method: 'GET',
-      credentials: 'include'
-    });
+    try {
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/rooms`, {
+        method: 'GET',
+        credentials: 'include'
+      });
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Rooms fetched:', data.rooms); // ログ出力を追加
+      setRooms(data.rooms);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+      setError('部屋の情報を取得できませんでした。');
+      setLoading(false);
     }
-
-    const data = await response.json();
-    console.log('Rooms fetched:', data.rooms); // ログ出力を追加
-    setRooms(data.rooms);
-    setLoading(false);
-  } catch (error) {
-    console.error('Error fetching rooms:', error);
-    setError('部屋の情報を取得できませんでした。');
-    setLoading(false);
-  }
   };
 
   useEffect(() => {
@@ -197,6 +197,25 @@ function ImageDisplayPage() {
     // クリーンアップ
     return () => clearInterval(interval);
   }, []);
+
+
+  const handleRoomSelect = (room) => {
+  // サーバーに部屋参加リクエストを送信
+    console.log('Joining room:', room.name); // ログ出力を追加
+    fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/join-room?room=${room.name}`, { 
+      method: 'POST',
+      credentials: 'include'
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Join room response:', data); // ログ出力を追加
+        if (data.success) {
+          navigate('/match', { state: { mode , room: room.name }});
+        } else {
+          alert(data.message);
+        }
+      });
+  };
 
 
   return (
@@ -287,10 +306,10 @@ function ImageDisplayPage() {
               rooms.map((room, index) => (
                 <button 
                   key={index} 
-                  onClick={() => navigate(`/room/${room.id}`)}
+                  onClick={() =>  handleRoomSelect(room)} // handleRoomSelectを使用
                   style={{ fontSize: '16px', padding: '10px', margin: '5px', width: 'auto' }} // ボタンを大きくするスタイルを追加
                 >
-                  {room.name}
+                  {room.name} - {room.players.length === 0 ? '0人' : room.players.length === 2 ? '満員' : `${room.players.length}人 - ID: ${room.players[0].slice(-5)}`}
                 </button>
               ))
             )}
