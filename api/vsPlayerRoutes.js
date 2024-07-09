@@ -3,7 +3,7 @@ import express from 'express';
 const router = express.Router();
 
 // 必要な関数や変数をserver.jsからインポート
-import { isBothUsersReady, checkMatchReady, saveUserChoice, determineMatchResult, calculatePoints, matches, rooms, generateMatchId } from '../api/server.js';
+import { isBothUsersReady, checkMatchReady, saveUserChoice, determineMatchResult, calculatePoints, matches, rooms } from '../api/server.js';
 
 
 // 部屋の状態を取得するエンドポイント
@@ -74,11 +74,10 @@ router.post('/match', (req, res) => {
     }
 
     const opponentId = players.find(id => id !== userId);
-    const matchId = generateMatchId();
 
     // マッチ情報の初期化
-    matches[matchId] = {
-        matchId: matchId, // マッチIDを保存
+    matches[room] = {
+        matchId: room, // マッチIDを保存
         players: players.reduce((acc, playerId) => {
             acc[playerId] = { userId: playerId, ready: false, hand: null, index: null, info: {}, points: 0 };
             return acc;
@@ -91,7 +90,7 @@ router.post('/match', (req, res) => {
         const response = {
             success: true,
             isMatched: true,
-            matchId: matchId,
+            matchId: room,
             yourId: playerId,
             opponentId: players.find(id => id !== playerId)
         };
@@ -106,7 +105,7 @@ router.post('/match', (req, res) => {
     res.json({
         success: true,
         isMatched: true,
-        matchId: matchId,
+        matchId: room,
         yourId: userId,
         opponentId: opponentId
     });
@@ -116,9 +115,9 @@ router.post('/match', (req, res) => {
 
 //状態をクライアントに通知するエンドポイント
 router.get('/check-match-ready', (req, res) => {
-    const { matchId } = req.query;
+    const { room } = req.query;
     console.log("Received GET request for /check-match-ready with matchId:", matchId);
-    const match = matches[matchId];
+    const match = matches[room];
     if (!match) {
         return res.status(404).json({ message: "Match not found" });
     }
@@ -126,7 +125,7 @@ router.get('/check-match-ready', (req, res) => {
     if (isBothUsersReady(match)) {
         // 両ユーザーが準備完了の場合の処理
         // ここで checkMatchReady を呼び出す
-        checkMatchReady(matchId, matches, res, req, 0, false);
+        checkMatchReady(room, matches, res, req, 0, false);
     } else {
         // まだ準備が整っていない場合の処理
         res.json({ message: 'Waiting for both users to be ready.' });
@@ -136,8 +135,8 @@ router.get('/check-match-ready', (req, res) => {
 // ユーザーの選択を保存
 router.post('/play-match', async (req, res) => {
     try {
-        const { userId, hand, index, info, matchId, opponentId, point } = req.body; // ユーザーIDと選択した画像を受け取る
-        console.log("Received from client:", { userId, hand, index, info, opponentId, matchId, point });
+        const { userId, hand, index, info, room, opponentId, point } = req.body; // ユーザーIDと選択した画像を受け取る
+        console.log("Received from client:", { userId, hand, index, info, opponentId, room, point });
         const match = matches[matchId]; // マッチIDを使用してマッチ情報を取得
         if (!match) {
             return res.status(404).json({ error: 'マッチが見つかりません' });
@@ -153,7 +152,7 @@ router.post('/play-match', async (req, res) => {
         }
 
         // ユーザーの選択を保存
-        await saveUserChoice(userId, hand, index, info, matchId, point);
+        await saveUserChoice(userId, hand, index, info, room, point);
 
         // デバッグ用ログ
         console.log("Player 1 ready state:", match.players[userId].ready);

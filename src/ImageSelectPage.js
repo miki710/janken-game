@@ -69,11 +69,11 @@ function ImageSelectPage() {
             } else {
                 console.error('Error: opponentInfo is undefined or not ready');
                 // マッチがまだ準備中の場合、再度ポーリング
-                setTimeout(() => checkMatchReady(matchId), 3000);
+                setTimeout(() => checkMatchReady(room), 3000);
             }
         } catch (error) {
             console.error('Error checking match readiness:', error);
-            setTimeout(() => checkMatchReady(matchId), 5000);
+            setTimeout(() => checkMatchReady(room), 5000);
         }
     };
 
@@ -102,7 +102,7 @@ function ImageSelectPage() {
                 
                 if (newUserInfo && newUserInfo.job) {
                     const intervalId = setInterval(async () => {
-                        console.log("Sending to server:", { userId, hand, index, newUserInfo, opponentId, romm, point });
+                        console.log("Sending to server:", { userId, hand, index, newUserInfo, opponentId, room, point });
                         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/play-match`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json'},
