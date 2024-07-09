@@ -127,9 +127,16 @@ function MatchPage() {
             <div>
                 <h2>部屋: {room}</h2> {/* 部屋名を表示 */}
             </div>
-            <button onClick={handleExit} style={{ fontSize: '16px', padding: '10px', margin: '5px' }}>
-                退出する
-            </button>
+            <div className="rainbow-border">
+                <button 
+                    onClick={handleExit}
+                    className="rainbow-button vs-player"  // クラスを追加
+                    style={{ fontSize: '18px' }}
+                >
+                    退出する
+                </button>
+            </div>
+           
         </div>
     );
 }
