@@ -166,6 +166,16 @@ body {
   width: 130px; /* PCと対戦ボタンの幅 */
 }
 
+.rainbow-button.custom-button {
+  font-size: 18px;
+  padding: 10px 20px;
+  width: auto;
+  line-height: normal; /* 行の高さを通常に設定 */
+  vertical-align: middle; /* テキストを中央に揃える */
+  display: inline-flex; /* インラインフレックスボックスを使用 */
+  align-items: center; /* フレックスアイテムを中央に揃える */
+}
+
 /* メディアクエリを追加して、画面サイズに応じたスタイルを適用 */
 @media (max-width: 375px) {
   .glowing-text {
