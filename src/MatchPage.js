@@ -76,6 +76,11 @@ function MatchPage() {
         }
     }, [isMatched, navigate, userId, room, opponentId, mode]);
 
+    const handleExit = () => {
+        navigate('/waiting', { state: { room } });
+    };
+      
+
     return (
         <div className='App-header'>
              <ul className="background">
@@ -100,6 +105,12 @@ function MatchPage() {
                     )} 
                 </ul>
             </div>
+            <div>
+                <h2>部屋: {room}</h2> {/* 部屋名を表示 */}
+            </div>
+            <button onClick={handleExit} style={{ fontSize: '16px', padding: '10px', margin: '5px' }}>
+                退出する
+            </button>
         </div>
     );
 }
