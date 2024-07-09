@@ -46,7 +46,10 @@ function MatchPage() {
                         const matchData = await matchResponse.json();
                         console.log('Received match data:', matchData);
 
-                        setPlayers([matchData.yourId, ...matchData.players]);
+                        // matchData.players が配列であることを確認
+                        const playersArray = Array.isArray(matchData.players) ? matchData.players : [];
+
+                        setPlayers([matchData.yourId, ...playersArray]);
                         setUserId(matchData.yourId);
                         setOpponentId(matchData.opponentId);
                         setIsMatched(true);
