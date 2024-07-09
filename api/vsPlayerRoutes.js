@@ -137,7 +137,7 @@ router.post('/play-match', async (req, res) => {
     try {
         const { userId, hand, index, info, room, opponentId, point } = req.body; // ユーザーIDと選択した画像を受け取る
         console.log("Received from client:", { userId, hand, index, info, opponentId, room, point });
-        const match = matches[matchId]; // マッチIDを使用してマッチ情報を取得
+        const match = matches[room]; // マッチIDを使用してマッチ情報を取得
         if (!match) {
             return res.status(404).json({ error: 'マッチが見つかりません' });
         }
