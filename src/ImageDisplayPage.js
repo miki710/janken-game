@@ -334,9 +334,8 @@ function ImageDisplayPage() {
               <p>{error}</p>
             ) : (
               rooms.map((room, index) => (
-                <div className="rainbow-border" key={index} style={{ margin: '5px' }}>
+                <div className="rainbow-border" key={index}>
                   <button 
-                    key={index} 
                     onClick={() =>  handleRoomSelect(room)} // handleRoomSelectを使用
                     className="rainbow-button"  // クラスを追加
                     style={{ fontSize: '18px', padding: '10px 20px', width: 'auto' }} // paddingを追加
