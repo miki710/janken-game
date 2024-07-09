@@ -77,7 +77,7 @@ router.post('/match', (req, res) => {
 
     // マッチ情報の初期化
     matches[room] = {
-        matchId: room, // マッチIDを保存
+        room: room, // マッチIDを保存
         players: players.reduce((acc, playerId) => {
             acc[playerId] = { userId: playerId, ready: false, hand: null, index: null, info: {}, points: 0 };
             return acc;
@@ -90,7 +90,7 @@ router.post('/match', (req, res) => {
         const response = {
             success: true,
             isMatched: true,
-            matchId: room,
+            room: room,
             yourId: playerId,
             opponentId: players.find(id => id !== playerId)
         };
@@ -105,7 +105,7 @@ router.post('/match', (req, res) => {
     res.json({
         success: true,
         isMatched: true,
-        matchId: room,
+        room: room,
         yourId: userId,
         opponentId: opponentId
     });
