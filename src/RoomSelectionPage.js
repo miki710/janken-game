@@ -81,7 +81,7 @@ function RoomSelectionPage() {
           {room.name} - {room.players.length === 0 ? '0人' : room.players.length === 2 ? '満員' : `${room.players.length}人 - ID: ${room.players[0].slice(-5)}`}
         </button>
       ))}
-      <div className="rainbow-border">
+      <div className="rainbow-border" style={{ marginTop: '20px' }}>
             <button 
               onClick={() => navigate('/')}
               className="rainbow-button vs-player"  // クラスを追加

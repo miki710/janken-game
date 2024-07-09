@@ -327,20 +327,22 @@ function ImageDisplayPage() {
         )}
 
         {mode === 'vsPlayer' && (
-          <div className="room-buttons">
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {loading ? (
               <p>部屋の情報を読み込み中...</p>
             ) : error ? (
               <p>{error}</p>
             ) : (
               rooms.map((room, index) => (
-                <button 
-                  key={index} 
-                  onClick={() =>  handleRoomSelect(room)} // handleRoomSelectを使用
-                  style={{ fontSize: '16px', padding: '10px', margin: '5px', width: 'auto' }} // ボタンを大きくするスタイルを追加
-                >
-                  {room.name} - {room.players.length === 0 ? '0人' : room.players.length === 2 ? '満員' : `${room.players.length}人 - ID: ${room.players[0].slice(-5)}`}
-                </button>
+                <div className="rainbow-border" key={index} style={{ margin: '5px' }}>
+                  <button 
+                    key={index} 
+                    onClick={() =>  handleRoomSelect(room)} // handleRoomSelectを使用
+                    style={{ fontSize: '16px', padding: '10px', margin: '5px', width: 'auto' }} // ボタンを大きくするスタイルを追加
+                  >
+                    {room.name} - {room.players.length === 0 ? '0人' : room.players.length === 2 ? '満員' : `${room.players.length}人 - ID: ${room.players[0].slice(-5)}`}
+                  </button>
+                </div>
               ))
             )}
           </div>
