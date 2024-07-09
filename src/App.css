@@ -359,3 +359,11 @@ body {
 .background li:nth-child(22) { left: 58%; width: 27px; height: 27px; bottom: -27px; animation-delay: 47s; }
 .background li:nth-child(23) { left: 26%; width: 51px; height: 51px; bottom: -51px; animation-delay: 77s; }
 .background li:nth-child(24) { left: 55%; width: 30px; height: 30px; bottom: -30px; animation-delay: 69s; }
+
+/* @RoomSelectionPggeのボタン */
+
+.room-button {
+  margin: 20px; /* ボタン同士の間隔を広げる */
+  padding: 15px 30px; /* ボタンを大きくする */
+  font-size: 18px; /* 文字サイズを大きくする */
+}
