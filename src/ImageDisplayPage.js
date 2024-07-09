@@ -215,7 +215,7 @@ function ImageDisplayPage() {
         throw new Error('Failed to leave the current room');
       }
   
-      console.log('Successfully left the current room');
+      console.log('Successfully left the current room', room);
     } catch (error) {
       console.error('Error leaving the current room:', error);
     }
