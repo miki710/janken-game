@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { UserContext } from './UserContext.js'; // UserContextをインポート
+import './App.css';
 
 function RoomSelectionPage() {
   const [rooms, setRooms] = useState(['Room 1', 'Room 2', 'Room 3']);
