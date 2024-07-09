@@ -17,7 +17,7 @@ export const images = {
 function ImageSelectPage() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { matchId, userId, opponentId, mode, room, isMatched } = location.state || {}; // stateがnullの場合に備えてデフォルト値を設定
+    const { room, userId, opponentId, mode, isMatched } = location.state || {}; // stateがnullの場合に備えてデフォルト値を設定
     console.log(location.state)
 
     const { point = 0 } = location.state || {};
@@ -34,14 +34,14 @@ function ImageSelectPage() {
     const savedPoint = Cookies.get('point') || 0; // クッキーからポイントを取得
     const { cookieUserId } = useContext(UserContext);
 
-      const checkMatchReady = async (matchId) => {
+      const checkMatchReady = async (room) => {
          // userInfoがnullまたはundefinedでないことを確認
         if (!userInfo && !userInfo.job && !opponentInfo && !opponentInfo.job) {
             console.error('userInfoが未定義、またはopponentInfoが未定義、またはjobプロパティが存在しません。');
             return;
         }
         try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-match-ready?matchId=${matchId}`, {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-match-ready?matchId=${room}`, {
                 method: 'GET', // リクエストメソッドをGETに変更
                 credentials: 'include' // クッキーを含める
             });
@@ -81,7 +81,7 @@ function ImageSelectPage() {
     useEffect(() => {
         console.log('Effect running: userInfo', userInfo, 'currentPoint', currentPoint);
         if (mode === 'vsPlayer' && userInfo && userInfo.job && isPointUpdated) {
-            checkMatchReady(matchId);
+            checkMatchReady(room);
             setIsPointUpdated(false);  // フラグをリセット
         }
     }, [userInfo, isPointUpdated]);  
@@ -102,7 +102,7 @@ function ImageSelectPage() {
                 
                 if (newUserInfo && newUserInfo.job) {
                     const intervalId = setInterval(async () => {
-                        console.log("Sending to server:", { userId, hand, index, newUserInfo, opponentId, matchId, point });
+                        console.log("Sending to server:", { userId, hand, index, newUserInfo, opponentId, romm, point });
                         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/play-match`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json'},
@@ -113,7 +113,7 @@ function ImageSelectPage() {
                                 index: index,  // 選択した画像のインデックス
                                 info: newUserInfo,  // ユーザー情報
                                 opponentId: opponentId,
-                                matchId: matchId, // マッチID
+                                room: room, // マッチID
                                 point: currentPoint
                             }),
                         });

@@ -60,14 +60,14 @@ export function generateMatchId() {
     return Date.now().toString(); // 簡易的なマッチID生成
 }
 
-export const checkMatchReady = (matchId, matches, res, req, attempts = 0, responseSent = false) => {
+export const checkMatchReady = (room, matches, res, req, attempts = 0, responseSent = false) => {
         console.log(`checkMatchReady function started for matchId: ${matchId}`);
 
         if (responseSent) {
             return; // レスポンスが既に送信されていれば何もしない
         }
     
-        const match = matches[matchId];
+        const match = matches[room];
         const players = Object.values(match.players);
         const player1 = players[0];
         const player2 = players[1];
@@ -106,9 +106,9 @@ export const checkMatchReady = (matchId, matches, res, req, attempts = 0, respon
             }
             responseSent = true; // レスポンスが送信されたことを記録
         } else if (attempts < 30) { // 最大30秒間試行
-            setTimeout(() => checkMatchReady(matchId, matches, res, req, attempts + 1, responseSent), 1000);
+            setTimeout(() => checkMatchReady(room, matches, res, req, attempts + 1, responseSent), 1000);
         } else {
-            console.log(`マッチID: ${matchId} の準備がタイムアウトしました。`); // ログ出力を追加
+            console.log(`マッチID: ${room} の準備がタイムアウトしました。`); // ログ出力を追加
             res.status(408).json({ message: 'タイムアウト: マッチが準備完了になりませんでした。' });
             responseSent = true; // レスポンスが送信されたことを記録
         }
@@ -117,13 +117,13 @@ export const checkMatchReady = (matchId, matches, res, req, attempts = 0, respon
 
 let userChoices = {}; // ユーザーの選択を保存するためのオブジェクト
 
-export async function saveUserChoice(userId, hand, index, info, matchId, point) {
+export async function saveUserChoice(userId, hand, index, info, room, point) {
     console.log('Received info:', info); // infoの内容をログ出力
     // ユーザーの選択を保存
     const userChoice = { hand, index, info, points: point };
     userChoices[userId] = userChoice;
 
-    const match = matches[matchId];
+    const match = matches[room];
     if (match && match.players[userId]) {
         match.players[userId].hand = hand; // ユーザーの手を保存
         match.players[userId].index = index; // ユーザーのインデックスを保存

@@ -47,7 +47,6 @@ function MatchPage() {
                         console.log('Received match data:', matchData);
 
                         setPlayers(matchData.players);
-                        setMatchId(matchData.matchId);
                         setUserId(matchData.yourId);
                         setOpponentId(matchData.opponentId);
                         setIsMatched(true);
@@ -70,9 +69,9 @@ function MatchPage() {
 
     useEffect(() => {
         if (isMatched) {
-            navigate('/game', { state: { matchId, userId, opponentId, mode, room, isMatched: true }});
+            navigate('/game', { state: { room, userId, opponentId, mode, isMatched: true }});
         }
-    }, [isMatched, navigate, matchId, userId, opponentId, mode]);
+    }, [isMatched, navigate, matchId, userId, room, opponentId, mode]);
 
     return (
         <div>
