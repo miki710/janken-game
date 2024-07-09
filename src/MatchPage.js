@@ -76,8 +76,27 @@ function MatchPage() {
         }
     }, [isMatched, navigate, userId, room, opponentId, mode]);
 
-    const handleExit = () => {
-        navigate('/waiting', { state: { room } });
+    const handleExit = async () => {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ room })
+          });
+      
+          if (!response.ok) {
+            throw new Error('Failed to leave the room');
+          }
+      
+          const data = await response.text();
+          console.log(data); // ログ出力を追加
+          navigate('/waiting', { state: { room } });
+        } catch (error) {
+          console.error('Error leaving the room:', error);
+        }
     };
       
 
