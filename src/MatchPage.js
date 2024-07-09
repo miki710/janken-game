@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import './App.css';
 
 function MatchPage() {
     const [isMatched, setIsMatched] = useState(false);
     const [players, setPlayers] = useState([]);
     const [isMatchingProcess, setIsMatchingProcess] = useState(false);
-    const [matchId, setMatchId] = useState(null);
     const [userId, setUserId] = useState(null);
     const [opponentId, setOpponentId] = useState([]);
     const navigate = useNavigate();
@@ -46,7 +46,7 @@ function MatchPage() {
                         const matchData = await matchResponse.json();
                         console.log('Received match data:', matchData);
 
-                        setPlayers(matchData.players);
+                        setPlayers([matchData.yourId, ...matchData.players]);
                         setUserId(matchData.yourId);
                         setOpponentId(matchData.opponentId);
                         setIsMatched(true);
@@ -71,10 +71,15 @@ function MatchPage() {
         if (isMatched) {
             navigate('/game', { state: { room, userId, opponentId, mode, isMatched: true }});
         }
-    }, [isMatched, navigate, matchId, userId, room, opponentId, mode]);
+    }, [isMatched, navigate, userId, room, opponentId, mode]);
 
     return (
-        <div>
+        <div className='App-header'>
+             <ul className="background">
+                {Array.from({ length: 25 }).map((_, index) => (
+                    <li key={index}></li>
+                ))}
+            </ul>
             {isMatched ? (
                 <h1>マッチングしました！</h1>
             ) : (
