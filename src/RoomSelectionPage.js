@@ -12,28 +12,37 @@ function RoomSelectionPage() {
   const { mode } = location.state || {}; // location.stateからmodeを取得
   const { cookieUserId } = useContext(UserContext); // UserContextからcookieUserIdを取得
 
-  useEffect(() => {
-    // サーバーから部屋の状態を取得
-    fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/rooms`, {
+  const fetchRooms = async () => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/rooms`, {
         method: 'GET',
         credentials: 'include'
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-      return response.json();
-      })
-      .then(data => {
-        console.log('Rooms fetched:', data.rooms); // ログ出力を追加
-        setRooms(data.rooms);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching rooms:', error);
-        setError('部屋の情報を取得できませんでした。');
-        setLoading(false);
       });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Rooms fetched:', data.rooms); // ログ出力を追加
+      setRooms(data.rooms);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+      setError('部屋の情報を取得できませんでした。');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // 初回ロード時に部屋の状態を取得
+    fetchRooms();
+
+    // 5秒ごとに部屋の状態を更新
+    const interval = setInterval(fetchRooms, 5000);
+
+    // クリーンアップ
+    return () => clearInterval(interval);
   }, []);
 
   const handleRoomSelect = (room) => {
