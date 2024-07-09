@@ -60,7 +60,12 @@ function RoomSelectionPage() {
   }
 
   return (
-    <div>
+    <div className='App-header'>
+        <ul className="background">
+            {Array.from({ length: 25 }).map((_, index) => (
+                <li key={index}></li>
+            ))}
+        </ul>
       <h1>対戦部屋を選択</h1>
       {rooms.map((room, index) => (
         <button key={index} onClick={() => handleRoomSelect(room)}>
