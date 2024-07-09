@@ -38,6 +38,10 @@ function ImageDisplayPage() {
 
     const { cookieUserId } = useContext(UserContext);
 
+    const [rooms, setRooms] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
     useEffect(() => {
       console.log('useEffect for initial point and mode');
       // クッキーから前回のポイントを読み取る
@@ -160,6 +164,39 @@ function ImageDisplayPage() {
     navigate('/game', { state: { mode }}); // /gameに遷移
   };
 
+  // 部屋の情報を取得する関数
+  const fetchRooms = async () => {
+  try {
+    const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/rooms`, {
+      method: 'GET',
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    console.log('Rooms fetched:', data.rooms); // ログ出力を追加
+    setRooms(data.rooms);
+    setLoading(false);
+  } catch (error) {
+    console.error('Error fetching rooms:', error);
+    setError('部屋の情報を取得できませんでした。');
+    setLoading(false);
+  }
+  };
+
+  useEffect(() => {
+    // 初回ロード時に部屋の状態を取得
+    fetchRooms();
+
+    // 5秒ごとに部屋の状態を更新
+    const interval = setInterval(fetchRooms, 5000);
+
+    // クリーンアップ
+    return () => clearInterval(interval);
+  }, []);
 
 
   return (
@@ -239,6 +276,23 @@ function ImageDisplayPage() {
             </button>
           </div>
         )}
+
+        {mode === 'vsPlayer' && (
+          <div className="room-buttons">
+            {loading ? (
+              <p>部屋の情報を読み込み中...</p>
+            ) : error ? (
+              <p>{error}</p>
+            ) : (
+              rooms.map((room, index) => (
+                <button key={index} onClick={() => navigate(`/room/${room.id}`)}>
+                  {room.name}
+                </button>
+              ))
+            )}
+          </div>
+        )}        
+
         <div className="rainbow-border">
             <button 
               onClick={resetGame}
@@ -249,6 +303,7 @@ function ImageDisplayPage() {
             </button>
         </div> 
         <p style={{ fontSize: '12px' }}>User ID: {cookieUserId}</p>
+        {opponent && <p style={{ fontSize: '12px' }}>対戦相手ID: {opponent.opponentId}</p>}
     </div>
     </>
     )

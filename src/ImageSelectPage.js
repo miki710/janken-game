@@ -60,7 +60,8 @@ function ImageSelectPage() {
                         opponent: {
                             hand: data.opponentHand,
                             job: data.opponentInfo.job,
-                            index: data.opponentIndex
+                            index: data.opponentIndex,
+                            opponentId: opponentId
                         },
                         result: data.result,
                         mode: mode,  // location.stateから受け取ったmodeを使用
