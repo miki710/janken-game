@@ -41,7 +41,7 @@ function ImageSelectPage() {
             return;
         }
         try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-match-ready?matchId=${room}`, {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-match-ready?room=${room}`, {
                 method: 'GET', // リクエストメソッドをGETに変更
                 credentials: 'include' // クッキーを含める
             });

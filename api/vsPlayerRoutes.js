@@ -116,7 +116,7 @@ router.post('/match', (req, res) => {
 //状態をクライアントに通知するエンドポイント
 router.get('/check-match-ready', (req, res) => {
     const { room } = req.query;
-    console.log("Received GET request for /check-match-ready with matchId:", matchId);
+    console.log("Received GET request for /check-match-ready with matchId:", room);
     const match = matches[room];
     if (!match) {
         return res.status(404).json({ message: "Match not found" });
