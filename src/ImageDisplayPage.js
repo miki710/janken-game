@@ -199,24 +199,46 @@ function ImageDisplayPage() {
   }, []);
 
 
-  const handleRoomSelect = (room) => {
-  // サーバーに部屋参加リクエストを送信
-    console.log('Joining room:', room.name); // ログ出力を追加
-    fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/join-room?room=${room.name}`, { 
-      method: 'POST',
-      credentials: 'include'
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('Join room response:', data); // ログ出力を追加
-        if (data.success) {
-          navigate('/match', { state: { mode , room: room.name }});
-        } else {
-          alert(data.message);
-        }
+  const handleRoomSelect = async (room) => {
+    // 現在の部屋から退出
+    try {
+      const leaveResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ room: room }) // 現在の部屋を指定
       });
+  
+      if (!leaveResponse.ok) {
+        throw new Error('Failed to leave the current room');
+      }
+  
+      console.log('Successfully left the current room');
+    } catch (error) {
+      console.error('Error leaving the current room:', error);
+    }
+  
+    // 新しい部屋に参加
+    try {
+      const joinResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/join-room?room=${room.name}`, { 
+        method: 'POST',
+        credentials: 'include'
+      });
+  
+      const data = await joinResponse.json();
+      console.log('Join room response:', data); // ログ出力を追加
+      if (data.success) {
+        navigate('/match', { state: { mode, room: room.name }});
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error('Error joining the new room:', error);
+    }
   };
-
+  
 
   return (
     <>
