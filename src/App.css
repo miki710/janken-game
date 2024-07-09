@@ -366,4 +366,50 @@ body {
   margin: 20px; /* ボタン同士の間隔を広げる */
   padding: 15px 30px; /* ボタンを大きくする */
   font-size: 18px; /* 文字サイズを大きくする */
+  background-color: transparent; /* 背景色を透明にする */
+  color: white; /* ボタンの文字色 */
+  border: none; /* ボタンのデフォルトの枠線を削除 */
+  cursor: pointer; /* カーソルをポインタに変更 */
+  position: relative; /* 擬似要素のために相対位置を設定 */
+}
+
+.neon-border {
+  position: relative;
+  display: inline-block;
+  padding: 10px; /* 画像の周りに余白を追加 */
+  border-radius: 10px; /* 角を丸くする場合 */
+  box-shadow: 0 0 20px rgba(128, 0, 128, 0.5), /* パープルのネオンの影 */
+              0 0 30px rgba(128, 0, 128, 0.5), /* パープルのネオンの影 */
+              0 0 40px rgba(128, 0, 128, 0.5), /* パープルのネオンの影 */
+              0 0 50px rgba(128, 0, 128, 0.5), /* パープルのネオンの影 */
+              0 0 60px rgba(128, 0, 128, 0.5), /* パープルのネオンの影 */
+              0 0 70px rgba(128, 0, 128, 0.5); /* パープルのネオンの影 */
+  animation: neon-flicker 1.5s infinite alternate; /* ネオンのちらつきアニメーション */
+}
+
+@keyframes neon-flicker {
+  0% {
+    box-shadow: 0 0 20px rgba(128, 0, 128, 0.5),
+                0 0 30px rgba(128, 0, 128, 0.5),
+                0 0 40px rgba(128, 0, 128, 0.5),
+                0 0 50px rgba(128, 0, 128, 0.5),
+                0 0 60px rgba(128, 0, 128, 0.5),
+                0 0 70px rgba(128, 0, 128, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(128, 0, 128, 0.3),
+                0 0 20px rgba(128, 0, 128, 0.3),
+                0 0 30px rgba(128, 0, 128, 0.3),
+                0 0 40px rgba(128, 0, 128, 0.3),
+                0 0 50px rgba(128, 0, 128, 0.3),
+                0 0 60px rgba(128, 0, 128, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(128, 0, 128, 0.5),
+                0 0 30px rgba(128, 0, 128, 0.5),
+                0 0 40px rgba(128, 0, 128, 0.5),
+                0 0 50px rgba(128, 0, 128, 0.5),
+                0 0 60px rgba(128, 0, 128, 0.5),
+                0 0 70px rgba(128, 0, 128, 0.5);
+  }
 }
