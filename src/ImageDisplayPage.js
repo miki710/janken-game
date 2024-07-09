@@ -285,7 +285,11 @@ function ImageDisplayPage() {
               <p>{error}</p>
             ) : (
               rooms.map((room, index) => (
-                <button key={index} onClick={() => navigate(`/room/${room.id}`)}>
+                <button 
+                  key={index} 
+                  onClick={() => navigate(`/room/${room.id}`)}
+                  style={{ fontSize: '16px', padding: '10px', margin: '5px', width: 'auto' }} // ボタンを大きくするスタイルを追加
+                >
                   {room.name}
                 </button>
               ))
