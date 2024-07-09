@@ -338,8 +338,7 @@ function ImageDisplayPage() {
                   <button 
                     key={index} 
                     onClick={() =>  handleRoomSelect(room)} // handleRoomSelectを使用
-                    className="rainbow-button vs-player"  // クラスを追加
-                    style={{ fontSize: '18px', width: 'auto' }} // ボタンを大きくするスタイルを追加
+                    style={{ fontSize: '18px', padding: '10px 20px', width: 'auto' }} // paddingを追加
                   >
                     {room.name} - {room.players.length === 0 ? '0人' : room.players.length === 2 ? '満員' : `${room.players.length}人 - ID: ${room.players[0].slice(-5)}`}
                   </button>
