@@ -217,6 +217,41 @@ function ImageSelectPage() {
                 return null;
         }
     };
+
+     // 対戦相手の状態を確認する関数を追加
+     useEffect(() => {
+        const checkOpponentStatus = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${room}&userId=${userId}`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to check opponent status');
+                }
+
+                const data = await response.json();
+                if (data.opponentLeft) {
+                    alert('対戦相手が退出したのであなたはたった一人部屋に取り残されました');
+                    // 部屋からユーザーを削除するリクエストを送信
+                    await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ room })
+                    });
+                    navigate('/'); // 対戦相手が退出した場合、モード選択画面に戻る
+                }
+            } catch (error) {
+                console.error('Error checking opponent status:', error);
+            }
+        };
+
+        const intervalId = setInterval(checkOpponentStatus, 5000); // 5秒ごとに対戦相手の状態を確認
+
+        return () => clearInterval(intervalId);
+    }, [room, userId, navigate]);
       
   return (
     <>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const useAutoLeaveRoom = (mode, room, timeout = 300000) => { // デフォルトで5分
+const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルトで1分
   const timerRef = useRef(null);
   const [timeElapsed, setTimeElapsed] = useState(0); // 経過時間を管理
   const navigate = useNavigate(); // useNavigateフックを使用

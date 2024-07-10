@@ -144,6 +144,7 @@ function MatchPage() {
             {mode === 'vsPlayer' && (
                 <p style={{ fontSize: '14px' }}>{formatTime(timeElapsed)}</p>
             )}
+            <p style={{ fontSize: '12px' }}>User ID: {cookieUserId}</p>
         </div>
     );
 }

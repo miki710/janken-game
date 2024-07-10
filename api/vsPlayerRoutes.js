@@ -55,7 +55,6 @@ router.post('/join-room', (req, res) => {
 });
 
 
-// プレイヤーを部屋から出すためのエンドポイント
 // 待機部屋からユーザーを削除するエンドポイント
 router.post('/leave-room', (req, res) => {
     const { room } = req.body;
@@ -64,10 +63,25 @@ router.post('/leave-room', (req, res) => {
     // 待機部屋からユーザーを削除するロジックを実装
     if (rooms[room] && rooms[room].players.includes(userId)) {
         rooms[room].players = rooms[room].players.filter(player => player !== userId);
+
+        console.log(`User ${userId} left room: ${room}`); // デバッグ用ログ
+
         res.status(200).send('Successfully left the room');
     } else {
         res.status(400).send('User not found in the specified room');
     }
+});
+
+// 対戦相手の状態を確認するエンドポイント
+router.get('/check-opponent-status', (req, res) => {
+    const { room, userId } = req.query;
+    if (rooms[room]) {
+        const opponent = rooms[room].players.find(player => player.userId !== userId);
+        if (!opponent) {
+            return res.status(200).json({ opponentLeft: true });
+        }
+    }
+    res.status(200).json({ opponentLeft: false });
 });
 
 
