@@ -27,6 +27,36 @@ function MatchPage() {
        return `${paddedMinutes}:${paddedSeconds}`;
      };
 
+    // コンポーネントがマウントされたときにルームのプレイヤー情報を取得
+    useEffect(() => {
+        const fetchRoomPlayers = async () => {
+            try {
+                const serverUrl = process.env.REACT_APP_SERVER_URL;
+                const response = await fetch(`${serverUrl}/vs-player/get-room-players?room=${room}`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch room players');
+                }
+
+                const data = await response.json();
+                console.log('Fetched room players:', data); // デバッグ用ログ
+                if (data.players) {
+                    setPlayers(data.players);
+                    if (data.players.length > 1) {
+                        setOpponentId(data.players.find(player => player !== cookieUserId));
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching room players:', error);
+            }
+        };
+
+        fetchRoomPlayers();
+    }, [room, cookieUserId]);
+
     useEffect(() => {
         const intervalId = setInterval(async () => {
             if (!isMatchingProcess && !isMatched) {
@@ -121,16 +151,12 @@ function MatchPage() {
                 ))}
             </ul>
             <div>
-                <h2>{room}</h2> {/* 部屋名を表示 */}
+                <h2>{room}</h2> 
             </div>
             <div>
-                {players && players.length > 0 ? (
-                    players.map((player, index) => (
-                        <p key={index}>ID: {player.slice(-5)}</p>
-                    ))
-                ) : (
-                    <p>プレイヤーがいません</p>
-                )} 
+                {players.map((player, index) => (
+                    <p key={index}>ID: {player.slice(-5)}</p>
+                ))}
             </div>
             <div className="rainbow-border">
                 <button 

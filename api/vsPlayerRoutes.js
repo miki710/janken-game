@@ -84,6 +84,16 @@ router.get('/check-opponent-status', (req, res) => {
     res.status(200).json({ opponentLeft: false });
 });
 
+//ルームのプレイヤー情報を取得するエンドポイント
+router.get('/get-room-players', (req, res) => {
+    const { room } = req.query;
+    if (rooms[room]) {
+        res.status(200).json({ players: rooms[room].players });
+    } else {
+        res.status(404).json({ error: 'Room not found' });
+    }
+});
+
 
 // マッチが準備完了状態になっているかを確認し、そのマッチリクエストを処理するエンドポイント
 router.post('/match', (req, res) => {
