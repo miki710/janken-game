@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const useAutoLeaveRoom = (mode, room, timeout = 300000) => { // デフォルトで5分
   const timerRef = useRef(null);
   const [timeElapsed, setTimeElapsed] = useState(0); // 経過時間を管理
+  const navigate = useNavigate(); // useNavigateフックを使用
 
   const leaveRoom = () => {
     if (mode === 'vsPlayer' && room) {
@@ -18,6 +20,7 @@ const useAutoLeaveRoom = (mode, room, timeout = 300000) => { // デフォルト�
           throw new Error('Failed to leave the room');
         }
         console.log('Successfully left the room due to inactivity');
+        navigate('/'); // 5分後にModeSelectPageに遷移
       }).catch(error => {
         console.error('Error leaving the room:', error);
       });
