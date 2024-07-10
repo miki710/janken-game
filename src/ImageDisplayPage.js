@@ -6,7 +6,7 @@ import { playSound, getHandEmoji } from './utils.js';
 import { images } from './ImageSelectPage.js';
 import { UserContext } from './UserContext.js';
 import Fireworks from './Fireworks.js'; // Fireworksコンポーネントをインポート
-import useAutoLeaveRoom from './hooks/useAutoLeaveRoom.js'; // カスタムフックをインポート
+import useAutoLeaveRoom from './useAutoLeaveRoom.js'; // カスタムフックをインポート
 import './App.css';
 
 
