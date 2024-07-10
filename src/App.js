@@ -9,6 +9,7 @@ import ImageSelectPage from './ImageSelectPage.js';
 import ImageDisplayPage from './ImageDisplayPage.js';
 import { UserProvider, UserContext } from './UserContext.js';
 import { playBGM } from './utils.js'; // 関数をインポート
+import NotFoundPage from './NotFoundPage.js';
 
 function App() {
   useEffect(() => {
@@ -62,6 +63,7 @@ function AppContent() {
           <Route path="/match" element={<MatchPage />} /> {/* 新しいルートを追加 */}
           <Route path="/game" element={<ImageSelectPage />} /> 
           <Route path="/display" element={<ImageDisplayPage />} />
+          <Route path="*" element={<NotFoundPage />} /> {/* 404エラーページ */}
         </Routes>
       </BrowserRouter>
   );
