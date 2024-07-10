@@ -13,14 +13,14 @@
         }
       }
     ],
-    "rewrites": [
+    "routes": [
       {
-          "source": "/api/(.*)",
-          "destination": "/api/server.js"
+          "src": "/api/(.*)",
+          "dest": "/api/server.js"
       },
       {
-          "source": "/(.*)",
-          "destination": "/index.html"
+          "src": "/(.*)",
+          "dest": "/index.html"
       }
     ]
   }
