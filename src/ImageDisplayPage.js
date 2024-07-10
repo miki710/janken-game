@@ -350,9 +350,11 @@ function ImageDisplayPage() {
                 <div className={`rainbow-border ${room.players.length === 2 ? 'red-neon-border' : ''}`} key={index}>
                   <button 
                     onClick={() =>  handleRoomSelect(room)} // handleRoomSelectを使用
+                    disabled={room.players.includes(cookieUserId)} // 自分が入っている部屋のボタンを無効化
                     className="rainbow-button custom-button"  // クラスを追加
                   >
                     {room.name} - {room.players.length === 0 ? '0人' : room.players.length === 2 ? '満員' : `${room.players.length}人 - ID: ${room.players[0].slice(-5)}`}
+                    {room.players.includes(cookieUserId) ? ' (自分の部屋)' : ''}
                   </button>
                 </div>
               ))
