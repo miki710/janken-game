@@ -220,12 +220,16 @@ function ImageSelectPage() {
 
      // 対戦相手の状態を確認する関数を追加
      useEffect(() => {
+        if (mode === 'vsPlayer') {
         const checkOpponentStatus = async () => {
+            console.log('Checking opponent status...'); // デバッグ用ログ
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${room}&userId=${userId}`, {
                     method: 'GET',
                     credentials: 'include'
                 });
+
+                console.log('Response status:', response.status); // デバッグ用ログ
 
                 if (!response.ok) {
                     throw new Error('Failed to check opponent status');
@@ -233,7 +237,7 @@ function ImageSelectPage() {
 
                 const data = await response.json();
                 if (data.opponentLeft) {
-                    alert('対戦相手が退出したのであなたはたった一人部屋に取り残されました');
+                    alert('あなたはたった一人部屋に取り残されました');
                     // 部屋からユーザーを削除するリクエストを送信
                     await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
                         method: 'POST',
@@ -251,6 +255,7 @@ function ImageSelectPage() {
         const intervalId = setInterval(checkOpponentStatus, 5000); // 5秒ごとに対戦相手の状態を確認
 
         return () => clearInterval(intervalId);
+        }
     }, [room, userId, navigate]);
       
   return (
