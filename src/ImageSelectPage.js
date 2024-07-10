@@ -4,6 +4,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { parseFilename, playSound, getHandEmoji } from './utils.js';  // functionName を utils.js からインポート
 import { attributeMap } from './attribute.js';
 import { UserContext } from './UserContext.js';
+import useAutoLeaveRoom from './useAutoLeaveRoom.js'; // カスタムフックをインポート
 import Cookies from 'js-cookie'
 
 
@@ -34,7 +35,19 @@ function ImageSelectPage() {
     const savedPoint = Cookies.get('point') || 0; // クッキーからポイントを取得
     const { cookieUserId } = useContext(UserContext);
 
-      const checkMatchReady = async (room) => {
+    // カスタムフックを使用
+    const timeElapsed = useAutoLeaveRoom(mode, room);
+
+    // 分と秒に変換する関数
+    const formatTime = (seconds) => {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      const paddedMinutes = String(minutes).padStart(2, '0');
+      const paddedSeconds = String(remainingSeconds).padStart(2, '0');
+      return `${paddedMinutes}:${paddedSeconds}`;
+    };
+
+    const checkMatchReady = async (room) => {
          // userInfoがnullまたはundefinedでないことを確認
         if (!userInfo && !userInfo.job && !opponentInfo && !opponentInfo.job) {
             console.error('userInfoが未定義、またはopponentInfoが未定義、またはjobプロパティが存在しません。');
@@ -260,6 +273,9 @@ function ImageSelectPage() {
                             Top画面へ戻る
                         </button>
                     </div>
+                )}
+                {mode === 'vsPlayer' && (
+                    <p style={{ fontSize: '14px' }}>{formatTime(timeElapsed)}</p>
                 )}
                 <p style={{ fontSize: '12px' }}>User ID: {cookieUserId}</p>
                 {mode === 'vsPlayer' && <p style={{ fontSize: '12px' }}>対戦相手ID: {opponentId}</p>}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { UserContext } from './UserContext.js'; // UserContext をインポート
+import useAutoLeaveRoom from './useAutoLeaveRoom.js'; 
 import './App.css';
 
 function MatchPage() {
@@ -13,6 +14,18 @@ function MatchPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const { mode, room } = location.state || {};
+
+     // カスタムフックを使用
+     const timeElapsed = useAutoLeaveRoom(mode, room);
+
+     // 分と秒に変換する関数
+     const formatTime = (seconds) => {
+       const minutes = Math.floor(seconds / 60);
+       const remainingSeconds = seconds % 60;
+       const paddedMinutes = String(minutes).padStart(2, '0');
+       const paddedSeconds = String(remainingSeconds).padStart(2, '0');
+       return `${paddedMinutes}:${paddedSeconds}`;
+     };
 
     useEffect(() => {
         const intervalId = setInterval(async () => {
@@ -110,17 +123,14 @@ function MatchPage() {
             <div>
                 <h2>{room}</h2> {/* 部屋名を表示 */}
             </div>
-                <p style={{ fontWeight: 'normal', fontSize: '14px' }}>マッチングを待っています</p>
-            <div>
             <div>
                 {players && players.length > 0 ? (
                     players.map((player, index) => (
-                        <p key={index}>{player.slice(-5)}</p>
+                        <p key={index}>ID: {player.slice(-5)}</p>
                     ))
                 ) : (
                     <p>プレイヤーがいません</p>
                 )} 
-            </div> 
             </div>
             <div className="rainbow-border">
                 <button 
@@ -131,7 +141,9 @@ function MatchPage() {
                     退出する
                 </button>
             </div>
-           
+            {mode === 'vsPlayer' && (
+                <p style={{ fontSize: '14px' }}>{formatTime(timeElapsed)}</p>
+            )}
         </div>
     );
 }
