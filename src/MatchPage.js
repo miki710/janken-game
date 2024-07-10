@@ -110,11 +110,7 @@ function MatchPage() {
             <div>
                 <h2>{room}</h2> {/* 部屋名を表示 */}
             </div>
-            {isMatched ? (
-                <h3>マッチングしました！</h3>
-            ) : (
-                <h3>マッチングを待っています...</h3>
-            )}
+                <p style={{ fontWeight: 'normal' }}>マッチングを待っています</p>
             <div>
                 <ul>
                     {players && players.length > 0 ? (
