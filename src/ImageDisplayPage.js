@@ -47,6 +47,13 @@ function ImageDisplayPage() {
     // カスタムフックを使用
     const timeElapsed = useAutoLeaveRoom(mode, room);
 
+    // 分と秒に変換する関数
+    const formatTime = (seconds) => {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes}分 ${remainingSeconds}秒`;
+    };
+
     useEffect(() => {
       console.log('useEffect for initial point and mode');
       // クッキーから前回のポイントを読み取る
