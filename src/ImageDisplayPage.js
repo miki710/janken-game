@@ -347,7 +347,7 @@ function ImageDisplayPage() {
               <p>{error}</p>
             ) : (
               rooms.map((room, index) => (
-                <div className="rainbow-border" key={index}>
+                <div className={`rainbow-border ${room.players.length === 2 ? 'red-neon-border' : ''}`} key={index}>
                   <button 
                     onClick={() =>  handleRoomSelect(room)} // handleRoomSelectを使用
                     className="rainbow-button custom-button"  // クラスを追加
