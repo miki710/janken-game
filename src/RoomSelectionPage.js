@@ -77,7 +77,11 @@ function RoomSelectionPage() {
         </ul>
       <h1>対戦部屋を選択</h1>
       {rooms.map((room, index) => (
-        <button key={index} onClick={() => handleRoomSelect(room)} className="room-button">
+        <button 
+            key={index} 
+            onClick={() => handleRoomSelect(room)} 
+            className={`room-button ${room.players.length === 2 ? 'red-neon-border' : ''}`}
+        >
           {room.name} - {room.players.length === 0 ? '0人' : room.players.length === 2 ? '満員' : `${room.players.length}人 - ID: ${room.players[0].slice(-5)}`}
         </button>
       ))}
