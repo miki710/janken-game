@@ -110,17 +110,17 @@ function MatchPage() {
             <div>
                 <h2>{room}</h2> {/* 部屋名を表示 */}
             </div>
-                <p style={{ fontWeight: 'normal' }}>マッチングを待っています</p>
+                <p style={{ fontWeight: 'normal', fontSize: '14px' }}>マッチングを待っています</p>
             <div>
-                <ul>
-                    {players && players.length > 0 ? (
-                        players.map((player, index) => (
-                            <li key={index}>{player}</li>
-                        ))
-                    ) : (
-                        <li>プレイヤーがいません</li>
-                    )} 
-                </ul>
+            <div>
+                {players && players.length > 0 ? (
+                    players.map((player, index) => (
+                        <p key={index}>{player.slice(-5)}</p>
+                    ))
+                ) : (
+                    <p>プレイヤーがいません</p>
+                )} 
+            </div> 
             </div>
             <div className="rainbow-border">
                 <button 

@@ -369,7 +369,9 @@ function ImageDisplayPage() {
               Top画面へ戻る
             </button>
         </div>
-        <p style={{ fontSize: '14px' }}>{formatTime(timeElapsed)}</p>
+        {mode === 'vsPlayer' && (
+          <p style={{ fontSize: '14px' }}>{formatTime(timeElapsed)}</p>
+        )}
         <p style={{ fontSize: '12px' }}>User ID: {cookieUserId}</p>
         {opponent && <p style={{ fontSize: '12px' }}>対戦相手ID: {opponent.opponentId}</p>}
     </div>

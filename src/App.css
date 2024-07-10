@@ -395,7 +395,7 @@ body {
 }
 
 .red-neon-border {
-  border: 0.2rem solid red; /* 赤い枠線を追加 */
+  border: 0.2rem solid #fff; /* 白い枠線を追加 */
   box-shadow:
     0 0 20px rgba(255, 0, 0, 0.8), /* 外側の赤いネオンの影 */
     0 0 30px rgba(255, 0, 0, 0.8), /* 外側の赤いネオンの影 */
