@@ -107,13 +107,15 @@ function MatchPage() {
                     <li key={index}></li>
                 ))}
             </ul>
+            <div>
+                <h2>{room}</h2> {/* 部屋名を表示 */}
+            </div>
             {isMatched ? (
-                <h1>マッチングしました！</h1>
+                <h3>マッチングしました！</h3>
             ) : (
-                <h1>マッチングを待っています...</h1>
+                <h3>マッチングを待っています...</h3>
             )}
             <div>
-                <h2>参加プレイヤー:</h2>
                 <ul>
                     {players && players.length > 0 ? (
                         players.map((player, index) => (
@@ -123,9 +125,6 @@ function MatchPage() {
                         <li>プレイヤーがいません</li>
                     )} 
                 </ul>
-            </div>
-            <div>
-                <h2>部屋: {room}</h2> {/* 部屋名を表示 */}
             </div>
             <div className="rainbow-border">
                 <button 

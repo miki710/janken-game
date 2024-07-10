@@ -6,6 +6,7 @@ import { playSound, getHandEmoji } from './utils.js';
 import { images } from './ImageSelectPage.js';
 import { UserContext } from './UserContext.js';
 import Fireworks from './Fireworks.js'; // Fireworksコンポーネントをインポート
+import useAutoLeaveRoom from './hooks/useAutoLeaveRoom.js'; // カスタムフックをインポート
 import './App.css';
 
 
@@ -42,6 +43,9 @@ function ImageDisplayPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const intervalRef = useRef(null);
+
+    // カスタムフックを使用
+    const timeElapsed = useAutoLeaveRoom(mode, room);
 
     useEffect(() => {
       console.log('useEffect for initial point and mode');
@@ -355,7 +359,8 @@ function ImageDisplayPage() {
             >
               Top画面へ戻る
             </button>
-        </div> 
+        </div>
+        <p style={{ fontSize: '12px' }}>{timeElapsed}</p>
         <p style={{ fontSize: '12px' }}>User ID: {cookieUserId}</p>
         {opponent && <p style={{ fontSize: '12px' }}>対戦相手ID: {opponent.opponentId}</p>}
     </div>

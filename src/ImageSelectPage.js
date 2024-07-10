@@ -219,7 +219,7 @@ function ImageSelectPage() {
                     <li key={index}></li>
                 ))}
             </ul>
-            <h3>じゃんけんゲーム: {mode === 'vsPlayer' ? 'ユーザー戦' : 'PC戦'}</h3>           
+            <h3>じゃんけんゲーム: {mode === 'vsPlayer' ? `ユーザー戦 ${room}` : 'PC戦'}</h3>          
                 {isMatched || mode !== 'vsPlayer' ? (
                     Object.entries(images).map(([hand, imagePaths]) => (
                     <div 
