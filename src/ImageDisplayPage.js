@@ -245,7 +245,7 @@ function ImageDisplayPage() {
   
     // 新しい部屋に参加
     try {
-      const joinResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/join-room?room=${room}`, { 
+      const joinResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/join-room?room=${room.name}`, { 
         method: 'POST',
         credentials: 'include'
       });
@@ -253,7 +253,7 @@ function ImageDisplayPage() {
       const data = await joinResponse.json();
       console.log('Join room response:', data); // ログ出力を追加
       if (data.success) {
-        navigate('/match', { state: { mode, room: room }});
+        navigate('/match', { state: { mode, room: room.name }});
       } else {
         alert(data.message);
       }
