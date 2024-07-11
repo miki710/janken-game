@@ -233,6 +233,8 @@ function ImageDisplayPage() {
       });
   
       if (!leaveResponse.ok) {
+        const errorText = await leaveResponse.text();
+        console.error('Error response:', errorText);
         throw new Error('Failed to leave the current room');
       }
   
