@@ -12,9 +12,7 @@ import './App.css';
 
 function ImageDisplayPage() {
     const navigate = useNavigate(); // useNavigateフックを使用
-    const location = useLocation();
-    console.log('Location state:', location.state);
-    
+    const location = useLocation();    
     const { user = {}, opponent ={}, mode, room, result: initialResult } = location.state || {};
 
     const initialPoint = location.state && location.state.user ? location.state.user.point : 0;
@@ -216,7 +214,7 @@ function ImageDisplayPage() {
   }, []);
 
 
-  const handleRoomSelect = async (room) => {
+  const handleRoomSelect = async (newRoom) => {
     // ポーリングを停止
     console.log('Clearing interval with ID:', intervalRef.current);
     clearInterval(intervalRef.current);
@@ -229,7 +227,7 @@ function ImageDisplayPage() {
           'Content-Type': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify({ room: room.name }) // 現在の部屋を指定
+        body: JSON.stringify({ room: room }) // 現在の部屋を指定
       });
   
       if (!leaveResponse.ok) {
@@ -245,7 +243,7 @@ function ImageDisplayPage() {
   
     // 新しい部屋に参加
     try {
-      const joinResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/join-room?room=${room.name}`, { 
+      const joinResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/join-room?room=${newRoom}`, { 
         method: 'POST',
         credentials: 'include'
       });
@@ -253,7 +251,7 @@ function ImageDisplayPage() {
       const data = await joinResponse.json();
       console.log('Join room response:', data); // ログ出力を追加
       if (data.success) {
-        navigate('/match', { state: { mode, room: room.name }});
+        navigate('/match', { state: { mode, room: newRoom }});
       } else {
         alert(data.message);
       }
@@ -351,7 +349,7 @@ function ImageDisplayPage() {
               rooms.map((room, index) => (
                 <div className={`rainbow-border ${room.players.length === 2 ? 'red-neon-border' : ''}`} key={index}>
                   <button 
-                    onClick={() =>  handleRoomSelect(room)} // handleRoomSelectを使用
+                    onClick={() =>  handleRoomSelect(newRoom)} // handleRoomSelectを使用
                     disabled={room.players.includes(cookieUserId)} // 自分が入っている部屋のボタンを無効化
                     className="rainbow-button custom-button"  // クラスを追加
                   >

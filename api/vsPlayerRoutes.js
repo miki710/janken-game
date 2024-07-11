@@ -60,6 +60,8 @@ router.post('/leave-room', (req, res) => {
     const { room } = req.body;
     const userId = req.cookies.userId; // クッキーからuserIdを取得
 
+    console.log(`Request to leave room: ${room} by user: ${userId}`); // デバッグ用ログ
+
     // 待機部屋からユーザーを削除するロジックを実装
     if (rooms[room] && rooms[room].players.includes(userId)) {
         rooms[room].players = rooms[room].players.filter(player => player !== userId);
