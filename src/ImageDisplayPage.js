@@ -229,7 +229,7 @@ function ImageDisplayPage() {
           'Content-Type': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify({ room: room }) // 現在の部屋を指定
+        body: JSON.stringify({ room: room.name }) // 現在の部屋を指定
       });
   
       if (!leaveResponse.ok) {

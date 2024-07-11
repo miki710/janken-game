@@ -19,7 +19,6 @@ function ImageSelectPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const { room, userId, opponentId, mode, isMatched } = location.state || {}; // stateがnullの場合に備えてデフォルト値を設定
-    console.log(location.state)
 
     const { point = 0 } = location.state || {};
     const [currentPoint, setCurrentPoint] = useState(point); // 受け取ったポイントを状態として保持
@@ -236,6 +235,7 @@ function ImageSelectPage() {
                 }
 
                 const data = await response.json();
+                console.log('Opponent status data:', data); // デバッグ用ログ
                 if (data.opponentLeft) {
                     alert('あなたはたった一人部屋に取り残されました');
                     // 部屋からユーザーを削除するリクエストを送信
