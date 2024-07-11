@@ -66,12 +66,19 @@ body {
 }
 
 /*
-勝敗、ポイントのアニメーション設定 @ImageDisplayPage
+勝敗CSS、ポイントのアニメーション設定 @ImageDisplayPage
 */
 
 .glowing-text {
-  color: #00bfff;
-  text-shadow: 0 0 10px #00bfff, 0 0 15px #00bfff;
+  color: #fff; /* 白抜き文字 */
+  text-shadow: 
+    0 0 10px #ff00ff, /* ピンクネオンの影 */
+    0 0 20px #ff00ff, 
+    0 0 30px #ff00ff, 
+    0 0 40px #ff00ff, 
+    0 0 50px #ff00ff, 
+    0 0 60px #ff00ff, 
+    0 0 70px #ff00ff; 
   padding: 30px;
   background: none;
 }

@@ -312,7 +312,7 @@ function ImageDisplayPage() {
             <>
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
-                      <h2 className="animate__animated animate__bounceIn animate__repeat-2 glowing-text">{result}</h2> 
+                      <h2 className="animate__animated animate__bounceIn glowing-text">{result}</h2> 
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div>      
                 )}
@@ -321,7 +321,7 @@ function ImageDisplayPage() {
             <>
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
-                      <h3 className="bounce glowing-text">{initialResult}</h3> 
+                      <h2 className="animate__animated animate__bounceIn glowing-text">{initialResult}</h2> 
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div> 
                 )}
