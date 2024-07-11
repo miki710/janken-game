@@ -8,6 +8,7 @@ import { UserContext } from './UserContext.js';
 import Fireworks from './Fireworks.js'; // Fireworksコンポーネントをインポート
 import useAutoLeaveRoom from './useAutoLeaveRoom.js'; // カスタムフックをインポート
 import './App.css';
+import 'animate.css';
 
 
 function ImageDisplayPage() {
@@ -311,7 +312,7 @@ function ImageDisplayPage() {
             <>
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
-                      <h2 className="bounce glowing-text">{result}</h2> 
+                      <h2 className="animate__animated animate__bounceIn animate__repeat-2 glowing-text">{result}</h2> 
                       {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
                     </div>      
                 )}

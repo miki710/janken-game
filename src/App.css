@@ -77,23 +77,6 @@ body {
 }
 
 
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-30px);
-  }
-  60% {
-    transform: translateY(-15px);
-  }
-}
-
-.bounce {
-  animation: bounce 1s infinite !important;
-  animation-delay: 0.5s; /* 0.5秒の遅延を追加 */
-}
-
 @keyframes flydown {
   from {
     transform: translateY(-20px);
