@@ -75,7 +75,7 @@ function RoomSelectionPage() {
                 <li key={index}></li>
             ))}
         </ul>
-      <h1>対戦部屋を選択</h1>
+      <h1>💜対戦部屋を選択💜</h1>
       {rooms.map((room, index) => (
         <button 
             key={index} 
