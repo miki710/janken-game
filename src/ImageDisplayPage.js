@@ -347,7 +347,7 @@ function ImageDisplayPage() {
               <p>{error}</p>
             ) : (
               rooms.map((newRoom, index) => (
-                <div className={`rainbow-border ${room.players.length === 2 ? 'red-neon-border' : ''}`} key={index}>
+                <div className={`rainbow-border ${newRoom.players.length === 2 ? 'red-neon-border' : ''}`} key={index}>
                   <button 
                     onClick={() =>  handleRoomSelect(newRoom)} // handleRoomSelectを使用
                     disabled={room.players.includes(cookieUserId)} // 自分が入っている部屋のボタンを無効化
