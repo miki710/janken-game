@@ -80,11 +80,10 @@ const FireworksComponent = () => {
 
   return (
     <div className="fireworks-container">
-      <h2 className="text">テスト</h2>
       <canvas
         ref={canvasRef}
-        width="400"
-        height="400"
+        width="300"
+        height="150"
         className="fireworks-canvas"
       ></canvas>
     </div>

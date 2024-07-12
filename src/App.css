@@ -66,19 +66,18 @@ body {
 }
 
 /* 花火の設定 */
+
 .fireworks-container {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .fireworks-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 0; /* キャンバスを背面に表示 */
-  pointer-events: none; /* キャンバスがクリックイベントを受け取らないようにする */
   border: none; /* キャンバスの枠を取り除く */
   outline: none; /* キャンバスのアウトラインを取り除く */
 }
