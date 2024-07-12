@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Modal from 'react-modal'; // react-modalをインポート
 
-Modal.setAppElement('#root'); // アクセシビリティのために必要
 
 const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルトで1分
   const timerRef = useRef(null);
@@ -12,6 +10,7 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
   const leaveRoom = async () => {
     console.log('Attempting to leave the room due to inactivity'); // デバッグ用ログ
     if (mode === 'vsPlayer' && room) {
+      console.log('Condition met: mode === vsPlayer and room is not null'); // デバッグ用ログ
       try {
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
         method: 'POST',
@@ -56,7 +55,7 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
           console.log(`Time elapsed: ${newTimeElapsed} seconds`); // デバッグ用ログ
           return newTimeElapsed;
       });
-  };
+    };
 
     window.addEventListener('mousemove', handleActivity);
     window.addEventListener('keydown', handleActivity);
@@ -78,10 +77,10 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
   }, [mode, room, timeout]);
 
   useEffect(() => {
+    console.log(`Checking timeElapsed: ${timeElapsed} seconds`); // デバッグ用ログ
     if (timeElapsed >= 60) {
       alert('悪い子は退出させちゃうわよ💜');
-      // 部屋から退出する処理を追加
-      navigate('/'); // トップページに戻る
+      leaveRoom(); // 部屋から退出する処理を追加
     }
   }, [timeElapsed, navigate]);
 
