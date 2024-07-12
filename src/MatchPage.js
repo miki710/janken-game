@@ -15,8 +15,8 @@ function MatchPage() {
     const location = useLocation();
     const { mode, room } = location.state || {};
 
-     // カスタムフックを使用
-     const timeElapsed = useAutoLeaveRoom(mode, room);
+    // カスタムフックを使用
+    const { timeElapsed, modal } = useAutoLeaveRoom(mode, room);
 
      // 分と秒に変換する関数
      const formatTime = (seconds) => {
@@ -171,6 +171,7 @@ function MatchPage() {
                 <p style={{ fontSize: '14px' }}>{formatTime(timeElapsed)}</p>
             )}
             <p style={{ fontSize: '12px' }}>User ID: {cookieUserId}</p>
+            {modal} {/* モーダルを表示 */}
         </div>
     );
 }

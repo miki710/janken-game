@@ -72,8 +72,9 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
     }
   }, [timeElapsed]);
 
-  return (
-    <>
+  return { 
+    timeElapsed, 
+    modal: (
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
@@ -98,9 +99,8 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
         <p>悪い子は退出させちゃうわよ💜</p>
         <button onClick={() => setModalIsOpen(false)}>Close Modal</button>
       </Modal>
-      {timeElapsed}
-    </>
-  );
+    )
+  };
 };
 
 export default useAutoLeaveRoom;
