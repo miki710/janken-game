@@ -46,11 +46,13 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
   useEffect(() => {
     console.log('Setting up event listeners'); // デバッグ用ログ
     const handleActivity = () => {
+      console.log('User activity detected'); // デバッグ用ログ
       resetTimer();
     };
 
     const countUp = () => {
       setTimeElapsed(prev => prev + 1);
+      console.log(`Time elapsed: ${timeElapsed} seconds`); // デバッグ用ログ
     };
 
     window.addEventListener('mousemove', handleActivity);
