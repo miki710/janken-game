@@ -275,28 +275,31 @@ function ImageDisplayPage() {
                 });
 
                 console.log('Response status:', response.status); // デバッグ用ログ
-
+              
                 if (!response.ok) {
                     throw new Error('Failed to check opponent status');
                 }
 
                 const data = await response.json();
                 console.log('Opponent status data:', data); // デバッグ用ログ
+
                 if (data.opponentLeft) {
                   const userConfirmed = window.confirm('あなたはたった一人部屋に取り残されました。他のルームへ移動しますか？');
+                  // 部屋からユーザーを削除するリクエストを送信
+                  await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      credentials: 'include',
+                      body: JSON.stringify({ room: currentRoom })
+                  });
+
                   if (userConfirmed) {
-                      // 部屋からユーザーを削除するリクエストを送信
-                      await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          credentials: 'include',
-                          body: JSON.stringify({ room: currentRoom })
-                      });
-                      navigate('/waiting'); // 他のルームに移動するためのページに遷移
+                      navigate('/waiting', { state: { mode } }); // 他のルームに移動するためのページに遷移
                   } else {
-                    navigate('/'); // トップページに遷移
+                      navigate('/'); // トップページに遷移
                   }
-                }
+              }
+                
             } catch (error) {
                 console.error('Error checking opponent status:', error);
             }
