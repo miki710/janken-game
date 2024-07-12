@@ -312,8 +312,8 @@ function ImageDisplayPage() {
             <>
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
+                      {showParticles && result === 'Win' && <FireworksComponent />} {/* FireworksComponentを追加 */}
                       <h2 className="animate__animated animate__bounceIn glowing-text">{result}</h2> 
-                      {showParticles && <FireworksComponent />} {/* Fireworksコンポーネントを追加 */}
                     </div>      
                 )}
             </>

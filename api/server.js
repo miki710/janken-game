@@ -49,9 +49,9 @@ app.use((req, res, next) => {
 
 // 仮のデータベース
 export let rooms = {
-    'Room A': { players: [] },
-    'Room B': { players: [] },
-    'Room C': { players: [] },
+    '♦Room A': { players: [] },
+    '♧Room B': { players: [] },
+    '♠Room C': { players: [] },
 };
 
 export let matches = {}; // すべてのマッチ情報を保持するオブジェクト
