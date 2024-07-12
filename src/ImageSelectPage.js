@@ -100,6 +100,23 @@ function ImageSelectPage() {
             setIsPointUpdated(false);  // フラグをリセット
         }
     }, [userInfo, isPointUpdated]);  
+
+    useEffect(() => {
+        console.log('userInfo changed:', userInfo);
+    }, [userInfo]);
+    
+    useEffect(() => {
+        console.log('isPointUpdated changed:', isPointUpdated);
+    }, [isPointUpdated]);
+    
+    useEffect(() => {
+        console.log('mode changed:', mode);
+    }, [mode]);
+    
+    useEffect(() => {
+        console.log('room changed:', room);
+    }, [room]);
+
     
     const handleChoice = async (hand, index) => { 
         console.log("isMatched:", isMatched, "mode:", mode);  // 状態をログに出力
