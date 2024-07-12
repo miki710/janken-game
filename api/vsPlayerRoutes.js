@@ -83,7 +83,9 @@ router.get('/check-opponent-status', (req, res) => {
     console.log('userId:', userId);
 
     if (rooms[decodedRoom]) {
-        const opponent = rooms[decodedRoom].players.find(player => player.userId !== userId);
+        console.log('Room found:', decodedRoom);
+        const opponent = rooms[decodedRoom].players.find(player => player !== userId);
+        console.log('Opponent:', opponent);
         if (!opponent) {
             return res.status(200).json({ opponentLeft: true });
         }
