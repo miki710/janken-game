@@ -58,7 +58,7 @@ const FireworksComponent = () => {
     };
 
     const launchFireworks = (cx, cy) => {
-      const colors = ['orange', 'red', 'yellow'];
+      const colors = ['#FF00FF', '#800080']; // ピンクとパープル
       for (let i = 0; i < 100; i++) {
         const particle = new Particle(cx, cy);
         particle.color = colors[Math.floor(Math.random() * colors.length)];
