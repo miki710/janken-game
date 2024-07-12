@@ -267,15 +267,13 @@ function ImageDisplayPage() {
   useEffect(() => {
     if (mode === 'vsPlayer') {
         const checkOpponentStatus = async () => {
-            console.log('Checking opponent status...'); // デバッグ用ログ
+            console.log('Checking opponent status...', { room: currentRoom, userId: user.userId });
             try {
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${currentRoom}&userId=${user.userId}`, {
                     method: 'GET',
                     credentials: 'include'
                 });
 
-                console.log('Response status:', response.status); // デバッグ用ログ
-              
                 if (!response.ok) {
                     throw new Error('Failed to check opponent status');
                 }
@@ -283,9 +281,12 @@ function ImageDisplayPage() {
                 const data = await response.json();
                 console.log('Opponent status data:', data); // デバッグ用ログ
 
+                // opponentLeftがtrueの場合にのみ実行                
                 if (data.opponentLeft) {
+                  console.log('Opponent has left the room'); // opponentLeftがtrueの場合のログ
                   const userConfirmed = window.confirm('あなたはたった一人部屋に取り残されました。他のルームへ移動しますか？');
                   // 部屋からユーザーを削除するリクエストを送信
+                  console.log('Sending leave-room request');
                   await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
@@ -309,7 +310,7 @@ function ImageDisplayPage() {
 
         return () => clearInterval(intervalId);
     }
-}, [currentRoom, navigate, mode]);
+}, [currentRoom, navigate, mode, user.userId]);
 
   return (
 
