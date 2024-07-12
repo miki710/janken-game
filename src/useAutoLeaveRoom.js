@@ -51,9 +51,12 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
     };
 
     const countUp = () => {
-      setTimeElapsed(prev => prev + 1);
-      console.log(`Time elapsed: ${timeElapsed} seconds`); // デバッグ用ログ
-    };
+      setTimeElapsed(prev => {
+          const newTimeElapsed = prev + 1;
+          console.log(`Time elapsed: ${newTimeElapsed} seconds`); // デバッグ用ログ
+          return newTimeElapsed;
+      });
+  };
 
     window.addEventListener('mousemove', handleActivity);
     window.addEventListener('keydown', handleActivity);
