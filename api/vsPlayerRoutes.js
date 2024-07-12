@@ -9,6 +9,7 @@ import { isBothUsersReady, checkMatchReady, saveUserChoice, determineMatchResult
 // 部屋の状態を取得するエンドポイント
 router.get('/rooms', (req, res) => {
     try {
+        console.log('Fetching rooms:', rooms); // デバッグ用ログ
         const roomStates = Object.keys(rooms).map(room => ({
             name: room,
             players: rooms[room].players,
@@ -84,6 +85,7 @@ router.get('/check-opponent-status', (req, res) => {
 
     if (rooms[decodedRoom]) {
         console.log('Room found:', decodedRoom);
+        console.log('Players in room:', rooms[decodedRoom].players);
         const opponent = rooms[decodedRoom].players.find(player => player !== userId);
         console.log('Opponent:', opponent);
         if (!opponent) {
