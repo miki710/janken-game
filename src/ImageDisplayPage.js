@@ -263,6 +263,50 @@ function ImageDisplayPage() {
     }
   };
   
+  // 対戦相手の状態を確認する関数を追加
+  useEffect(() => {
+    if (mode === 'vsPlayer') {
+        const checkOpponentStatus = async () => {
+            console.log('Checking opponent status...'); // デバッグ用ログ
+            try {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${currentRoom}&userId=${cookieUserId}`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                console.log('Response status:', response.status); // デバッグ用ログ
+
+                if (!response.ok) {
+                    throw new Error('Failed to check opponent status');
+                }
+
+                const data = await response.json();
+                console.log('Opponent status data:', data); // デバッグ用ログ
+                if (data.opponentLeft) {
+                  const userConfirmed = confirm('あなたはたった一人部屋に取り残されました。他のルームへ移動しますか？');
+                  if (userConfirmed) {
+                      // 部屋からユーザーを削除するリクエストを送信
+                      await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          credentials: 'include',
+                          body: JSON.stringify({ room: currentRoom })
+                      });
+                      navigate('/waiting'); // 他のルームに移動するためのページに遷移
+                  } else {
+                    navigate('/'); // トップページに遷移
+                  }
+                }
+            } catch (error) {
+                console.error('Error checking opponent status:', error);
+            }
+        };
+
+        const intervalId = setInterval(checkOpponentStatus, 5000); // 5秒ごとに対戦相手の状態を確認
+
+        return () => clearInterval(intervalId);
+    }
+}, [currentRoom, cookieUserId, navigate, mode]);
 
   return (
     <>
