@@ -309,7 +309,7 @@ function ImageDisplayPage() {
 
         return () => clearInterval(intervalId);
     }
-}, [currentRoom, cookieUserId, navigate, mode]);
+}, [currentRoom, navigate, mode]);
 
   return (
 
