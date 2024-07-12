@@ -62,6 +62,14 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
     };
   }, [mode, room, timeout]);
 
+  useEffect(() => {
+    if (timeElapsed >= 60) {
+      alert('悪い子は退出させちゃうわよ💜');
+      // 部屋から退出する処理を追加
+      navigate('/'); // トップページに戻る
+    }
+  }, [timeElapsed, navigate]);
+
   return timeElapsed;
 };
 
