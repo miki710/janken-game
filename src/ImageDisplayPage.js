@@ -283,24 +283,43 @@ function ImageDisplayPage() {
 
                 // opponentLeftがtrueの場合にのみ実行                
                 if (data.opponentLeft) {
-                  console.log('Opponent has left the room'); // opponentLeftがtrueの場合のログ
-                  const userConfirmed = window.confirm('あなたはたった一人部屋に取り残されました。他のルームへ移動しますか？');
-                  // 部屋からユーザーを削除するリクエストを送信
-                  console.log('Sending leave-room request');
-                  await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      credentials: 'include',
-                      body: JSON.stringify({ room: currentRoom })
-                  });
+                   // 再確認のために1秒後に再度チェック
+                   setTimeout(async () => {
+                    const recheckResponse = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${currentRoom}&userId=${user.userId}`, {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
 
-                  if (userConfirmed) {
-                      navigate('/waiting', { state: { mode } }); // 他のルームに移動するためのページに遷移
-                  } else {
-                      navigate('/'); // トップページに遷移
-                  }
-              }
-                
+                    if (!recheckResponse.ok) {
+                        throw new Error('Failed to recheck opponent status');
+                    }
+
+                    const recheckData = await recheckResponse.json();
+                    console.log('Rechecked opponent status data:', recheckData); // デバッグ用ログ
+
+                    if (recheckData.opponentLeft) {
+                        const userConfirmed = window.confirm('あなたはたった一人部屋に取り残されました。他のルームへ移動しますか？');
+                        // 部屋からユーザーを削除するリクエストを送信
+                        console.log('Sending leave-room request');
+                        await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                            body: JSON.stringify({ room: currentRoom })
+                        });
+
+                        if (userConfirmed) {
+                          navigate('/waiting', { state: { mode } }); // 他のルームに移動するためのページに遷移
+                        } else {
+                          navigate('/'); // トップページに遷移
+                        }
+                    } else {
+                      console.log('Opponent is still in the room after recheck'); // opponentLeftがfalseの場合のログ
+                    }
+                  }, 1000); // 1秒後に再確認
+                } else {
+                  console.log('Opponent is still in the room'); // opponentLeftがfalseの場合のログ
+                }
             } catch (error) {
                 console.error('Error checking opponent status:', error);
             }
@@ -310,7 +329,7 @@ function ImageDisplayPage() {
 
         return () => clearInterval(intervalId);
     }
-}, [currentRoom, navigate, mode, user.userId]);
+  }, [currentRoom, navigate, mode, user.userId]);
 
   return (
 
