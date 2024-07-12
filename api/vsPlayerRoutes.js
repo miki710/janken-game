@@ -78,15 +78,14 @@ router.post('/leave-room', (req, res) => {
 // 対戦相手の状態を確認するエンドポイント
 router.get('/check-opponent-status', (req, res) => {
     const { room, userId } = req.query;
-    const decodedRoom = decodeURIComponent(room); // roomをデコード
 
-    console.log('room:', decodedRoom);
+    console.log('room:', room);
     console.log('userId:', userId);
 
-    if (rooms[decodedRoom]) {
-        console.log('Room found:', decodedRoom);
-        console.log('Players in room:', rooms[decodedRoom].players);
-        const opponent = rooms[decodedRoom].players.find(player => player !== userId);
+    if (rooms[room]) {
+        console.log('Room found:', room);
+        console.log('Players in room:', rooms[room].players);
+        const opponent = rooms[room].players.find(player => player !== userId);
         console.log('Opponent:', opponent);
         if (!opponent) {
             return res.status(200).json({ opponentLeft: true });
