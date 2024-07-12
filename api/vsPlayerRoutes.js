@@ -42,7 +42,7 @@ router.post('/join-room', (req, res) => {
                 console.log('Room state after join:', rooms[room]); // ログ出力を追加
                 res.json({ success: true });
             } else {
-                res.json({ success: false, message: 'Room is full' });
+                res.json({ success: false, message: 'そこは、ダメ💜' });
             }
         } else {
             console.error('Room not found:', room); // エラーログを追加
