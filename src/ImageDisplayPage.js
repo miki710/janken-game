@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router-dom'; // useNavigateをインポート
 import { playSound, getHandEmoji } from './utils.js';
 import { images } from './ImageSelectPage.js';
 import { UserContext } from './UserContext.js';
-import Fireworks from './Fireworks.js'; // Fireworksコンポーネントをインポート
 import useAutoLeaveRoom from './useAutoLeaveRoom.js'; // カスタムフックをインポート
 import './App.css';
 import 'animate.css';
+import FireworksComponent from './FireworksComponent.js';
 
 
 function ImageDisplayPage() {
@@ -313,7 +313,7 @@ function ImageDisplayPage() {
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
                       <h2 className="animate__animated animate__bounceIn glowing-text">{result}</h2> 
-                      {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
+                      {showParticles && <FireworksComponent />} {/* Fireworksコンポーネントを追加 */}
                     </div>      
                 )}
             </>
@@ -322,7 +322,7 @@ function ImageDisplayPage() {
                 {showResult && (
                     <div style={{ position: 'relative', display: 'inline-block' }}>
                       <h2 className="animate__animated animate__bounceIn glowing-text">{initialResult}</h2> 
-                      {showParticles && <Fireworks />} {/* Fireworksコンポーネントを追加 */}
+                      {showParticles && <FireworksComponent />} {/* Fireworksコンポーネントを追加 */}
                     </div> 
                 )}
             </>

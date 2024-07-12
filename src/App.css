@@ -65,6 +65,24 @@ body {
   to { box-shadow: none; }
 }
 
+/* 花火の設定 */
+.fireworks-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fireworks-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0; /* キャンバスを背面に表示 */
+  pointer-events: none; /* キャンバスがクリックイベントを受け取らないようにする */
+  border: none; /* キャンバスの枠を取り除く */
+  outline: none; /* キャンバスのアウトラインを取り除く */
+}
+
 /*
 勝敗CSS、ポイントのアニメーション設定 @ImageDisplayPage
 */
