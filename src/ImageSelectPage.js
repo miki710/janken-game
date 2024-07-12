@@ -67,7 +67,8 @@ function ImageSelectPage() {
                             hand: userHand,
                             job: userInfo.job,
                             index: userImageIndex,
-                            point: currentPoint
+                            point: currentPoint,
+                            userId: userId
                         },
                         opponent: {
                             hand: data.opponentHand,

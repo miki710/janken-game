@@ -269,7 +269,7 @@ function ImageDisplayPage() {
         const checkOpponentStatus = async () => {
             console.log('Checking opponent status...'); // デバッグ用ログ
             try {
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${currentRoom}&userId=${cookieUserId}`, {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${currentRoom}&userId=${user.userId}`, {
                     method: 'GET',
                     credentials: 'include'
                 });
@@ -312,6 +312,7 @@ function ImageDisplayPage() {
 }, [currentRoom, cookieUserId, navigate, mode]);
 
   return (
+
     <>
     <ul className="background">
         {Array.from({ length: 25 }).map((_, index) => (
