@@ -8,9 +8,7 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
   const navigate = useNavigate(); // useNavigateフックを使用
 
   const leaveRoom = async () => {
-    console.log('Attempting to leave the room due to inactivity'); // デバッグ用ログ
     if (mode === 'vsPlayer' && room) {
-      console.log('Condition met: mode === vsPlayer and room is not null'); // デバッグ用ログ
       try {
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
         method: 'POST',
@@ -34,7 +32,6 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
   };
 
   const resetTimer = () => {
-    console.log('Resetting timer'); // デバッグ用ログ
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
@@ -43,7 +40,6 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
   };
 
   useEffect(() => {
-    console.log('Setting up event listeners'); // デバッグ用ログ
     const handleActivity = () => {
       console.log('User activity detected'); // デバッグ用ログ
       resetTimer();
@@ -52,7 +48,6 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
     const countUp = () => {
       setTimeElapsed(prev => {
           const newTimeElapsed = prev + 1;
-          console.log(`Time elapsed: ${newTimeElapsed} seconds`); // デバッグ用ログ
           return newTimeElapsed;
       });
     };
@@ -66,7 +61,6 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
     const intervalId = setInterval(countUp, 1000); // 1秒ごとにカウントアップ
 
     return () => {
-      console.log('Cleaning up event listeners'); // デバッグ用ログ
       clearTimeout(timerRef.current);
       clearInterval(intervalId);
       window.removeEventListener('mousemove', handleActivity);
@@ -77,7 +71,6 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
   }, [mode, room, timeout]);
 
   useEffect(() => {
-    console.log(`Checking timeElapsed: ${timeElapsed} seconds`); // デバッグ用ログ
     if (timeElapsed >= 60) {
       alert('悪い子は退出させちゃうわよ💜');
       leaveRoom(); // 部屋から退出する処理を追加
