@@ -35,6 +35,7 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
   };
 
   const resetTimer = () => {
+    console.log('Resetting timer'); // デバッグ用ログ
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
@@ -43,6 +44,7 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
   };
 
   useEffect(() => {
+    console.log('Setting up event listeners'); // デバッグ用ログ
     const handleActivity = () => {
       resetTimer();
     };
@@ -60,6 +62,7 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
     const intervalId = setInterval(countUp, 1000); // 1秒ごとにカウントアップ
 
     return () => {
+      console.log('Cleaning up event listeners'); // デバッグ用ログ
       clearTimeout(timerRef.current);
       clearInterval(intervalId);
       window.removeEventListener('mousemove', handleActivity);
