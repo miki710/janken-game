@@ -96,6 +96,7 @@ function ImageSelectPage() {
     useEffect(() => {
         console.log('Effect running: userInfo', userInfo, 'currentPoint', currentPoint);
         if (mode === 'vsPlayer' && userInfo && userInfo.job && isPointUpdated) {
+            console.log('checkMatchReady is called');
             checkMatchReady(room);
             setIsPointUpdated(false);  // フラグをリセット
         }
@@ -108,15 +109,6 @@ function ImageSelectPage() {
     useEffect(() => {
         console.log('isPointUpdated changed:', isPointUpdated);
     }, [isPointUpdated]);
-    
-    useEffect(() => {
-        console.log('mode changed:', mode);
-    }, [mode]);
-    
-    useEffect(() => {
-        console.log('room changed:', room);
-    }, [room]);
-
     
     const handleChoice = async (hand, index) => { 
         console.log("isMatched:", isMatched, "mode:", mode);  // 状態をログに出力
