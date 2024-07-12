@@ -9,24 +9,28 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
   const [timeElapsed, setTimeElapsed] = useState(0); // 経過時間を管理
   const navigate = useNavigate(); // useNavigateフックを使用
 
-  const leaveRoom = () => {
+  const leaveRoom = async () => {
+    console.log('Attempting to leave the room due to inactivity'); // デバッグ用ログ
     if (mode === 'vsPlayer' && room) {
-      fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ room: room }),
         credentials: 'include'
-      }).then(response => {
+        });
+
         if (!response.ok) {
           throw new Error('Failed to leave the room');
         }
+
         console.log('Successfully left the room due to inactivity');
         navigate('/'); // 5分後にModeSelectPageに遷移
-      }).catch(error => {
+      } catch (error) {
         console.error('Error leaving the room:', error);
-      });
+      }
     }
   };
 
