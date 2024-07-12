@@ -283,7 +283,7 @@ function ImageDisplayPage() {
                 const data = await response.json();
                 console.log('Opponent status data:', data); // デバッグ用ログ
                 if (data.opponentLeft) {
-                  const userConfirmed = confirm('あなたはたった一人部屋に取り残されました。他のルームへ移動しますか？');
+                  const userConfirmed = window.confirm('あなたはたった一人部屋に取り残されました。他のルームへ移動しますか？');
                   if (userConfirmed) {
                       // 部屋からユーザーを削除するリクエストを送信
                       await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
