@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Modal from 'react-modal'; // react-modalをインポート
+
+Modal.setAppElement('#root'); // アクセシビリティのために必要
 
 const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルトで1分
   const timerRef = useRef(null);
   const [timeElapsed, setTimeElapsed] = useState(0); // 経過時間を管理
+  const [modalIsOpen, setModalIsOpen] = useState(false); // モーダルの開閉状態を管理
   const navigate = useNavigate(); // useNavigateフックを使用
 
   const leaveRoom = () => {
@@ -64,13 +68,39 @@ const useAutoLeaveRoom = (mode, room, timeout = 60000) => { // デフォルト�
 
   useEffect(() => {
     if (timeElapsed >= 60) {
-      alert('悪い子は退出させちゃうわよ💜');
-      // 部屋から退出する処理を追加
-      navigate('/'); // トップページに戻る
+      setModalIsOpen(true); // モーダルを開く
     }
-  }, [timeElapsed, navigate]);
+  }, [timeElapsed]);
 
-  return timeElapsed;
+  return (
+    <>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        contentLabel="Inactivity Alert"
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            width: '200px', // 幅を調整
+            height: '100px', // 高さを調整
+            backgroundColor: 'rgba(0, 0, 0, 0)', // 背景色を完全に透明に設定
+            color: 'white', // テキスト色を白に設定
+            border: '2px solid white', // 白い枠線
+            boxShadow: '0 0 20px #9400D3, inset 0 0 20px #9400D3' // パープルネオンの影（外側と内側）
+          }
+        }}
+      >
+        <p>悪い子は退出させちゃうわよ💜</p>
+        <button onClick={() => setModalIsOpen(false)}>Close Modal</button>
+      </Modal>
+      {timeElapsed}
+    </>
+  );
 };
 
 export default useAutoLeaveRoom;
