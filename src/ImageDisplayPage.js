@@ -201,19 +201,62 @@ function ImageDisplayPage() {
     }
   };
 
-  useEffect(() => {
-    // 初回ロード時に部屋の状態を取得
-    fetchRooms();
+  // 対戦相手の状態を確認する関数
+  const checkOpponentStatus = async () => {
+    console.log('Checking opponent status...', { room: currentRoom }); // デバッグ用ログ
+    try {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${currentRoom}`, {
+            method: 'GET',
+            credentials: 'include'
+        });
 
-    // 5秒ごとに部屋の状態を更新
-    intervalRef.current = setInterval(fetchRooms, 5000);
+        console.log('Response status:', response.status); // デバッグ用ログ
+
+        if (!response.ok) {
+            throw new Error('Failed to check opponent status');
+        }
+
+        const data = await response.json();
+        console.log('Opponent status data:', data); // デバッグ用ログ
+        setOpponentLeft(data.opponentLeft);
+
+        if (data.opponentLeft) {
+            console.log('Opponent has left the room');
+            // 部屋からユーザーを削除するリクエストを送信
+            await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/leave-room`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ room: currentRoom })
+            });
+            navigate('/'); // 対戦相手が退出した場合、モード選択画面に戻る
+        } else {
+            console.log('Opponent is still in the room');
+        }
+    } catch (error) {
+        console.error('Error checking opponent status:', error);
+    }
+  };
+
+  // データを取得する関数
+  const fetchData = async () => {
+    await fetchRooms();
+    await checkOpponentStatus();
+  };
+
+  useEffect(() => {
+    // 初回ロード時にデータを取得
+    fetchData();
+
+    // 5秒ごとにデータを更新
+    intervalRef.current = setInterval(fetchData, 5000);
     console.log('Polling started with ID:', intervalRef.current);
     // クリーンアップ
     return () => {
-      console.log('Clearing interval with ID:', intervalRef.current);
-      clearInterval(intervalRef.current);
-    }
-  }, []);
+        console.log('Clearing interval with ID:', intervalRef.current);
+        clearInterval(intervalRef.current);
+    };
+}, [currentRoom, navigate]);
 
 
   const handleRoomSelect = async (room) => {
