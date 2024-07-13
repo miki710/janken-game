@@ -269,7 +269,7 @@ function ImageDisplayPage() {
         const checkOpponentStatus = async () => {
             console.log('Checking opponent status...', { room: currentRoom, userId: user.userId });
             try {
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${currentRoom}&userId=${user.userId}`, {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${currentRoom}`, {
                     method: 'GET',
                     credentials: 'include'
                 });

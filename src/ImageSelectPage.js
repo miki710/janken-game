@@ -233,7 +233,7 @@ function ImageSelectPage() {
         const checkOpponentStatus = async () => {
             console.log('Checking opponent status...'); // デバッグ用ログ
             try {
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${room}&userId=${userId}`, {
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/vs-player/check-opponent-status?room=${room}`, {
                     method: 'GET',
                     credentials: 'include'
                 });

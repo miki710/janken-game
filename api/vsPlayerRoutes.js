@@ -77,7 +77,8 @@ router.post('/leave-room', (req, res) => {
 
 // 対戦相手の状態を確認するエンドポイント
 router.get('/check-opponent-status', (req, res) => {
-    const { room, userId } = req.query;
+    const { room } = req.query;
+    const userId = req.cookies.userId; // クッキーからuserIdを取得
 
     console.log('room:', room);
     console.log('userId:', userId);
@@ -85,12 +86,17 @@ router.get('/check-opponent-status', (req, res) => {
     if (rooms[room]) {
         console.log('Room found:', room);
         console.log('Players in room:', rooms[room].players);
+
         const opponent = rooms[room].players.find(player => player !== userId);
         console.log('Opponent:', opponent);
+
         if (!opponent) {
+            console.log('Opponent not found');
             return res.status(200).json({ opponentLeft: true });
         }
     }
+    // 対戦相手が見つかった場合の処理
+    console.log('Opponent found');
     res.status(200).json({ opponentLeft: false });
 });
 
