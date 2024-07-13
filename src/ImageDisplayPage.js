@@ -43,6 +43,7 @@ function ImageDisplayPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const intervalRef = useRef(null);
+    const [, setOpponentLeft] = useState(false); // ここで定義
 
     // カスタムフックを使用
     const timeElapsed = useAutoLeaveRoom(mode, currentRoom);
